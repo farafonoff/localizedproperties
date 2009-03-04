@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.triadsoft.properties.editors.PropertiesEditor"
+            contributorClass="com.triadsoft.properties.editors.MultiPageEditorContributor"
+            extensions="properties"
+            icon="icons/page_white_world.png"
+            id="com.triadsoft.properties.editors.PropertiesEditor"
+            name="Localized Properties Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="com.triadsoft.properties"
+            name="LocalizedProperties">
+      </category>
+      <wizard
+            category="com.triadsoft.properties"
+            class="com.triadsoft.properties.wizards.LocalizedPropertiesWizard"
+            icon="icons/sample.gif"
+            id="com.triadsoft.properties.wizards.LocalizedPropertiesWizard"
+            name="Localized File Properties">
+      </wizard>
+   </extension>
+
+</plugin>
