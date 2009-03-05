@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
  * descubrir los datos referidos al path
  * 
  * @author triad
- * 
  */
 public class WildcardPath {
 	public static final String ROOT_WILDCARD = "{root}";
