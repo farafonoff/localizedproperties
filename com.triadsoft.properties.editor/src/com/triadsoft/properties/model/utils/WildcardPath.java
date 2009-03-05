@@ -1,6 +1,8 @@
 package com.triadsoft.properties.model.utils;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Esta clase es la encargada de encapsular todos la logica para poder parsear y
@@ -36,22 +38,35 @@ public class WildcardPath {
 		return path;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
-	}
-
+	/**
+	 * This method replace the language and country into the path string 
+	 * @param locale
+	 * @return
+	 */
 	public WildcardPath replace(Locale locale) {
 		this.replace(LANGUAGE_WILDCARD, locale.getLanguage());
 		this.replace(COUNTRY_WILDCARD, locale.getCountry());
 		return this;
 	}
 	
-	public WildcardPath replace() {
-		this.replace(scapedWildcard(ROOT_WILDCARD),"[a-zA-Z\\-\\_]+");
-		this.replace(scapedWildcard(FILENAME_WILDCARD),"[a-zA-Z\\-\\_]+");
-		this.replace(scapedWildcard(FILE_EXTENSION_WILDCARD),"[a-zA-Z\\-\\_]+");
-		this.replace(scapedWildcard(LANGUAGE_WILDCARD),"[a-z]{2}");
-		this.replace(scapedWildcard(COUNTRY_WILDCARD),"[A-Z]{2}");
+	/**
+	 * Reset the path to initial state
+	 */
+	public void resetPath(){
+		this.path = wildcardpath;
+		this.path = wildcardpath.replaceAll("\\.", "\\\\.");
+	}
+
+	/**
+	 * This method return a wildcard path as regular expresion
+	 */
+	public WildcardPath replaceToRegex() {
+		resetPath();
+		this.replace(ROOT_WILDCARD, "[a-zA-Z\\-\\_]+");
+		this.replace(FILENAME_WILDCARD, "[a-zA-Z\\-\\_]+");
+		this.replace(FILE_EXTENSION_WILDCARD, "[a-zA-Z\\-\\_]+");
+		this.replace(LANGUAGE_WILDCARD, "[a-z]{2}");
+		this.replace(COUNTRY_WILDCARD, "[A-Z]{2}");
 		return this;
 	}
 
@@ -59,22 +74,53 @@ public class WildcardPath {
 		if (path.equals("") || path.length() == 0) {
 			path = wildcardpath.replaceAll("\\.", "\\\\.");
 		}
-		path = path.replaceAll(scapedWildcard(wildcard), value);
+		path = path.replaceAll(escapedWildcard(wildcard), value);
 		return this;
 	}
-	
-	private String scapedWildcard(String wildcard){
+
+	/**
+	 * Return an string that contain the wildcard string with the curly braces
+	 * chars escaped
+	 * 
+	 * @param wildcard
+	 * @return
+	 */
+	private String escapedWildcard(String wildcard) {
 		String rep = wildcard;
 		rep = rep.replaceAll("\\{", "\\\\{");
 		rep = rep.replaceAll("\\}", "\\\\}");
 		return rep;
 	}
 
+	/**
+	 * This method return true if the file path match with the wildcard path
+	 * loaded into the WildcardPath object
+	 * 
+	 * @param filepath
+	 *            The file path string to compare
+	 * @return java.lang.Boolean
+	 */
+	public Boolean match(String filepath) {
+		WildcardPath path = new WildcardPath(wildcardpath);
+		path.replaceToRegex();
+		Pattern p = Pattern.compile(path.getPath());
+		Matcher m = p.matcher(filepath);
+		return m.find();
+	}
+
 	public static void main(String[] args) {
 		WildcardPath wp = new WildcardPath(
 				"/{root}/{filename}.{lang}_{country}.{fileextension}");
-		wp.replace(ROOT_WILDCARD,"locale").replace(FILENAME_WILDCARD, "alert").replace(FILE_EXTENSION_WILDCARD,"properties");
+		wp.replace(ROOT_WILDCARD, "locale").replace(FILENAME_WILDCARD, "alert")
+				.replace(FILE_EXTENSION_WILDCARD, "properties");
 		wp.replace(Locale.getDefault());
-		System.out.println(wp.getPath());
+
+		WildcardPath wp1 = new WildcardPath(
+				"/{root}/{filename}.{lang}_{country}.{fileextension}");
+		wp1.replaceToRegex();
+		System.out.println(wp1.getPath());
+		System.out.println(wp1.match("src/locale/component.es_AR.properties"));
+		System.out.println(wp1.match("src/locale/component.en_US.properties"));
+		System.out.println(wp1.match("src/locale/component.es.properties"));
 	}
 }
