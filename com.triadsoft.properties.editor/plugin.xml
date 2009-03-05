@@ -13,19 +13,5 @@
             name="Localized Properties Editor">
       </editor>
    </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="com.triadsoft.properties"
-            name="LocalizedProperties">
-      </category>
-      <wizard
-            category="com.triadsoft.properties"
-            class="com.triadsoft.properties.wizards.LocalizedPropertiesWizard"
-            icon="icons/sample.gif"
-            id="com.triadsoft.properties.wizards.LocalizedPropertiesWizard"
-            name="Localized File Properties">
-      </wizard>
-   </extension>
 
 </plugin>
