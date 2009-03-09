@@ -25,6 +25,7 @@ public class WildcardPath {
 	private String fileExtension;
 	private String country;
 	private String language;
+	private String pathToRoot;
 
 	private String wildcardpath;
 	private String path = "";
@@ -72,6 +73,10 @@ public class WildcardPath {
 		return locale;
 	}
 
+	public String getPathToRoot() {
+		return pathToRoot;
+	}
+
 	/**
 	 * Este metodo se encarga de obtener del path pasado como parámetro los
 	 * datos correspondientes a cada wildcard
@@ -84,6 +89,7 @@ public class WildcardPath {
 		if (m.find()) {
 			String discoveredPath = escapedFilepath.substring(m.start(), m
 					.end());
+			this.pathToRoot = escapedFilepath.substring(0,m.start());
 			String[] wildcards = wildcardpath.split("\\/");
 			String[] segments = discoveredPath.split("\\/");
 			for (int i = 0; i < segments.length; i++) {
@@ -247,7 +253,7 @@ public class WildcardPath {
 				"/{root}/prueba/{filename}.{lang}_{country}.{fileextension}");
 		wp1.replaceToRegex();
 		System.out.println(wp1.getPath());
-		System.out.println(wp1.match("src/locale/component.es_AR.properties"));
+		System.out.println(wp1.match("src/locale/prueba/component.es_AR.properties"));
 		System.out.println(wp1
 				.match("src/locale/prueba/component.en_US.properties"));
 		System.out.println(wp1
@@ -258,5 +264,6 @@ public class WildcardPath {
 		System.out.println("Extension:" + wp1.getFileExtension());
 		System.out.println("Root: " + wp1.getRoot());
 		System.out.println("Locale: " + wp1.getLocale());
+		System.out.println("Path: " + wp1.getPathToRoot());
 	}
 }
