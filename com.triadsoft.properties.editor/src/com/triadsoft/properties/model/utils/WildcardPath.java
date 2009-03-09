@@ -84,10 +84,9 @@ public class WildcardPath {
 		if (m.find()) {
 			String discoveredPath = escapedFilepath.substring(m.start(), m
 					.end());
-			String[] wildcards = wildcardpath.split("/");
-			String[] segments = discoveredPath.split("/");
+			String[] wildcards = wildcardpath.split("\\/");
+			String[] segments = discoveredPath.split("\\/");
 			for (int i = 0; i < segments.length; i++) {
-				System.out.println(segments[i] + ":" + wildcards[i]);
 				parseWildcard(wildcards[i], segments[i]);
 			}
 			if (this.language == null || this.country == null) {
@@ -198,7 +197,7 @@ public class WildcardPath {
 	 */
 	private String escapedFilepath(String filepath) {
 		if (File.separator.equals("\\")) {
-			return filepath.replaceAll("\\\\", "/");
+			return filepath.replaceAll("\\\\", "\\/");
 		}
 		return filepath;
 	}
@@ -245,14 +244,16 @@ public class WildcardPath {
 		wp.replace(Locale.getDefault());
 
 		WildcardPath wp1 = new WildcardPath(
-				"/{root}/{filename}.{lang}_{country}.{fileextension}");
+				"/{root}/prueba/{filename}.{lang}_{country}.{fileextension}");
 		wp1.replaceToRegex();
 		System.out.println(wp1.getPath());
 		System.out.println(wp1.match("src/locale/component.es_AR.properties"));
-		System.out.println(wp1.match("src/locale/component.en_US.properties"));
-		System.out.println(wp1.match("src/locale/component.es.properties"));
+		System.out.println(wp1
+				.match("src/locale/prueba/component.en_US.properties"));
+		System.out.println(wp1
+				.match("src/locale/prueba/component.es.properties"));
 		wp1
-				.parse("c:\\tempos\\TemposProject\\src\\localeProp\\component.en_US.properties");
+				.parse("c:\\tempos\\TemposProject\\src\\locale\\prueba\\component.en_US.properties");
 		System.out.println("Filename:" + wp1.getFileName());
 		System.out.println("Extension:" + wp1.getFileExtension());
 		System.out.println("Root: " + wp1.getRoot());
