@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
  * @author triad
  */
 public class WildcardPath {
+	public static final String COUNTRY_REGEX = "[A-Z]{2}";
+	public static final String LANGUAGE_REGEX = "[a-z]{2}";
+	public static final String TEXT_REGEX = "[a-zA-Z\\-\\_]+";
 	public static final String ROOT_WILDCARD = "{root}";
 	public static final String FILENAME_WILDCARD = "{filename}";
 	public static final String FILE_EXTENSION_WILDCARD = "{fileextension}";
@@ -164,11 +167,11 @@ public class WildcardPath {
 	 */
 	public WildcardPath replaceToRegex() {
 		resetPath();
-		this.replace(ROOT_WILDCARD, "[a-zA-Z\\-\\_]+");
-		this.replace(FILENAME_WILDCARD, "[a-zA-Z\\-\\_]+");
-		this.replace(FILE_EXTENSION_WILDCARD, "[a-zA-Z\\-\\_]+");
-		this.replace(LANGUAGE_WILDCARD, "[a-z]{2}");
-		this.replace(COUNTRY_WILDCARD, "[A-Z]{2}");
+		this.replace(ROOT_WILDCARD, TEXT_REGEX);
+		this.replace(FILENAME_WILDCARD, TEXT_REGEX);
+		this.replace(FILE_EXTENSION_WILDCARD, TEXT_REGEX);
+		this.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
+		this.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
 		return this;
 	}
 
@@ -177,6 +180,15 @@ public class WildcardPath {
 			path = wildcardpath.replaceAll("\\.", "\\\\.");
 		}
 		path = path.replaceAll(escapedWildcard(wildcard), value);
+		return this;
+	}
+	
+	public WildcardPath replaceDiscoveryLocale(){
+		this.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
+		this.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
+		this.replace(FILENAME_WILDCARD,this.getFileName());
+		this.replace(FILE_EXTENSION_WILDCARD,this.getFileExtension());
+		this.replace(ROOT_WILDCARD,this.getRoot());
 		return this;
 	}
 
