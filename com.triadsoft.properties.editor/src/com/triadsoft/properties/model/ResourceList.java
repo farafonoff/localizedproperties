@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Path;
 
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
+import com.triadsoft.properties.model.utils.PathDiscovery;
 
 /**
  * Natures para Java org.eclipse.jdt.core.javanature
@@ -49,6 +50,7 @@ public class ResourceList {
 	public ResourceList(IFile file) {
 		try {
 			project = file.getProject();
+			PathDiscovery pd = new PathDiscovery(file);
 			locator = getResourceLocatorByNature(project);
 			localePath = locator.getLocalePath(file);
 			filename = locator.getFileName(file, new Locale("en", "US"));
