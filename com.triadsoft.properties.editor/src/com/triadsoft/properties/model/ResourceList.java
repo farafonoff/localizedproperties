@@ -8,96 +8,46 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.model.utils.PathDiscovery;
 
 /**
- * Natures para Java org.eclipse.jdt.core.javanature
- * 
- * Natures java web org.eclipse.wst.common.project.facet.core.nature
- * org.eclipse.wst.common.modulecore.ModuleCoreNature
- * 
- * Nature java plugin org.eclipse.pde.PluginNature
- * 
- * Natures para flex com.adobe.flexbuilder.project.flexnature
- * com.adobe.flexbuilder.project.actionscriptnature
  * 
  * @author Leonardo Flores
- * 
  */
 public class ResourceList {
 
-	protected static final String FLEX_NATURE = "com.adobe.flexbuilder.project.flexnature";
-	protected static final String AS_NATURE = "com.adobe.flexbuilder.project.actionscriptnature";
-	protected static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
+	// protected static final String FLEX_NATURE =
+	// "com.adobe.flexbuilder.project.flexnature";
+	// protected static final String AS_NATURE =
+	// "com.adobe.flexbuilder.project.actionscriptnature";
+	// protected static final String JAVA_NATURE =
+	// "org.eclipse.jdt.core.javanature";
 
 	private HashMap<Locale, PropertyFile> map = new HashMap<Locale, PropertyFile>();
-	private IPath localePath;
-	private IProject project = null;
 	private Locale[] locales = new Locale[0];
 	private String filename = null;
-	private IResourceLocator locator = null;
 	private List<IResourceListener> listeners = new LinkedList<IResourceListener>();
 
 	public ResourceList(IFile file) {
 		try {
-			project = file.getProject();
 			PathDiscovery pd = new PathDiscovery(file);
-			locator = getResourceLocatorByNature(project);
-			localePath = locator.getLocalePath(file);
-			filename = locator.getFileName(file, new Locale("en", "US"));
-			parseLocales(file);
-			Locale[] locales = getLocales();
-			for (int i = 0; i < locales.length; i++) {
-				loadByLocale(locator.getFileName(file, locales[i]), locales[i]);
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
+			parseLocales(pd.getResources());
 		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public String getFileName() {
 		return filename;
-	}
-
-	/**
-	 * Este metodo se encarga de cargar los archivos de recursos segun su
-	 * locale.
-	 * 
-	 * @param filename
-	 *            Nombre del archivo, se debe usar el devuelto por el locator
-	 *            para abstraer el nombre del archivo de la forma en que se
-	 *            almacenan los recursos
-	 * @param locale
-	 *            Locale para el cual se buscará el archivo
-	 */
-	private void loadByLocale(String filename, Locale locale) {
-		try {
-			String localeDir = locator.getLocaleDir(locale);
-			IPath filePath = localePath.append(new Path("/" + localeDir + "/"
-					+ filename));
-			IFile file = project.getFile(filePath.removeFirstSegments(1));
-			if (!file.isSynchronized(IFile.DEPTH_ONE)) {
-				file.refreshLocal(IFile.DEPTH_ONE, null);
-			}
-			map.put(locale, new PropertyFile(file));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -110,29 +60,18 @@ public class ResourceList {
 		return locales;
 	}
 
-	/**
-	 * Metodo que a partir del IFile y del locator "descubre" cuales son los
-	 * locales disponibles.Por el momento estan hardcore los locales de en_US y
-	 * es_AR, pero la idea es que se obtengan los locales disponibles en el path
-	 * de los archivos de recursos
-	 * 
-	 * @param file
-	 */
-	private void parseLocales(IFile file) {
-		LinkedList<Locale> locales = new LinkedList<Locale>();
-		locales.add(new Locale("en", "US"));
-		locales.add(new Locale("es", "AR"));
-		this.locales = (Locale[]) locales.toArray(new Locale[locales.size()]);
-	}
-
-	private static IResourceLocator getResourceLocatorByNature(IProject project)
-			throws CoreException {
-		if (project.getNature(FLEX_NATURE) != null) {
-			return new FlexLocator();
-		} else if (project.getNature(JAVA_NATURE) != null) {
-			return new JavaLocator();
+	private void parseLocales(Map<Locale, IFile> files) throws IOException {
+		List<Locale> locales = new LinkedList<Locale>();
+		for (Iterator<Locale> iterator = files.keySet().iterator(); iterator
+				.hasNext();) {
+			Locale locale = iterator.next();
+			IFile ifile = (IFile) files.get(locale);
+			map.put(locale, new PropertyFile(ifile));
+			locales.add(locale);
+			System.out.println(ifile.getFullPath().toString() + " Locale: "
+					+ locale.toString());
 		}
-		return new FlexLocator();
+		this.locales = (Locale[]) locales.toArray(new Locale[locales.size()]);
 	}
 
 	public void addResourceListener(IResourceListener listener) {
@@ -197,7 +136,7 @@ public class ResourceList {
 			if (defaultProperties != null) {
 				value = defaultEntries[i].getValue();
 			}
-			if (secondProperties != null) {
+			if (secondProperties != null && secondEntry != null) {
 				secondValue = secondEntry.getValue();
 			}
 			list.add(new Property(defaultEntries[i].getKey(), value,

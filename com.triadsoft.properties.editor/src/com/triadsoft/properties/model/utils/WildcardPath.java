@@ -92,7 +92,7 @@ public class WildcardPath {
 		if (m.find()) {
 			String discoveredPath = escapedFilepath.substring(m.start(), m
 					.end());
-			this.pathToRoot = escapedFilepath.substring(0,m.start());
+			this.pathToRoot = escapedFilepath.substring(0, m.start());
 			String[] wildcards = wildcardpath.split("\\/");
 			String[] segments = discoveredPath.split("\\/");
 			for (int i = 0; i < segments.length; i++) {
@@ -176,20 +176,36 @@ public class WildcardPath {
 	}
 
 	public WildcardPath replace(String wildcard, String value) {
+		return replace(wildcard, value, true);
+	}
+
+	public WildcardPath replace(String wildcard, String value, boolean replace) {
 		if (path.equals("") || path.length() == 0) {
-			path = wildcardpath.replaceAll("\\.", "\\\\.");
+			resetPath();
 		}
 		path = path.replaceAll(escapedWildcard(wildcard), value);
 		return this;
 	}
-	
-	public WildcardPath replaceDiscoveryLocale(){
-		this.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
-		this.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
-		this.replace(FILENAME_WILDCARD,this.getFileName());
-		this.replace(FILE_EXTENSION_WILDCARD,this.getFileExtension());
-		this.replace(ROOT_WILDCARD,this.getRoot());
-		return this;
+
+	/**
+	 * Devuelve la expresion regular necesaria para obtener el locale a partir
+	 * del nombre del archivo
+	 * 
+	 * @return
+	 */
+	public String getLocaleRegex() {
+		String toRegex = this.wildcardpath;
+		toRegex = toRegex.replaceAll(escapedWildcard(COUNTRY_WILDCARD),
+				COUNTRY_REGEX);
+		toRegex = toRegex.replaceAll(escapedWildcard(LANGUAGE_WILDCARD),
+				LANGUAGE_REGEX);
+		toRegex = toRegex.replaceAll(escapedWildcard(FILENAME_WILDCARD), this
+				.getFileName());
+		toRegex = toRegex.replaceAll(escapedWildcard(FILE_EXTENSION_WILDCARD),
+				this.getFileExtension());
+		toRegex = toRegex.replaceAll(escapedWildcard(ROOT_WILDCARD), this
+				.getRoot());
+		return toRegex;
 	}
 
 	/**
@@ -265,7 +281,8 @@ public class WildcardPath {
 				"/{root}/prueba/{filename}.{lang}_{country}.{fileextension}");
 		wp1.replaceToRegex();
 		System.out.println(wp1.getPath());
-		System.out.println(wp1.match("src/locale/prueba/component.es_AR.properties"));
+		System.out.println(wp1
+				.match("src/locale/prueba/component.es_AR.properties"));
 		System.out.println(wp1
 				.match("src/locale/prueba/component.en_US.properties"));
 		System.out.println(wp1
