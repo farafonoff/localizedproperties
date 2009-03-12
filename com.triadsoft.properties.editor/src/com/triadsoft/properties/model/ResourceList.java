@@ -68,8 +68,8 @@ public class ResourceList {
 			IFile ifile = (IFile) files.get(locale);
 			map.put(locale, new PropertyFile(ifile));
 			locales.add(locale);
-			System.out.println(ifile.getFullPath().toString() + " Locale: "
-					+ locale.toString());
+//			System.out.println(ifile.getFullPath().toString() + " Locale: "
+//					+ locale.toString());
 		}
 		this.locales = (Locale[]) locales.toArray(new Locale[locales.size()]);
 	}

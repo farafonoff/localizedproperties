@@ -58,4 +58,13 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
+	
+	public static String[] getWildcardPaths(){
+		String[] wildcardpaths =  new String[]{
+			"/{root}/{lang}_{country}/{filename}.{fileextension}",
+			"/{root}/WEB-INF/{filename}.{lang}_{country}.{fileextension}",
+			"/{root}/{filename}.{lang}_{country}.{fileextension}"
+		};
+		return wildcardpaths;
+	}
 }

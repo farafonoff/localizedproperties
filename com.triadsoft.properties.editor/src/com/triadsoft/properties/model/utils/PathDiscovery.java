@@ -11,11 +11,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+import com.triadsoft.properties.editor.Activator;
+
 /**
- * Se encarga de de obtener a partir del archivo pasado en el constructor
- * todos los locales, junto a los archivos ifile de cada locale.
- * Una vez que termina se puede obtener el resultado en el mapa resources
- * donde esta una entrada por cada para locale, archivo
+ * Se encarga de de obtener a partir del archivo pasado en el constructor todos
+ * los locales, junto a los archivos ifile de cada locale. Una vez que termina
+ * se puede obtener el resultado en el mapa resources donde esta una entrada por
+ * cada para locale, archivo
+ * 
  * @author Leonardo Flores (flores.leonardo@triadsoft.com.ar)
  */
 public class PathDiscovery {
@@ -23,27 +26,38 @@ public class PathDiscovery {
 	final Map<Locale, IFile> resources = new HashMap<Locale, IFile>();
 
 	public PathDiscovery(IFile file) {
-		wp = new WildcardPath(
-				"/{root}/{lang}_{country}/{filename}.{fileextension}");
-		if (wp.match(file.getFullPath().toString())) {
-			wp.parse(file.getFullPath().toString());
-			wp.resetPath();
-			IPath path = new Path(wp.getPathToRoot() + "/" + wp.getRoot());
-			System.out.println(path.toString());
-			if (file.getWorkspace().getRoot().exists(path)) {
-				IResource resource = file.getWorkspace().getRoot().findMember(
-						path);
-				if (resource.getType() == IFile.FOLDER) {
-					resources.clear();
-					FileVisitor fv = new FileVisitor(resources, wp);
-					try {
-						((IFolder) resource).accept(fv);
-					} catch (CoreException e) {
-						e.printStackTrace();
-					}
+		wp = getWildcardPath(file);
+		if (wp == null) {
+			throw new RuntimeException(
+					"No se encontró un wildcard path que coincida con "
+							+ file.getFullPath().toString());
+		}
+		wp.parse(file.getFullPath().toString());
+		wp.resetPath();
+		IPath path = new Path(wp.getPathToRoot() + "/" + wp.getRoot());
+		if (file.getWorkspace().getRoot().exists(path)) {
+			IResource resource = file.getWorkspace().getRoot().findMember(path);
+			if (resource.getType() == IFile.FOLDER) {
+				resources.clear();
+				FileVisitor fv = new FileVisitor(resources, wp);
+				try {
+					((IFolder) resource).accept(fv);
+				} catch (CoreException e) {
+					e.printStackTrace();
 				}
 			}
 		}
+	}
+
+	private WildcardPath getWildcardPath(IFile ifile) {
+		String[] wildcardPaths = Activator.getWildcardPaths();
+		for (int i = 0; i < wildcardPaths.length; i++) {
+			WildcardPath wildcardPath = new WildcardPath(wildcardPaths[i]);
+			if (wildcardPath.match(ifile.getFullPath().toString())) {
+				return wildcardPath;
+			}
+		}
+		return null;
 	}
 
 	public Map<Locale, IFile> getResources() {
