@@ -13,5 +13,19 @@
             name="Localized Properties Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage"
+            id="com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage"
+            name="Localized Properties Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.triadsoft.properties.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
