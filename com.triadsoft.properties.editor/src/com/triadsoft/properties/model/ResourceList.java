@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
+import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.properties.model.utils.PathDiscovery;
 
 /**
@@ -23,17 +24,10 @@ import com.triadsoft.properties.model.utils.PathDiscovery;
  */
 public class ResourceList {
 
-	// protected static final String FLEX_NATURE =
-	// "com.adobe.flexbuilder.project.flexnature";
-	// protected static final String AS_NATURE =
-	// "com.adobe.flexbuilder.project.actionscriptnature";
-	// protected static final String JAVA_NATURE =
-	// "org.eclipse.jdt.core.javanature";
-
 	private HashMap<Locale, PropertyFile> map = new HashMap<Locale, PropertyFile>();
 	private Locale[] locales = new Locale[0];
 	private String filename = null;
-	private List<IResourceListener> listeners = new LinkedList<IResourceListener>();
+	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
 	public ResourceList(IFile file) {
 		try {
@@ -66,15 +60,15 @@ public class ResourceList {
 				.hasNext();) {
 			Locale locale = iterator.next();
 			IFile ifile = (IFile) files.get(locale);
-			map.put(locale, new PropertyFile(ifile));
+			PropertyFile pf = new PropertyFile(ifile);
+			map.put(locale, pf);
+			addResourceListener(pf);
 			locales.add(locale);
-//			System.out.println(ifile.getFullPath().toString() + " Locale: "
-//					+ locale.toString());
 		}
 		this.locales = (Locale[]) locales.toArray(new Locale[locales.size()]);
 	}
 
-	public void addResourceListener(IResourceListener listener) {
+	public void addResourceListener(IPropertyFileListener listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
@@ -99,10 +93,10 @@ public class ResourceList {
 		}
 		PropertyEntry entry = properties.getPropertyEntry(key);
 		entry.setValue(value);
-		for (Iterator<IResourceListener> iterator = listeners.iterator(); iterator
+		for (Iterator<IPropertyFileListener> iterator = listeners.iterator(); iterator
 				.hasNext();) {
-			IResourceListener type = (IResourceListener) iterator.next();
-			type.entryModified(new Property(key, value), locale);
+			IPropertyFileListener type = (IPropertyFileListener) iterator.next();
+			// type.entryModified(new Property(key, value), locale);
 		}
 		return true;
 	}
@@ -121,7 +115,7 @@ public class ResourceList {
 			}
 		}
 	}
-
+	
 	public Object[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
 		PropertyFile defaultProperties = ((PropertyFile) map.get(locales[0]));

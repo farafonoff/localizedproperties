@@ -4,9 +4,11 @@
 package com.triadsoft.common.properties;
 
 /**
+ * Interfase que modela un listener para los archivos de 
+ * properties
  * @author lflores
  */
-public interface PropertyFileListener {
+public interface IPropertyFileListener {
     void keyChanged(PropertyCategory category, PropertyEntry entry);
 
     void valueChanged(PropertyCategory category, PropertyEntry entry);

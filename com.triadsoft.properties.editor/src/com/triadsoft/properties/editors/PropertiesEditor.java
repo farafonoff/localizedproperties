@@ -28,8 +28,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
-import com.triadsoft.properties.model.IResourceListener;
-import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
 
 /**
@@ -102,20 +100,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			columnsNamesList.add(locales[i].toString());
 		}
 		tableViewer.setInput(resource);
-		resource.addResourceListener(new IResourceListener() {
-
-			public void entryModified(Property property, Locale locale) {
-				tableChanged();
-			}
-
-			public void entryDeleted(Property property, Locale locale) {
-				tableChanged();
-			}
-
-			public void entryAdded(Property property, Locale locale) {
-				tableChanged();
-			}
-		});
 
 		tableViewer.setColumnProperties((String[]) columnsNamesList
 				.toArray(new String[columnsNamesList.size()]));
@@ -210,9 +194,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 * Saves the multi-page editor's document.
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		//getEditor(0).doSave(monitor);
+		// getEditor(0).doSave(monitor);
 		resource.save();
-		isModified =false;
+		isModified = false;
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 
@@ -222,11 +206,11 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 * correspond to the nested editor's.
 	 */
 	public void doSaveAs() {
-		//IEditorPart editor = getEditor(0);
-		//editor.doSaveAs();
-		//setPageText(0, editor.getTitle());
-		//setInput(editor.getEditorInput());
-		//updateTitle();
+		// IEditorPart editor = getEditor(0);
+		// editor.doSaveAs();
+		// setPageText(0, editor.getTitle());
+		// setInput(editor.getEditorInput());
+		// updateTitle();
 	}
 
 	/*

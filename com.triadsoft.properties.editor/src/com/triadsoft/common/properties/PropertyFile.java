@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
@@ -30,11 +29,11 @@ import org.eclipse.core.runtime.CoreException;
  * @author lflores
  */
 public class PropertyFile extends PropertyElement implements
-		IResourceChangeListener {
+		IPropertyFileListener {
 
 	public static final String DEFAULT_EXTENSION = "properties";
 	private List<PropertyCategory> categories;
-	private List<PropertyFileListener> listeners = new ArrayList<PropertyFileListener>();
+	private List<IPropertyFileListener> listeners = new ArrayList<IPropertyFileListener>();
 	private IFile file = null;
 
 	/**
@@ -124,62 +123,62 @@ public class PropertyFile extends PropertyElement implements
 		// 
 	}
 
-	public void addPropertyFileListener(PropertyFileListener listener) {
+	public void addPropertyFileListener(IPropertyFileListener listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
 	}
 
-	public void removePropertyFileListener(PropertyFileListener listener) {
+	public void removePropertyFileListener(IPropertyFileListener listener) {
 		listeners.remove(listener);
 	}
 
-	void keyChanged(PropertyCategory category, PropertyEntry entry) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void keyChanged(PropertyCategory category, PropertyEntry entry) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).keyChanged(category, entry);
+			((IPropertyFileListener) iter.next()).keyChanged(category, entry);
 		}
 	}
 
-	void valueChanged(PropertyCategory category, PropertyEntry entry) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void valueChanged(PropertyCategory category, PropertyEntry entry) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).valueChanged(category, entry);
+			((IPropertyFileListener) iter.next()).valueChanged(category, entry);
 		}
 	}
 
-	void nameChanged(PropertyCategory category) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void nameChanged(PropertyCategory category) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).nameChanged(category);
+			((IPropertyFileListener) iter.next()).nameChanged(category);
 		}
 	}
 
-	void entryAdded(PropertyCategory category, PropertyEntry entry) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void entryAdded(PropertyCategory category, PropertyEntry entry) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).entryAdded(category, entry);
+			((IPropertyFileListener) iter.next()).entryAdded(category, entry);
 		}
 	}
 
-	void entryRemoved(PropertyCategory category, PropertyEntry entry) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void entryRemoved(PropertyCategory category, PropertyEntry entry) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).entryRemoved(category, entry);
+			((IPropertyFileListener) iter.next()).entryRemoved(category, entry);
 		}
 	}
 
-	void categoryAdded(PropertyCategory category) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void categoryAdded(PropertyCategory category) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).categoryAdded(category);
+			((IPropertyFileListener) iter.next()).categoryAdded(category);
 		}
 	}
 
-	void categoryRemoved(PropertyCategory category) {
-		Iterator<PropertyFileListener> iter = listeners.iterator();
+	public void categoryRemoved(PropertyCategory category) {
+		Iterator<IPropertyFileListener> iter = listeners.iterator();
 		while (iter.hasNext()) {
-			((PropertyFileListener) iter.next()).categoryRemoved(category);
+			((IPropertyFileListener) iter.next()).categoryRemoved(category);
 		}
 	}
 
@@ -303,10 +302,10 @@ public class PropertyFile extends PropertyElement implements
 						&& file.getName().equals(this.file.getName())) {
 					// SistranLog.logInfo("Cambio!!!");
 					// System.out.println("Cambio " + file.getName() + "!!!!");
-					Iterator<PropertyFileListener> listenersIterator = this.listeners
+					Iterator<IPropertyFileListener> listenersIterator = this.listeners
 							.iterator();
 					while (listenersIterator.hasNext()) {
-						PropertyFileListener listener = (PropertyFileListener) listenersIterator
+						IPropertyFileListener listener = (IPropertyFileListener) listenersIterator
 								.next();
 						listener.fileChanged(this);
 					}
@@ -357,7 +356,7 @@ public class PropertyFile extends PropertyElement implements
 	 */
 	public PropertyEntry getPropertyEntry(String entryKey) {
 		PropertyCategory category = getCategoryFromEntry(entryKey);
-		if( category == null ){
+		if (category == null) {
 			return null;
 		}
 		return category.getEntry(entryKey);
@@ -417,5 +416,10 @@ public class PropertyFile extends PropertyElement implements
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void fileChanged(PropertyFile propertyFile) {
+		// TODO Auto-generated method stub
+		
 	}
 }
