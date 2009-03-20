@@ -398,6 +398,15 @@ public class PropertyFile extends PropertyElement implements
 				.size()]);
 	}
 
+	public String[] getKeys() {
+		List<String> keys = new LinkedList<String>();
+		PropertyEntry[] entries = this.getEntries();
+		for (int i = 0; i < entries.length; i++) {
+			keys.add(entries[i].getKey());
+		}
+		return (String[]) keys.toArray(new String[keys.size()]);
+	}
+
 	public void save() throws IOException, CoreException {
 		FileOutputStream stream = new FileOutputStream(new File(file
 				.getLocationURI()));
@@ -420,6 +429,6 @@ public class PropertyFile extends PropertyElement implements
 
 	public void fileChanged(PropertyFile propertyFile) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

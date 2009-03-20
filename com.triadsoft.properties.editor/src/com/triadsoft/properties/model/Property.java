@@ -1,18 +1,25 @@
 package com.triadsoft.properties.model;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class Property {
 	private String key;
-	private String value;
-	private String secondValue;
+	private Map<Locale, String> values = new HashMap<Locale, String>();
+	private Map<Locale,Error> errors = new HashMap<Locale, Error>();
+	private Boolean invalidValue = false;
 
-	public Property(String key, String value) {
-		this(key,value,null);
+	public Boolean getInvalidValue() {
+		return invalidValue;
 	}
-	
-	public Property(String key, String value,String secondValue) {
+
+	public void setInvalidValue(Boolean invalidValue) {
+		this.invalidValue = invalidValue;
+	}
+
+	public Property(String key) {
 		this.key = key;
-		this.value = value;
-		this.secondValue = secondValue;
 	}
 
 	public String getKey() {
@@ -23,19 +30,18 @@ public class Property {
 		this.key = key;
 	}
 
-	public String getValue() {
-		return value;
+	public String getValue(Locale locale) {
+		return values.get(locale);
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setValue(Locale locale, String value) {
+		if( value == null ){
+			invalidValue = true;
+		}
+		this.values.put(locale, value);
 	}
-
-	public String getSecondValue() {
-		return secondValue;
-	}
-
-	public void setSecondValue(String secondValue) {
-		this.secondValue = secondValue;
+	
+	public void addError(Locale locale,Error error){
+		errors.put(locale, error);
 	}
 }

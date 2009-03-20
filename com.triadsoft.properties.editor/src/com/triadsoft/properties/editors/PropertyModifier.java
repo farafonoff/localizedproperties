@@ -26,9 +26,9 @@ public class PropertyModifier implements ICellModifier {
 
 	public Object getValue(Object obj, String property) {
 		if (property.equals(PropertiesEditor.EN_US_COLUMN_ID)) {
-			return ((Property) obj).getValue();
+			return ((Property) obj).getValue(new Locale("en", "US"));
 		} else if (property.equals(PropertiesEditor.ES_AR_COLUMN_ID)) {
-			return ((Property) obj).getSecondValue();
+			return ((Property) obj).getValue(new Locale("es", "AR"));
 		}
 		return null;
 	}
@@ -47,13 +47,13 @@ public class PropertyModifier implements ICellModifier {
 
 		Property properties = (Property) ((Item) obj).getData();
 		if (property.equals(PropertiesEditor.EN_US_COLUMN_ID)) {
-			properties.setValue((String) value);
-			resources.saveValue(properties.getKey(), properties.getValue(),
-					locale);
-		} else if (property.equals(PropertiesEditor.ES_AR_COLUMN_ID)) {
-			properties.setSecondValue((String) value);
+			properties.setValue(locale, (String) value);
 			resources.saveValue(properties.getKey(), properties
-					.getSecondValue(), locale);
+					.getValue(new Locale("en", "US")), locale);
+		} else if (property.equals(PropertiesEditor.ES_AR_COLUMN_ID)) {
+			properties.setValue(locale, (String) value);
+			resources.saveValue(properties.getKey(), properties
+					.getValue(locale), locale);
 		}
 		viewer.refresh();
 	}

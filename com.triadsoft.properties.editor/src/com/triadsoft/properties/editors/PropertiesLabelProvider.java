@@ -1,5 +1,7 @@
 package com.triadsoft.properties.editors;
 
+import java.util.Locale;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -25,9 +27,9 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 		if (index == 0) {
 			return property.getKey();
 		} else if (index == 1) {
-			return property.getValue();
+			return property.getValue(new Locale("en","US"));
 		} else if (index == 2) {
-			return property.getSecondValue();
+			return property.getValue(new Locale("es","AR"));
 		}
 		return "";
 	}

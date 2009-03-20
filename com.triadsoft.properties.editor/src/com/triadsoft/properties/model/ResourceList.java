@@ -13,9 +13,9 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
+import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
-import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.properties.model.utils.PathDiscovery;
 
 /**
@@ -62,16 +62,9 @@ public class ResourceList {
 			IFile ifile = (IFile) files.get(locale);
 			PropertyFile pf = new PropertyFile(ifile);
 			map.put(locale, pf);
-			addResourceListener(pf);
 			locales.add(locale);
 		}
 		this.locales = (Locale[]) locales.toArray(new Locale[locales.size()]);
-	}
-
-	public void addResourceListener(IPropertyFileListener listener) {
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
-		}
 	}
 
 	/**
@@ -95,7 +88,8 @@ public class ResourceList {
 		entry.setValue(value);
 		for (Iterator<IPropertyFileListener> iterator = listeners.iterator(); iterator
 				.hasNext();) {
-			IPropertyFileListener type = (IPropertyFileListener) iterator.next();
+			// IPropertyFileListener type = (IPropertyFileListener) iterator
+			// .next();
 			// type.entryModified(new Property(key, value), locale);
 		}
 		return true;
@@ -115,26 +109,27 @@ public class ResourceList {
 			}
 		}
 	}
-	
+
 	public Object[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
 		PropertyFile defaultProperties = ((PropertyFile) map.get(locales[0]));
 		PropertyFile secondProperties = ((PropertyFile) map.get(locales[1]));
-		PropertyEntry[] defaultEntries = defaultProperties.getEntries();
-		for (int i = 0; i < defaultEntries.length; i++) {
-			PropertyEntry secondEntry = (PropertyEntry) secondProperties
-					.getPropertyEntry(defaultEntries[i].getKey());
-			String value = "";
-			String secondValue = "";
-
-			if (defaultProperties != null) {
-				value = defaultEntries[i].getValue();
+		String[] keys = defaultProperties.getKeys();
+		for (int i = 0; i < keys.length; i++) {
+			Property property = new Property(keys[i]);
+			property.setValue(locales[0], defaultProperties.getPropertyEntry(
+					keys[i]).getValue());
+			if (!secondProperties.exist(keys[i])) {
+				property.addError(locales[1], new PropertyError(
+						PropertyError.INVALID_KEY, "No se encontro la clave"));
+			} else if (secondProperties.getPropertyEntry(keys[i]).getValue() == null) {
+				property.addError(locales[1], new PropertyError(
+						PropertyError.VOID_VALUE, "No se encontro valor para"));
+			} else {
+				property.setValue(locales[1], secondProperties
+						.getPropertyEntry(keys[i]).getValue());
 			}
-			if (secondProperties != null && secondEntry != null) {
-				secondValue = secondEntry.getValue();
-			}
-			list.add(new Property(defaultEntries[i].getKey(), value,
-					secondValue));
+			list.add(property);
 		}
 		return list.toArray();
 	}
