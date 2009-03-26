@@ -24,6 +24,16 @@ import com.triadsoft.properties.editor.Activator;
 public class PathDiscovery {
 	private WildcardPath wp = null;
 	final Map<Locale, IFile> resources = new HashMap<Locale, IFile>();
+	private IPath path;
+	private String filename;
+
+	public IPath getPath() {
+		return path;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
 
 	public PathDiscovery(IFile file) {
 		wp = getWildcardPath(file);
@@ -33,8 +43,9 @@ public class PathDiscovery {
 							+ file.getFullPath().toString());
 		}
 		wp.parse(file.getFullPath().toString());
+		filename = wp.getFileName();
 		wp.resetPath();
-		IPath path = new Path(wp.getPathToRoot() + "/" + wp.getRoot());
+		path = new Path(wp.getPathToRoot() + "/" + wp.getRoot());
 		if (file.getWorkspace().getRoot().exists(path)) {
 			IResource resource = file.getWorkspace().getRoot().findMember(path);
 			if (resource.getType() == IFile.FOLDER) {
@@ -49,6 +60,13 @@ public class PathDiscovery {
 		}
 	}
 
+	/**
+	 * Este metodo recorre el listado de Wildcard Paths buscando el que coincida
+	 * con el ifile pasado como parametro
+	 * 
+	 * @param ifile
+	 * @return
+	 */
 	private WildcardPath getWildcardPath(IFile ifile) {
 		String[] wildcardPaths = Activator.getWildcardPaths();
 		for (int i = 0; i < wildcardPaths.length; i++) {
@@ -62,5 +80,9 @@ public class PathDiscovery {
 
 	public Map<Locale, IFile> getResources() {
 		return resources;
+	}
+
+	public WildcardPath getWildcardPath() {
+		return wp;
 	}
 }

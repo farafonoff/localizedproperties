@@ -25,13 +25,16 @@ import com.triadsoft.properties.model.utils.PathDiscovery;
 public class ResourceList {
 
 	private HashMap<Locale, PropertyFile> map = new HashMap<Locale, PropertyFile>();
-	private Locale[] locales = new Locale[0];
+	// private Locale[] locales = new Locale[0];
+	private Locale dl;
 	private String filename = null;
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
 	public ResourceList(IFile file) {
 		try {
 			PathDiscovery pd = new PathDiscovery(file);
+			dl = pd.getWildcardPath().getLocale();
+			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -51,20 +54,17 @@ public class ResourceList {
 	 * @return
 	 */
 	public Locale[] getLocales() {
-		return locales;
+		return map.keySet().toArray(new Locale[map.keySet().size()]);
 	}
 
 	private void parseLocales(Map<Locale, IFile> files) throws IOException {
-		List<Locale> locales = new LinkedList<Locale>();
 		for (Iterator<Locale> iterator = files.keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();
 			IFile ifile = (IFile) files.get(locale);
 			PropertyFile pf = new PropertyFile(ifile);
 			map.put(locale, pf);
-			locales.add(locale);
 		}
-		this.locales = (Locale[]) locales.toArray(new Locale[locales.size()]);
 	}
 
 	/**
@@ -76,28 +76,36 @@ public class ResourceList {
 	 * @param locale
 	 * @return
 	 */
-	public boolean saveValue(String key, String value, Locale locale) {
+	public boolean changeValue(String key, String value, Locale locale) {
 		PropertyFile properties = ((PropertyFile) map.get(locale));
 		if (properties == null) {
 			return false;
 		}
 		if (!properties.exist(key)) {
-			return false;
+			addEntry(key, locale);
+			// return true;
 		}
 		PropertyEntry entry = properties.getPropertyEntry(key);
 		entry.setValue(value);
+		return true;
+	}
+
+	public boolean addEntry(String key, Locale locale) {
+		PropertyFile file = map.get(locale);
+		PropertyEntry entry = new PropertyEntry(null, key, null);
+		file.getDefaultCategory().addEntry(entry);
 		for (Iterator<IPropertyFileListener> iterator = listeners.iterator(); iterator
 				.hasNext();) {
-			// IPropertyFileListener type = (IPropertyFileListener) iterator
-			// .next();
-			// type.entryModified(new Property(key, value), locale);
+			IPropertyFileListener type = (IPropertyFileListener) iterator
+					.next();
+			type.entryAdded(file.getDefaultCategory(), entry);
 		}
 		return true;
 	}
 
 	public void save() {
-		for (int i = 0; i < locales.length; i++) {
-			PropertyFile properties = (PropertyFile) map.get(locales[i]);
+		for (int i = 0; i < getLocales().length; i++) {
+			PropertyFile properties = (PropertyFile) map.get(getLocales()[i]);
 			try {
 				properties.save();
 			} catch (FileNotFoundException e) {
@@ -112,24 +120,34 @@ public class ResourceList {
 
 	public Object[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
-		PropertyFile defaultProperties = ((PropertyFile) map.get(locales[0]));
-		PropertyFile secondProperties = ((PropertyFile) map.get(locales[1]));
+		PropertyFile defaultProperties = ((PropertyFile) map.get(dl));
 		String[] keys = defaultProperties.getKeys();
 		for (int i = 0; i < keys.length; i++) {
 			Property property = new Property(keys[i]);
-			property.setValue(locales[0], defaultProperties.getPropertyEntry(
-					keys[i]).getValue());
-			if (!secondProperties.exist(keys[i])) {
-				property.addError(locales[1], new PropertyError(
-						PropertyError.INVALID_KEY, "No se encontro la clave"));
-			} else if (secondProperties.getPropertyEntry(keys[i]).getValue() == null) {
-				property.addError(locales[1], new PropertyError(
-						PropertyError.VOID_VALUE, "No se encontro valor para"));
-			} else {
-				property.setValue(locales[1], secondProperties
-						.getPropertyEntry(keys[i]).getValue());
+			property.setValue(dl, defaultProperties.getPropertyEntry(keys[i])
+					.getValue());
+
+			for (Iterator<Locale> iter = map.keySet().iterator(); iter
+					.hasNext();) {
+				Locale loc = iter.next();
+				if (dl.equals(loc)) {
+					continue;
+				}
+				PropertyFile properties = ((PropertyFile) map.get(loc));
+				if (!properties.exist(keys[i])) {
+					property.addError(loc, new PropertyError(
+							PropertyError.INVALID_KEY,
+							"No se encontro la clave"));
+				} else if (properties.getPropertyEntry(keys[i]).getValue() == null) {
+					property.addError(loc, new PropertyError(
+							PropertyError.VOID_VALUE,
+							"No se encontro valor para"));
+				} else {
+					property.setValue(loc, properties.getPropertyEntry(keys[i])
+							.getValue());
+				}
+				list.add(property);
 			}
-			list.add(property);
 		}
 		return list.toArray();
 	}

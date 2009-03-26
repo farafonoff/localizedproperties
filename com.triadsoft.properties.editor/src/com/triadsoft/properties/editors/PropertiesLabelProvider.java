@@ -12,12 +12,14 @@ import com.triadsoft.properties.model.Property;
 public class PropertiesLabelProvider implements ITableLabelProvider {
 
 	ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(this
-			.getClass(), "/icons/cancel.png");
+			.getClass(), "/icons/8x8/warning.png");
 
 	public Image getColumnImage(Object obj, int index) {
+		Property property = (Property) obj;
 		if (imageDescriptor != null && index == 0) {
-			//return imageDescriptor.createImage();
-			return null;
+			if (property.getErrors().size() > 0) {
+				return imageDescriptor.createImage();
+			}
 		}
 		return null;
 	}
@@ -27,9 +29,9 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 		if (index == 0) {
 			return property.getKey();
 		} else if (index == 1) {
-			return property.getValue(new Locale("en","US"));
+			return property.getValue(new Locale("en", "US"));
 		} else if (index == 2) {
-			return property.getValue(new Locale("es","AR"));
+			return property.getValue(new Locale("es", "AR"));
 		}
 		return "";
 	}

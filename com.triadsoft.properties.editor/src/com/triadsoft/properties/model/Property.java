@@ -44,4 +44,8 @@ public class Property {
 	public void addError(Locale locale,Error error){
 		errors.put(locale, error);
 	}
+	
+	public Map<Locale,Error> getErrors(){
+		return errors;
+	}
 }

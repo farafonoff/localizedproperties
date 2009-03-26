@@ -48,11 +48,11 @@ public class PropertyModifier implements ICellModifier {
 		Property properties = (Property) ((Item) obj).getData();
 		if (property.equals(PropertiesEditor.EN_US_COLUMN_ID)) {
 			properties.setValue(locale, (String) value);
-			resources.saveValue(properties.getKey(), properties
+			resources.changeValue(properties.getKey(), properties
 					.getValue(new Locale("en", "US")), locale);
 		} else if (property.equals(PropertiesEditor.ES_AR_COLUMN_ID)) {
 			properties.setValue(locale, (String) value);
-			resources.saveValue(properties.getKey(), properties
+			resources.changeValue(properties.getKey(), properties
 					.getValue(locale), locale);
 		}
 		viewer.refresh();
