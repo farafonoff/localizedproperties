@@ -146,8 +146,8 @@ public class ResourceList {
 					property.setValue(loc, properties.getPropertyEntry(keys[i])
 							.getValue());
 				}
-				list.add(property);
 			}
+			list.add(property);
 		}
 		return list.toArray();
 	}

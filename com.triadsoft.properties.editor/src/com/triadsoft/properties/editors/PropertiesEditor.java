@@ -43,8 +43,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		IResourceChangeListener {
 
 	protected static final String KEY_COLUMN_ID = "key_column";
-	protected static final String ES_AR_COLUMN_ID = "es_AR";
-	protected static final String EN_US_COLUMN_ID = "en_US";
 
 	/** The text editor used in page 0. */
 	private TableViewer tableViewer;
@@ -64,7 +62,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	public PropertiesEditor() {
 		super();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-
 	}
 
 	/**
@@ -80,7 +77,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		tableViewer = new TableViewer(getContainer(), SWT.SINGLE
 				| SWT.FULL_SELECTION);
 		tableViewer.setContentProvider(new PropertiesContentProvider());
-		tableViewer.setLabelProvider(new PropertiesLabelProvider());
+		tableViewer.setLabelProvider(new PropertiesLabelProvider(tableViewer));
 
 		Table table = tableViewer.getTable();
 		table.setHeaderVisible(true);
@@ -91,26 +88,23 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		keyColumn.setWidth(150);
 		Locale[] locales = resource.getLocales();
 		LinkedList<String> columnsNamesList = new LinkedList<String>();
+		LinkedList<CellEditor> editors = new LinkedList<CellEditor>();
 		columnsNamesList.add(KEY_COLUMN_ID);
+		editors.add(new TextCellEditor(tableViewer.getTable(), SWT.READ_ONLY));
 
 		for (int i = 0; i < locales.length; i++) {
 			TableColumn valueColumn = new TableColumn(table, SWT.NONE);
 			valueColumn.setText(locales[i].toString());
 			valueColumn.setWidth(200);
 			columnsNamesList.add(locales[i].toString());
+			CellEditor editor = new TextCellEditor(tableViewer.getTable());
+			editors.add(editor);
 		}
 		tableViewer.setInput(resource);
-
+		tableViewer.setCellEditors(editors.toArray(new CellEditor[editors
+				.size()]));
 		tableViewer.setColumnProperties((String[]) columnsNamesList
 				.toArray(new String[columnsNamesList.size()]));
-
-		final CellEditor[] cellEditors = new CellEditor[3];
-		cellEditors[0] = new TextCellEditor(tableViewer.getTable(),
-				SWT.READ_ONLY);
-		cellEditors[1] = new TextCellEditor(tableViewer.getTable());
-		cellEditors[2] = new TextCellEditor(tableViewer.getTable());
-
-		tableViewer.setCellEditors(cellEditors);
 		tableViewer.setCellModifier(new PropertyModifier(tableViewer));
 	}
 
@@ -150,7 +144,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		resource = new ResourceList(file);
 		createPage0();
 		createPage1();
-		setTitle(resource.getFileName());
+		setPartName(resource.getFileName());
 		// createPage2();
 	}
 
