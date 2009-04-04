@@ -25,15 +25,15 @@ import com.triadsoft.properties.model.utils.PathDiscovery;
 public class ResourceList {
 
 	private HashMap<Locale, PropertyFile> map = new HashMap<Locale, PropertyFile>();
-	// private Locale[] locales = new Locale[0];
-	private Locale dl;
+	private Locale defaultLocale;
+
 	private String filename = null;
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
 	public ResourceList(IFile file) {
 		try {
 			PathDiscovery pd = new PathDiscovery(file);
-			dl = pd.getWildcardPath().getLocale();
+			defaultLocale = pd.getDefaultLocale();
 			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
 		} catch (NullPointerException e) {
@@ -45,6 +45,10 @@ public class ResourceList {
 
 	public String getFileName() {
 		return filename;
+	}
+	
+	public Locale getDefaultLocale() {
+		return defaultLocale;
 	}
 
 	/**
@@ -120,17 +124,17 @@ public class ResourceList {
 
 	public Object[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
-		PropertyFile defaultProperties = ((PropertyFile) map.get(dl));
+		PropertyFile defaultProperties = ((PropertyFile) map.get(defaultLocale));
 		String[] keys = defaultProperties.getKeys();
 		for (int i = 0; i < keys.length; i++) {
 			Property property = new Property(keys[i]);
-			property.setValue(dl, defaultProperties.getPropertyEntry(keys[i])
-					.getValue());
+			property.setValue(defaultLocale, defaultProperties
+					.getPropertyEntry(keys[i]).getValue());
 
 			for (Iterator<Locale> iter = map.keySet().iterator(); iter
 					.hasNext();) {
 				Locale loc = iter.next();
-				if (dl.equals(loc)) {
+				if (defaultLocale.equals(loc)) {
 					continue;
 				}
 				PropertyFile properties = ((PropertyFile) map.get(loc));

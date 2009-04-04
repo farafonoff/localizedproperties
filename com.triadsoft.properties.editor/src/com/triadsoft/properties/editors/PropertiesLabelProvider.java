@@ -1,5 +1,7 @@
 package com.triadsoft.properties.editors;
 
+import java.util.Locale;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -7,7 +9,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 
 import com.triadsoft.properties.model.Property;
-import com.triadsoft.properties.model.ResourceList;
 
 public class PropertiesLabelProvider implements ITableLabelProvider {
 
@@ -31,13 +32,21 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 	}
 
 	public String getColumnText(Object obj, int index) {
-		ResourceList rl = (ResourceList) viewer.getInput();
 		Property property = (Property) obj;
 		if (index == 0) {
 			return property.getKey();
 		} else {
-			return property.getValue(rl.getLocales()[index-1]);
+			return property.getValue(getLocale((String) viewer
+					.getColumnProperties()[index]));
 		}
+	}
+
+	private Locale getLocale(String localeString) {
+		String[] loc = localeString.split("_");
+		if (loc.length == 1) {
+			return new Locale(loc[0]);
+		}
+		return new Locale(loc[0], loc[1]);
 	}
 
 	public void addListener(ILabelProviderListener arg0) {

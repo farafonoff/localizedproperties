@@ -1,6 +1,5 @@
 package com.triadsoft.properties.editors;
 
-import java.util.LinkedList;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
@@ -9,16 +8,11 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -29,6 +23,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.triadsoft.properties.model.ResourceList;
+import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
  * An example showing how to create a multi-page editor. This example has 3
@@ -45,7 +40,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	protected static final String KEY_COLUMN_ID = "key_column";
 
 	/** The text editor used in page 0. */
-	private TableViewer tableViewer;
+	private PropertyTableViewer tableViewer;
 
 	private TextEditor textEditor;
 
@@ -74,37 +69,12 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	private void createTable() {
-		tableViewer = new TableViewer(getContainer(), SWT.SINGLE
-				| SWT.FULL_SELECTION);
+		Locale locale = resource.getDefaultLocale();
+		tableViewer = new PropertyTableViewer(getContainer(), locale);
 		tableViewer.setContentProvider(new PropertiesContentProvider());
 		tableViewer.setLabelProvider(new PropertiesLabelProvider(tableViewer));
-
-		Table table = tableViewer.getTable();
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
-		TableColumn keyColumn = new TableColumn(table, SWT.NONE);
-		keyColumn.setText("Clave");
-		keyColumn.setWidth(150);
-		Locale[] locales = resource.getLocales();
-		LinkedList<String> columnsNamesList = new LinkedList<String>();
-		LinkedList<CellEditor> editors = new LinkedList<CellEditor>();
-		columnsNamesList.add(KEY_COLUMN_ID);
-		editors.add(new TextCellEditor(tableViewer.getTable(), SWT.READ_ONLY));
-
-		for (int i = 0; i < locales.length; i++) {
-			TableColumn valueColumn = new TableColumn(table, SWT.NONE);
-			valueColumn.setText(locales[i].toString());
-			valueColumn.setWidth(200);
-			columnsNamesList.add(locales[i].toString());
-			CellEditor editor = new TextCellEditor(tableViewer.getTable());
-			editors.add(editor);
-		}
+		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
-		tableViewer.setCellEditors(editors.toArray(new CellEditor[editors
-				.size()]));
-		tableViewer.setColumnProperties((String[]) columnsNamesList
-				.toArray(new String[columnsNamesList.size()]));
 		tableViewer.setCellModifier(new PropertyModifier(tableViewer));
 	}
 

@@ -26,6 +26,7 @@ public class PathDiscovery {
 	final Map<Locale, IFile> resources = new HashMap<Locale, IFile>();
 	private IPath path;
 	private String filename;
+	private Locale defaultLocale;
 
 	public IPath getPath() {
 		return path;
@@ -44,6 +45,7 @@ public class PathDiscovery {
 		}
 		wp.parse(file.getFullPath().toString());
 		filename = wp.getFileName();
+		defaultLocale = wp.getLocale();
 		wp.resetPath();
 		path = new Path(wp.getPathToRoot() + "/" + wp.getRoot());
 		if (file.getWorkspace().getRoot().exists(path)) {
@@ -84,5 +86,9 @@ public class PathDiscovery {
 
 	public WildcardPath getWildcardPath() {
 		return wp;
+	}
+
+	public Locale getDefaultLocale() {
+		return defaultLocale;
 	}
 }
