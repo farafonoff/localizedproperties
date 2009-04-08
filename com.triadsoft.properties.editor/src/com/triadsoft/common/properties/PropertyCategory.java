@@ -1,6 +1,3 @@
-/**
- * Created on Sep 14, 2004
- */
 package com.triadsoft.common.properties;
 
 import java.io.IOException;
@@ -12,7 +9,21 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author lflores
+ * Clase que modela una categoria. Una categoria dentro de un archivo de
+ * propiedades es un agrupamiento de las claves y valores delimitado por los
+ * comentarios hechos dentro del archivo de propiedades. El contenido entre
+ * comentarios, es parseado dentro de la categoria, y ésta toma como nombre el
+ * comentatio utilizado. <br>
+ * La idea de las categorias no es mia, sino que fue tomada del ejemplo del
+ * libro <a href="http://www.amazon.com/Eclipse-Plug-ins-3rd-Eric- Clayberg
+ * /dp/0321553462/ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1239049938&sr=8-1">Eclipse
+ * Plugins</a>
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @see <a href="http://www.amazon.com/Eclipse-Plug-ins-3rd-Eric- Clayberg
+ *      /dp/0321553462
+ *      /ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1239049938&sr=8-1">Eclipse
+ *      Plugins</a>
  */
 public class PropertyCategory extends PropertyElement {
 	private String name;
@@ -86,8 +97,8 @@ public class PropertyCategory extends PropertyElement {
 				if (line.length() > 0) {
 					name = line;
 				}
-			}else{
-				//Si name es distinto de null, hago un append
+			} else {
+				// Si name es distinto de null, hago un append
 				name += '\n';
 				name += line;
 			}
@@ -101,11 +112,12 @@ public class PropertyCategory extends PropertyElement {
 	public Collection<PropertyEntry> getEntries() {
 		return entries;
 	}
-	
-	public PropertyEntry getEntry(String entryKey){
-		for (Iterator<PropertyEntry> iterator = entries.iterator(); iterator.hasNext();) {
+
+	public PropertyEntry getEntry(String entryKey) {
+		for (Iterator<PropertyEntry> iterator = entries.iterator(); iterator
+				.hasNext();) {
 			PropertyEntry entry = (PropertyEntry) iterator.next();
-			if( entry.getKey().equals(entryKey)){
+			if (entry.getKey().equals(entryKey)) {
 				return entry;
 			}
 		}
@@ -150,7 +162,7 @@ public class PropertyCategory extends PropertyElement {
 	}
 
 	/**
-	 * @see com.sistran.tools.editors.views.PropertyElement#hasChildren()
+	 * @see com.triadsoft.common.properties.PropertyElement#hasChildren()
 	 */
 	public boolean hasChildren() {
 		if (entries != null && !entries.isEmpty()) {
@@ -161,9 +173,9 @@ public class PropertyCategory extends PropertyElement {
 
 	public void appendText(PrintWriter writer) {
 		if (name.length() > 0) {
-			//Valido si el comentario es multilinea
-			//entonces hago un split y en cada inicio le agrego el numeral
-			//junto al texto
+			// Valido si el comentario es multilinea
+			// entonces hago un split y en cada inicio le agrego el numeral
+			// junto al texto
 			String[] nameSplited = name.split("\\n");
 			for (int i = 0; i < nameSplited.length; i++) {
 				writer.print("#");
@@ -198,11 +210,11 @@ public class PropertyCategory extends PropertyElement {
 	public int getLine() {
 		return this.lineNumber;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuffer returnString = new StringBuffer();
-		returnString.append("name:'"+name+"'");
+		returnString.append("name:'" + name + "'");
 		return returnString.toString();
 	}
 }

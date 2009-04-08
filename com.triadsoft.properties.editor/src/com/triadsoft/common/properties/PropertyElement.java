@@ -4,7 +4,7 @@
 package com.triadsoft.common.properties;
 
 /**
- * @author lflores
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public abstract class PropertyElement {
 	public static final PropertyElement[] NO_CHILDREN = {};
@@ -18,9 +18,9 @@ public abstract class PropertyElement {
 	public PropertyElement getParent() {
 		return parent;
 	}
-	
-	public void setParent(PropertyElement parent){
-		this.parent=parent;
+
+	public void setParent(PropertyElement parent) {
+		this.parent = parent;
 	}
 
 	public abstract PropertyElement[] getChildren();
@@ -28,6 +28,6 @@ public abstract class PropertyElement {
 	public abstract void removeFromParent();
 
 	public abstract boolean hasChildren();
-    
-    public abstract int getLine();
+
+	public abstract int getLine();
 }

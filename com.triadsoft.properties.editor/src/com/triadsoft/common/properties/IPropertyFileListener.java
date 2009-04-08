@@ -4,24 +4,28 @@
 package com.triadsoft.common.properties;
 
 /**
- * Interfase que modela un listener para los archivos de 
- * properties
- * @author lflores
+ * Interfase que modela un listener para los archivos de properties
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public interface IPropertyFileListener {
-    void keyChanged(PropertyCategory category, PropertyEntry entry);
+	/**
+	 * @param category
+	 * @param entry
+	 */
+	void keyChanged(PropertyCategory category, PropertyEntry entry);
 
-    void valueChanged(PropertyCategory category, PropertyEntry entry);
+	void valueChanged(PropertyCategory category, PropertyEntry entry);
 
-    void nameChanged(PropertyCategory category);
+	void nameChanged(PropertyCategory category);
 
-    void entryAdded(PropertyCategory category, PropertyEntry entry);
+	void entryAdded(PropertyCategory category, PropertyEntry entry);
 
-    void entryRemoved(PropertyCategory category, PropertyEntry entry);
+	void entryRemoved(PropertyCategory category, PropertyEntry entry);
 
-    void categoryAdded(PropertyCategory category);
+	void categoryAdded(PropertyCategory category);
 
-    void categoryRemoved(PropertyCategory category);
-    
-    void fileChanged(PropertyFile propertyFile); 
+	void categoryRemoved(PropertyCategory category);
+
+	void fileChanged(PropertyFile propertyFile);
 }

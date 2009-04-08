@@ -1,6 +1,3 @@
-/**
- * Created on Sep 14, 2004
- */
 package com.triadsoft.common.properties;
 
 import java.io.BufferedReader;
@@ -26,7 +23,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * @author lflores
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class PropertyFile extends PropertyElement implements
 		IPropertyFileListener {
@@ -183,7 +180,7 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	/**
-	 * @see com.sistran.tools.editors.views.PropertyElement#hasChildren()
+	 * @see com.triadsoft.common.properties.PropertyElement#hasChildren()
 	 */
 	public boolean hasChildren() {
 		if (categories != null && !categories.isEmpty()) {
@@ -300,7 +297,6 @@ public class PropertyFile extends PropertyElement implements
 				IFile file = (IFile) iter.next();
 				if (this.file != null
 						&& file.getName().equals(this.file.getName())) {
-					// SistranLog.logInfo("Cambio!!!");
 					// System.out.println("Cambio " + file.getName() + "!!!!");
 					Iterator<IPropertyFileListener> listenersIterator = this.listeners
 							.iterator();
