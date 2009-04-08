@@ -19,6 +19,7 @@
    </license>
 
    <url>
+      <update url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/"/>
       <discovery label="Eclipse Updates" url="http://eclipse-plugins.triadsoft.com.ar"/>
    </url>
 
