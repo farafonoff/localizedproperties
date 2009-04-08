@@ -3,18 +3,24 @@ package com.triadsoft.properties.editors;
 import java.util.Locale;
 
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Item;
 
+import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.properties.model.Property;
-import com.triadsoft.properties.model.ResourceList;
+import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
+/**
+ * Cell modifier para la celda de datos de la grilla PropertyTableViewer
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @see PropertyTableViewer
+ */
 public class PropertyModifier implements ICellModifier {
 
-	private Viewer viewer = null;
+	private ILocalizedPropertyFileListener listener = null;
 
-	public PropertyModifier(Viewer viewer) {
-		this.viewer = viewer;
+	public PropertyModifier(ILocalizedPropertyFileListener listener) {
+		this.listener = listener;
 	}
 
 	public boolean canModify(Object obj, String property) {
@@ -30,6 +36,10 @@ public class PropertyModifier implements ICellModifier {
 		return ((Property) obj).getValue(locale);
 	}
 
+	/**
+	 * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object,
+	 *      java.lang.String, java.lang.Object)
+	 */
 	public void modify(Object obj, String property, Object value) {
 		if (!Item.class.isInstance(obj)) {
 			return;
@@ -38,14 +48,14 @@ public class PropertyModifier implements ICellModifier {
 		if (!Property.class.isInstance(item.getData())) {
 			return;
 		}
-		ResourceList resources = (ResourceList) viewer.getInput();
+		PropertiesEditor editor = (PropertiesEditor) listener;
 		String[] localeString = property.split("_");
 		Locale locale = new Locale(localeString[0], localeString[1]);
 
 		Property properties = (Property) ((Item) obj).getData();
 		properties.setValue(locale, (String) value);
-		resources.changeValue(properties.getKey(), properties.getValue(locale),
+
+		editor.valueChanged(properties.getKey(), properties.getValue(locale),
 				locale);
-		viewer.refresh();
 	}
 }

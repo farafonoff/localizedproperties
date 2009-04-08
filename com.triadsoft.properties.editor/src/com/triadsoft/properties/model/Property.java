@@ -7,7 +7,7 @@ import java.util.Map;
 public class Property {
 	private String key;
 	private Map<Locale, String> values = new HashMap<Locale, String>();
-	private Map<Locale,Error> errors = new HashMap<Locale, Error>();
+	private Map<Locale, Error> errors = new HashMap<Locale, Error>();
 	private Boolean invalidValue = false;
 
 	public Boolean getInvalidValue() {
@@ -35,17 +35,17 @@ public class Property {
 	}
 
 	public void setValue(Locale locale, String value) {
-		if( value == null ){
+		if (value == null) {
 			invalidValue = true;
 		}
 		this.values.put(locale, value);
 	}
-	
-	public void addError(Locale locale,Error error){
+
+	public void addError(Locale locale, Error error) {
 		errors.put(locale, error);
 	}
-	
-	public Map<Locale,Error> getErrors(){
+
+	public Map<Locale, Error> getErrors() {
 		return errors;
 	}
 }

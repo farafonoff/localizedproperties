@@ -9,7 +9,15 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 
 import com.triadsoft.properties.model.Property;
+import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
+/**
+ * Provider para las columnas de PropertyTableViewer
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @see PropertyTableViewer
+ * 
+ */
 public class PropertiesLabelProvider implements ITableLabelProvider {
 
 	ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(this
@@ -56,10 +64,17 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 	public void dispose() {
 	}
 
+	/**
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
+	 *      java.lang.String)
+	 */
 	public boolean isLabelProperty(Object arg0, String arg1) {
 		return false;
 	}
 
+	/**
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+	 */
 	public void removeListener(ILabelProviderListener arg0) {
 
 	}

@@ -18,7 +18,7 @@ public class FileVisitor implements IResourceVisitor {
 	public FileVisitor(Map<Locale, IFile> locales, WildcardPath wp) {
 		this.locales = locales;
 		this.wp = wp;
-		System.out.println("Default Locale: "+wp.getLocale());
+		System.out.println("Default Locale: " + wp.getLocale());
 	}
 
 	public boolean visit(IResource resource) throws CoreException {

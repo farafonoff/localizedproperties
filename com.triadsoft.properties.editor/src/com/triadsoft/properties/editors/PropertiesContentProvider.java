@@ -14,7 +14,7 @@ public class PropertiesContentProvider implements IStructuredContentProvider {
 	}
 
 	public Object[] getElements(Object obj) {
-		if(obj instanceof ResourceList){
+		if (obj instanceof ResourceList) {
 			return ((ResourceList) obj).getProperties();
 		}
 		return null;

@@ -17,10 +17,21 @@ import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.model.utils.PathDiscovery;
+import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
+ * Esta clase es la encargada de manejar el archivo que se intenta abrir desde
+ * el editor. A partir del nombre del archivo abierto, ésta clase intenta
+ * descubrir a partir de los WildcardPath mostrados en los defaults, la
+ * ubicacion de los demas archivos de recursos parseando el path del archivo y
+ * descubre el locale que contiene el path del archivo. Ésta clase basicamente
+ * sirve de conexion entre el editor y el manejo de los archivos de propiedades
+ * descubiertos en el path, los mantiene sincronizados, y cuando recibe un
+ * cambio desde el editor, se ancarga de actualizar el archivo que corresponde
+ * al idioma que se está modificando
  * 
- * @author Leonardo Flores
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @see WildcardPath
  */
 public class ResourceList {
 
@@ -28,6 +39,7 @@ public class ResourceList {
 	private Locale defaultLocale;
 
 	private String filename = null;
+
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
 	public ResourceList(IFile file) {
@@ -46,7 +58,7 @@ public class ResourceList {
 	public String getFileName() {
 		return filename;
 	}
-	
+
 	public Locale getDefaultLocale() {
 		return defaultLocale;
 	}
@@ -59,6 +71,10 @@ public class ResourceList {
 	 */
 	public Locale[] getLocales() {
 		return map.keySet().toArray(new Locale[map.keySet().size()]);
+	}
+
+	public void addListener(IPropertyFileListener listener) {
+		listeners.add(listener);
 	}
 
 	private void parseLocales(Map<Locale, IFile> files) throws IOException {
@@ -91,6 +107,7 @@ public class ResourceList {
 		}
 		PropertyEntry entry = properties.getPropertyEntry(key);
 		entry.setValue(value);
+
 		return true;
 	}
 
@@ -98,11 +115,18 @@ public class ResourceList {
 		PropertyFile file = map.get(locale);
 		PropertyEntry entry = new PropertyEntry(null, key, null);
 		file.getDefaultCategory().addEntry(entry);
-		for (Iterator<IPropertyFileListener> iterator = listeners.iterator(); iterator
+
+		for (Iterator<PropertyFile> iterator = map.values().iterator(); iterator
 				.hasNext();) {
 			IPropertyFileListener type = (IPropertyFileListener) iterator
 					.next();
 			type.entryAdded(file.getDefaultCategory(), entry);
+		}
+		for (Iterator<IPropertyFileListener> iterator = listeners.iterator(); iterator
+				.hasNext();) {
+			IPropertyFileListener listener = (IPropertyFileListener) iterator
+					.next();
+			listener.entryAdded(file.getDefaultCategory(), entry);
 		}
 		return true;
 	}

@@ -12,7 +12,7 @@ public class PropertyError extends Error {
 	@SuppressWarnings("unused")
 	private int type = -1;
 
-	public PropertyError(int errorType,String message) {
+	public PropertyError(int errorType, String message) {
 		super(message);
 		this.type = errorType;
 	}

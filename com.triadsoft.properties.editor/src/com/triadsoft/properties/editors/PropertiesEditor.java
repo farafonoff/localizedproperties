@@ -22,20 +22,18 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
+import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
- * An example showing how to create a multi-page editor. This example has 3
- * pages:
- * <ul>
- * <li>page 0 contains a nested text editor.
- * <li>page 1 allows you to change the font used in page 2
- * <li>page 2 shows the words in page 0 in sorted order
- * </ul>
+ * Editor que muestra la grilla de datos de las propiedades, viendo en la
+ * primera columna las claves y en las demás los distintos idiomas
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class PropertiesEditor extends MultiPageEditorPart implements
-		IResourceChangeListener {
+		IResourceChangeListener, ILocalizedPropertyFileListener {
 
 	protected static final String KEY_COLUMN_ID = "key_column";
 
@@ -59,10 +57,26 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
+	public ResourceList getResource() {
+		return resource;
+	}
+
+	/**
+	 * Creates the pages of the multi-page editor.
+	 */
+	protected void createPages() {
+		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+		resource = new ResourceList(file);
+		createPage0();
+		createPage1();
+		setPartName(resource.getFileName());
+		// createPage2();
+	}
+
 	/**
 	 * Creates page 0 of the multi-page editor, which contains a text editor.
 	 */
-	void createPage0() {
+	private void createPage0() {
 		createTable();
 		int index = addPage(tableViewer.getControl());
 		setPageText(index, "Properties");
@@ -75,7 +89,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		tableViewer.setLabelProvider(new PropertiesLabelProvider(tableViewer));
 		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
-		tableViewer.setCellModifier(new PropertyModifier(tableViewer));
+		tableViewer.setCellModifier(new PropertyModifier(this));
 	}
 
 	/**
@@ -104,18 +118,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 		int index = addPage(composite);
 		setPageText(index, "Preview");
-	}
-
-	/**
-	 * Creates the pages of the multi-page editor.
-	 */
-	protected void createPages() {
-		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-		resource = new ResourceList(file);
-		createPage0();
-		createPage1();
-		setPartName(resource.getFileName());
-		// createPage2();
 	}
 
 	protected void tableChanged() {
@@ -225,7 +227,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	/**
-	 * Closes all project files on project close.
+	 * Eschucha los cambios de los recursos en el workspace, por el momento no
+	 * aplica
 	 */
 	public void resourceChanged(final IResourceChangeEvent event) {
 		if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
@@ -245,5 +248,17 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 				}
 			});
 		}
+	}
+
+	public void valueChanged(String key, String value, Locale locale) {
+		tableChanged();
+		resource.changeValue(key, value, locale);
+		tableViewer.refresh();
+	}
+
+	public void keyAdded(String key, Locale locale) {
+		tableChanged();
+
+		tableViewer.refresh();
 	}
 }

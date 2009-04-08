@@ -17,9 +17,12 @@ import com.triadsoft.properties.editor.Activator;
  * Se encarga de de obtener a partir del archivo pasado en el constructor todos
  * los locales, junto a los archivos ifile de cada locale. Una vez que termina
  * se puede obtener el resultado en el mapa resources donde esta una entrada por
- * cada para locale, archivo
+ * cada para locale, archivo,etc. Básicamente lo que recibe es un coleccion de
+ * wildcard path y recorre cada uno de ellos hasta descubrir el match con el
+ * path name del archivo pasado como parámetro en el constructor.
  * 
- * @author Leonardo Flores (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @see WildcardPath
  */
 public class PathDiscovery {
 	private WildcardPath wp = null;
@@ -28,14 +31,32 @@ public class PathDiscovery {
 	private String filename;
 	private Locale defaultLocale;
 
+	/**
+	 * Devuelve el path ya parseado como el path desde el proyecto hasta el
+	 * directorio que contiene al archivo de recursos
+	 * 
+	 * @return
+	 */
 	public IPath getPath() {
 		return path;
 	}
 
+	/**
+	 * Devuelve el nombre del archivo sin extension.
+	 * 
+	 * @return String Nombre del srchivo
+	 */
 	public String getFilename() {
 		return filename;
 	}
 
+	/**
+	 * El constructor recibe como parámetro un archivo, el cual se usa para
+	 * descubrir datos como directorio root, locale, nombre del archivo, etc
+	 * 
+	 * @param file
+	 *            Archivo a analizar
+	 */
 	public PathDiscovery(IFile file) {
 		wp = getWildcardPath(file);
 		if (wp == null) {
@@ -80,14 +101,31 @@ public class PathDiscovery {
 		return null;
 	}
 
+	/**
+	 * Devuelve un mapa con los recursos encontrados dentro del path,
+	 * organizados por su locale
+	 * 
+	 * @return Map<Locale,IFile>
+	 */
 	public Map<Locale, IFile> getResources() {
 		return resources;
 	}
 
+	/**
+	 * Devuelve el objeto WildcardPath que se uso para descubir los datos de la
+	 * ubicacion de los recursos
+	 * 
+	 * @return
+	 */
 	public WildcardPath getWildcardPath() {
 		return wp;
 	}
 
+	/**
+	 * Devuelve el locale contenido en el archivo pasado en el constructor
+	 * 
+	 * @return Locale del archivo abierto
+	 */
 	public Locale getDefaultLocale() {
 		return defaultLocale;
 	}

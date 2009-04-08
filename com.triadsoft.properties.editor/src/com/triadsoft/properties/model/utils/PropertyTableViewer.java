@@ -12,6 +12,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+/**
+ * Tabla que muestra las columnas con las claves y los idiomas de los distintos
+ * archivos de recursos
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ */
 public class PropertyTableViewer extends TableViewer {
 	private TableColumn defaultColumn;
 	private Locale defaultLocale;
