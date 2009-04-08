@@ -1,0 +1,17 @@
+<project basedir="." name="localized_properties" default="init">
+	<property file="ant.properties" />
+	<target name="clean">
+		<delete dir="${javadoc.api.folder}" />
+	</target>
+	<target name="init">
+		<mkdir dir="${javadoc.api.folder}" />
+	</target>
+	<target name="javadoc" depends="init">
+		<javadoc destdir="${javadoc.api.folder}">
+			<fileset dir="${project.source}">
+				<include name="**/*.java" />
+			</fileset>
+		</javadoc>
+	</target>
+
+</project>
