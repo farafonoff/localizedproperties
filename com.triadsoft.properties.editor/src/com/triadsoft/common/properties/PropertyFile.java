@@ -23,6 +23,9 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 /**
+ * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
+ * en categorias y entradas. Tambien se puede persistir mediante el metodo save
+ * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class PropertyFile extends PropertyElement implements
@@ -193,7 +196,7 @@ public class PropertyFile extends PropertyElement implements
 	 * Devuelve true, si existe una categoria con este nombre
 	 * 
 	 * @param categoryName
-	 * @return
+	 * @return Booleano TRUE o FALSE
 	 */
 	public boolean existCategory(String categoryName) {
 		for (Iterator<PropertyCategory> iter = categories.iterator(); iter
@@ -210,7 +213,7 @@ public class PropertyFile extends PropertyElement implements
 	 * Devuelve verdadero si existe la propiedad en el archivo
 	 * 
 	 * @param propertyName
-	 * @return
+	 * @return Booleano TRUE o FALSE
 	 */
 	public boolean exist(String propertyName) {
 		for (Iterator<PropertyCategory> iter = this.categories.iterator(); iter
@@ -226,7 +229,7 @@ public class PropertyFile extends PropertyElement implements
 	/**
 	 * Convierte el PropertyFile en texto
 	 * 
-	 * @return
+	 * @return un String con todo el contenido del archivo de propiedades
 	 */
 	public String asText() {
 		StringWriter stringWriter = new StringWriter(2000);
@@ -240,9 +243,14 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	/**
-	 * Devuelve la categoria por default
+	 * Devuelve la categoria por default. La categoria por default es un
+	 * categoria que se crea para todas las claves que no pertenecen a un
+	 * categoria. Todas las claves entontradas antes de un comentario, son
+	 * agregadas a esta categoria, ya que no se puede identificar a la categoria
+	 * a la que pertenecen
 	 * 
-	 * @return
+	 * @return PropertyCategory
+	 * @see PropertyCategory
 	 */
 	public PropertyCategory getDefaultCategory() {
 		PropertyCategory category = null;
@@ -316,7 +324,8 @@ public class PropertyFile extends PropertyElement implements
 	 * Devuelve una categoria a partir de su nombre
 	 * 
 	 * @param categoryName
-	 * @return
+	 *            Nombre de la categoria buscada
+	 * @return PropertyCategory encontrada, null si no la encuentra
 	 */
 	public PropertyCategory getCategoryByName(String categoryName) {
 		for (int i = 0; i < getChildren().length; i++) {
@@ -345,10 +354,11 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	/**
-	 * Devuelve el objeto entry a partir de la clave
+	 * Devuelve el objeto PropertyEntry a partir de la clave
 	 * 
 	 * @param entryKey
-	 * @return
+	 *            String que identifica a la entrada
+	 * @return ProperyEntry
 	 */
 	public PropertyEntry getPropertyEntry(String entryKey) {
 		PropertyCategory category = getCategoryFromEntry(entryKey);

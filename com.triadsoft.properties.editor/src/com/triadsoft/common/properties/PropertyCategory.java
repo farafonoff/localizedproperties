@@ -191,7 +191,7 @@ public class PropertyCategory extends PropertyElement {
 	 * Devuelve un booleano que indica si la clave existe en esta categoria
 	 * 
 	 * @param entryValue
-	 * @return
+	 * @return Boolean TRUE o FALSE
 	 */
 	public boolean existEntry(String entryValue) {
 		PropertyElement[] elements = getChildren();
