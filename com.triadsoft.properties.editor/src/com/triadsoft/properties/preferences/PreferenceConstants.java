@@ -2,6 +2,8 @@ package com.triadsoft.properties.preferences;
 
 /**
  * Constant definitions for plug-in preferences
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class PreferenceConstants {
 

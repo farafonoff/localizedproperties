@@ -17,7 +17,8 @@ public class LocalizedPropertiesPreferencePage extends
 	public LocalizedPropertiesPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A demonstration of a preference page implementation");
+		setDescription(Activator
+				.getString("preferences.description")); //$NON-NLS-1$
 	}
 
 	/**
@@ -28,7 +29,8 @@ public class LocalizedPropertiesPreferencePage extends
 	public void createFieldEditors() {
 		addField(new WilcardPathEditor(
 				PreferenceConstants.WILDCARD_PATHS_PREFERENCES,
-				"Listado de Wildcards", getFieldEditorParent()));
+				Activator
+						.getString("preferences.field.label"), getFieldEditorParent())); //$NON-NLS-1$
 	}
 
 	/**
