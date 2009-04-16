@@ -10,8 +10,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
  * Se encarga de de obtener a partir del archivo pasado en el constructor todos
@@ -35,7 +37,7 @@ public class PathDiscovery {
 	 * Devuelve el path ya parseado como el path desde el proyecto hasta el
 	 * directorio que contiene al archivo de recursos
 	 * 
-	 * @return
+	 * @return IPath con el path parseado
 	 */
 	public IPath getPath() {
 		return path;
@@ -88,7 +90,8 @@ public class PathDiscovery {
 	 * con el ifile pasado como parametro
 	 * 
 	 * @param ifile
-	 * @return
+	 * @return Devuelve el objeto WilcardPath que coincide con el path del
+	 *         archivo
 	 */
 	private WildcardPath getWildcardPath(IFile ifile) {
 		String[] wildcardPaths = Activator.getWildcardPaths();
@@ -115,7 +118,7 @@ public class PathDiscovery {
 	 * Devuelve el objeto WildcardPath que se uso para descubir los datos de la
 	 * ubicacion de los recursos
 	 * 
-	 * @return
+	 * @return Devuelve el wilcard path encontrado a partir del archivo
 	 */
 	public WildcardPath getWildcardPath() {
 		return wp;

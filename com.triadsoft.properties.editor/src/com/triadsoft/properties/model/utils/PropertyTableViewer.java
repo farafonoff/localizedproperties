@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import com.triadsoft.properties.editor.Activator;
+
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
  * archivos de recursos
@@ -33,7 +35,7 @@ public class PropertyTableViewer extends TableViewer {
 
 	private void createKeyColumn() {
 		TableColumn keyColumn = new TableColumn(getTable(), SWT.NONE);
-		keyColumn.setText("Clave");
+		keyColumn.setText(Activator.getString("editor.table.key"));
 		keyColumn.setWidth(150);
 	}
 

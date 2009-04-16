@@ -146,7 +146,7 @@ public class WildcardPath {
 	 * This method replace the language and country into the path string
 	 * 
 	 * @param locale
-	 * @return
+	 * @return Devuelve el WilcardPath a la cual reemplazo el pais y el lenguaje 
 	 */
 	public WildcardPath replace(Locale locale) {
 		this.replace(LANGUAGE_WILDCARD, locale.getLanguage());
@@ -191,7 +191,7 @@ public class WildcardPath {
 	 * Devuelve la expresion regular necesaria para obtener el locale a partir
 	 * del nombre del archivo
 	 * 
-	 * @return
+	 * @return String con la expresion regular resultante
 	 */
 	public String getLocaleRegex() {
 		String toRegex = this.wildcardpath;
