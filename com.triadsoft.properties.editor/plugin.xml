@@ -10,7 +10,7 @@
             extensions="properties"
             icon="icons/page_white_world.png"
             id="com.triadsoft.properties.editors.PropertiesEditor"
-            name="Localized Properties Editor">
+            name="%localizedProperties.editor.name">
       </editor>
    </extension>
    <extension
@@ -18,7 +18,7 @@
       <page
             class="com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage"
             id="com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage"
-            name="Localized Properties Preferences">
+            name="%localizedProperties.preferences.name">
       </page>
    </extension>
    <extension
