@@ -67,7 +67,7 @@ public class ResourceList {
 	 * Este metodo se encarga de devolver los Locales disponibles para los
 	 * archivos de recursos
 	 * 
-	 * @return
+	 * @return Array de Locale
 	 */
 	public Locale[] getLocales() {
 		return map.keySet().toArray(new Locale[map.keySet().size()]);
@@ -94,7 +94,7 @@ public class ResourceList {
 	 * @param key
 	 * @param value
 	 * @param locale
-	 * @return
+	 * @return Boolean que indica si se pudo cambiar el valor 
 	 */
 	public boolean changeValue(String key, String value, Locale locale) {
 		PropertyFile properties = ((PropertyFile) map.get(locale));
