@@ -19,10 +19,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 /**
- * Manages the installation/deinstallation of global actions for multi-page
- * editors. Responsible for the redirection of global actions to the active
- * editor. Multi-page contributor replaces the contributors for the individual
- * editors in the multi-page editor.
+ * Controla la instalacion/desinstalacion de las acciones globales para los
+ * editores multi-pagina. Responsable de la redireccion de las acctiones
+ * globales para el editor activo.
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class MultiPageEditorContributor extends
 		MultiPageEditorActionBarContributor {
@@ -30,7 +31,7 @@ public class MultiPageEditorContributor extends
 	private Action sampleAction;
 
 	/**
-	 * Creates a multi-page contributor.
+	 * Constructor por default
 	 */
 	public MultiPageEditorContributor() {
 		super();
@@ -38,18 +39,13 @@ public class MultiPageEditorContributor extends
 	}
 
 	/**
-	 * Returns the action registed with the given text editor.
+	 * Devuelve la accion registrada para el editor de texto dado
 	 * 
-	 * @return IAction or null if editor is null.
+	 * @return IAction o nulo si el editor es nulo.
 	 */
 	protected IAction getAction(ITextEditor editor, String actionID) {
 		return (editor == null ? null : editor.getAction(actionID));
 	}
-
-	/*
-	 * (non-JavaDoc) Method declared in
-	 * AbstractMultiPageEditorActionBarContributor.
-	 */
 
 	public void setActivePage(IEditorPart part) {
 		if (activeEditorPart == part)

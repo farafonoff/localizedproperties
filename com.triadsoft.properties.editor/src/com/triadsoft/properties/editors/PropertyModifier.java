@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Item;
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
+import com.triadsoft.properties.model.utils.StringUtils;
 
 /**
  * Cell modifier para la celda de datos de la grilla PropertyTableViewer
@@ -37,8 +38,12 @@ public class PropertyModifier implements ICellModifier {
 	}
 
 	/**
-	 * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object,
-	 *      java.lang.String, java.lang.Object)
+	 * Metodo encargado de hacer la modificacion real del valor
+	 * 
+	 * @param obj
+	 *            Objeto que se esta modificando
+	 * @param property
+	 *            Indica la propiedad del objeto que se está modificando
 	 */
 	public void modify(Object obj, String property, Object value) {
 		if (!Item.class.isInstance(obj)) {
@@ -49,8 +54,7 @@ public class PropertyModifier implements ICellModifier {
 			return;
 		}
 		PropertiesEditor editor = (PropertiesEditor) listener;
-		String[] localeString = property.split("_");
-		Locale locale = new Locale(localeString[0], localeString[1]);
+		Locale locale = StringUtils.getLocale(property);
 
 		Property properties = (Property) ((Item) obj).getData();
 		properties.setValue(locale, (String) value);
