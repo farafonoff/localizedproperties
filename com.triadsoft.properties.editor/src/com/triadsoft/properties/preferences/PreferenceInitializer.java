@@ -18,7 +18,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 			"/{root}/{filename}.{lang}_{country}.{fileextension}",
 			"/{root}/{filename}.{lang}.{country}.{fileextension}",
 			"/{root}/{lang}.{country}/{filename}.{fileextension}",
-			"/{root}/{lang}/{country}/{filename}.{fileextension}" };
+			"/{root}/{lang}/{country}/{filename}.{fileextension}",
+			"/{filename}.{lang}.{fileextension}"};
 
 	/**
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
