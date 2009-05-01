@@ -1,5 +1,7 @@
 package com.triadsoft.properties.wizards;
 
+import java.util.Locale;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -11,8 +13,12 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
@@ -20,14 +26,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
  * Permite crear un archivo de propiedades localizado por el idioma
+ * @author Leonardo Flores
  */
 
 public class LocalizedPropertiesPage extends WizardPage {
-	private Text containerText;
-
 	private Text fileText;
 
 	private ISelection selection;
@@ -50,6 +56,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 
 	private Text filepathText;
 
+	private Text containerText;
+
 	/**
 	 * Constructor for SampleNewWizardPage.
 	 * 
@@ -66,82 +74,129 @@ public class LocalizedPropertiesPage extends WizardPage {
 	 * @see IDialogPage#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		container.setLayout(layout);
-		layout.numColumns = 4;
-		layout.verticalSpacing = 9;
-		Label rootLabel = new Label(container, SWT.NULL);
-		rootLabel.setText("&Wildcard Paths:");
-		GridData pathsData = new GridData();
-		pathsData.horizontalSpan = 4;
-		rootLabel.setLayoutData(pathsData);
+		try {
+			Composite container = new Composite(parent, SWT.NULL);
 
-		wildcardList = new List(container, SWT.SINGLE);
-		wildcardList.setItems(Activator.getWildcardPaths());
-		GridData wildData = new GridData(GridData.FILL_HORIZONTAL);
-		wildData.horizontalSpan = 4;
-		wildcardList.setLayoutData(wildData);
+			GridLayout layout = new GridLayout();
+			container.setLayout(layout);
+			layout.numColumns = 4;
+			layout.verticalSpacing = 9;
+			Label label = new Label(container, SWT.NULL);
+			label.setText("&Container:");
 
-		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 4;
-		containerText.setLayoutData(gd);
-		containerText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+			containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
+			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+			containerText.setLayoutData(gd);
+			containerText.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					dialogChanged();
+				}
+			});
 
-		rootLabel = new Label(container, SWT.NULL);
-		rootLabel.setText("&Root:");
+			Button button = new Button(container, SWT.PUSH);
+			button.setText("Browse...");
+			button.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					handleBrowse();
+				}
+			});
 
-		filenameLabel = new Label(container, SWT.NULL);
-		filenameLabel.setText("&Filename");
+			container.setLayout(layout);
+			layout.numColumns = 4;
+			layout.verticalSpacing = 9;
+			Label rootLabel = new Label(container, SWT.NULL);
+			rootLabel.setText("&Wildcard Paths");
+			GridData pathsData = new GridData();
+			pathsData.horizontalSpan = 4;
+			rootLabel.setLayoutData(pathsData);
 
-		langLabel = new Label(container, SWT.NULL);
-		langLabel.setText("Language");
+			wildcardList = new List(container, SWT.SINGLE);
+			wildcardList.setItems(Activator.getWildcardPaths());
+			GridData wildData = new GridData(GridData.FILL_HORIZONTAL);
+			wildData.horizontalSpan = 4;
+			wildcardList.setLayoutData(wildData);
+			wildcardList.addSelectionListener(new SelectionListener() {
 
-		countryLabel = new Label(container, SWT.NULL);
-		countryLabel.setText("Country");
+				public void widgetSelected(SelectionEvent evt) {
+					changeFilepath();
+					dialogChanged();
+				}
 
-		rootText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		rootText.setText("locale");
-		GridData fullData = new GridData(GridData.FILL_HORIZONTAL);
-		rootText.setLayoutData(fullData);
+				public void widgetDefaultSelected(SelectionEvent evt) {
 
-		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		fileText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
-		fileText.setLayoutData(fullData);
+				}
+			});
+			rootLabel = new Label(container, SWT.NULL);
+			rootLabel.setText("&Root");
 
-		languageText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		languageText.setText("en");
-		languageText.setLayoutData(fullData);
+			filenameLabel = new Label(container, SWT.NULL);
+			filenameLabel.setText("&Filename");
 
-		countryText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		countryText.setText("AR");
-		countryText.setLayoutData(fullData);
+			langLabel = new Label(container, SWT.NULL);
+			langLabel.setText("Language");
 
-		filepathLabel = new Label(container, SWT.NULL);
-		filepathLabel.setText("File path");
-		GridData filepath = new GridData();
-		filepath.horizontalSpan = 4;
-		filepathLabel.setLayoutData(filepath);
+			countryLabel = new Label(container, SWT.NULL);
+			countryLabel.setText("Country");
 
-		filepathText = new Text(container, SWT.BORDER | SWT.SINGLE);
-		filepathText.setText("<resultado>");
-		GridData filepathData = new GridData(GridData.FILL_HORIZONTAL);
-		filepathData.horizontalSpan = 4;
-		filepathText.setLayoutData(filepathData);
-		filepathText.setEnabled(false);
+			rootText = new Text(container, SWT.BORDER | SWT.SINGLE);
+			rootText.setText("locale");
+			GridData fullData = new GridData(GridData.FILL_HORIZONTAL);
+			rootText.setLayoutData(fullData);
+			rootText.addModifyListener(new ModifyListener() {
 
-		initialize();
-		dialogChanged();
-		setControl(container);
+				public void modifyText(ModifyEvent arg0) {
+					changeFilepath();
+				}
+			});
+
+			fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
+			fileText.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					changeFilepath();
+					dialogChanged();
+				}
+			});
+			fileText.setLayoutData(fullData);
+
+			languageText = new Text(container, SWT.BORDER | SWT.SINGLE);
+			languageText.setText("en");
+			languageText.setLayoutData(fullData);
+			languageText.addModifyListener(new ModifyListener() {
+
+				public void modifyText(ModifyEvent arg0) {
+					changeFilepath();
+				}
+			});
+
+			countryText = new Text(container, SWT.BORDER | SWT.SINGLE);
+			countryText.setText("AR");
+			countryText.setLayoutData(fullData);
+			countryText.addModifyListener(new ModifyListener() {
+
+				public void modifyText(ModifyEvent arg0) {
+					changeFilepath();
+				}
+			});
+			filepathLabel = new Label(container, SWT.NULL);
+			filepathLabel.setText("File path");
+			GridData filepath = new GridData();
+			filepath.horizontalSpan = 4;
+			filepathLabel.setLayoutData(filepath);
+
+			filepathText = new Text(container, SWT.BORDER | SWT.SINGLE);
+			filepathText.setText("<resultado>");
+			GridData filepathData = new GridData(GridData.FILL_HORIZONTAL);
+			filepathData.horizontalSpan = 4;
+			filepathText.setLayoutData(filepathData);
+			filepathText.setEnabled(false);
+
+			initialize();
+			// changeFilepath();
+			dialogChanged();
+			setControl(container);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -179,9 +234,28 @@ public class LocalizedPropertiesPage extends WizardPage {
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
-				containerText.setText(((Path) result[0]).toString());
+				filepathText.setText(((Path) result[0]).toString());
 			}
 		}
+	}
+
+	private void changeFilepath() {
+		String[] selected = wildcardList.getSelection();
+		if (selected == null || selected.length == 0) {
+			filepathText.setText("");
+			return;
+		}
+		WildcardPath wp = new WildcardPath(selected[0]);
+		// TODO:Validar que no vengan vacios
+		wp.replace(WildcardPath.COUNTRY_WILDCARD, countryText.getText());
+		wp.replace(WildcardPath.LANGUAGE_WILDCARD, languageText.getText());
+
+		wp.replace(WildcardPath.ROOT_WILDCARD, rootText.getText());
+		wp.replace(WildcardPath.FILENAME_WILDCARD, fileText.getText());
+		wp.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
+		// TODO: Ver que el wilcard path deja los puntos escapeados
+		wp.replace("\\.", ".");
+		filepathText.setText(wp.getPath());
 	}
 
 	/**
@@ -214,14 +288,14 @@ public class LocalizedPropertiesPage extends WizardPage {
 			updateStatus("File name must be valid");
 			return;
 		}
-		int dotLoc = fileName.lastIndexOf('.');
-		if (dotLoc != -1) {
-			String ext = fileName.substring(dotLoc + 1);
-			if (ext.equalsIgnoreCase("properties") == false) {
-				updateStatus("File extension must be \"properties\"");
-				return;
-			}
-		}
+		// int dotLoc = fileName.lastIndexOf('.');
+		// if (dotLoc != -1) {
+		// String ext = fileName.substring(dotLoc + 1);
+		// if (ext.equalsIgnoreCase("properties") == false) {
+		// updateStatus("File extension must be \"properties\"");
+		// return;
+		// }
+		// }
 		updateStatus(null);
 	}
 
@@ -232,6 +306,10 @@ public class LocalizedPropertiesPage extends WizardPage {
 
 	public String getContainerName() {
 		return containerText.getText();
+	}
+	
+	public String getFilePath(){
+		return filepathText.getText();
 	}
 
 	public String getFileName() {
