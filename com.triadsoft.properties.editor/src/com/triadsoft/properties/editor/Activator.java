@@ -89,7 +89,20 @@ public class Activator extends AbstractUIPlugin {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
 		} catch (MissingResourceException e) {
-			return '!' + key + '!';
+			return key;
 		}
+	}
+
+	public static String getString(String key, Object[] params) {
+		String resource = getString(key);
+		String parametrized = resource;
+		if (key.equals(resource)) {
+			return key;
+		}
+		for (int i = 0; i < params.length; i++) {
+			parametrized = resource.replaceAll("\\{" + i + "\\}", params[i]
+					.toString());
+		}
+		return parametrized;
 	}
 }

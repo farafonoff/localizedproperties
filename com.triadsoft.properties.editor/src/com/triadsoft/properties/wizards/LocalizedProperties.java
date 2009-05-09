@@ -1,28 +1,38 @@
 package com.triadsoft.properties.wizards;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.operation.*;
-import java.lang.reflect.InvocationTargetException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-import java.io.*;
-
-import org.eclipse.ui.*;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * This is a sample new wizard. Its role is to create a new file resource in the
- * provided container. If the container resource (a folder or a project) is
- * selected in the workspace when the wizard is opened, it will accept it as the
- * target container. The wizard creates one file with the extension
- * "properties". If a sample multi-page editor (also available as a template) is
- * registered for the same extension, it will be able to open it.
+ * Wizard para poder crear un archivo de recursos internacionalizados
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 
 public class LocalizedProperties extends Wizard implements INewWizard {
@@ -30,7 +40,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	private ISelection selection;
 
 	/**
-	 * Constructor for LocalizedProperties.
+	 * Contructor por default
 	 */
 	public LocalizedProperties() {
 		super();
@@ -38,7 +48,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	}
 
 	/**
-	 * Adding the page to the wizard.
+	 * Agrega la pagina al wizard
 	 */
 
 	public void addPages() {
@@ -47,8 +57,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	}
 
 	/**
-	 * This method is called when 'Finish' button is pressed in the wizard. We
-	 * will create an operation and run it using wizard as execution context.
+	 * Éste metodo es llamado cuando se presiona el botón finalizar del wizard
 	 */
 	public boolean performFinish() {
 		final String filepath = page.getFilePath().substring(0,
@@ -123,7 +132,9 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage();
 				try {
-					IDE.openEditor(page, file, "com.triadsoft.properties.editors.PropertiesEditor");
+					IDE
+							.openEditor(page, file,
+									"com.triadsoft.properties.editors.PropertiesEditor");
 				} catch (PartInitException e) {
 				}
 			}

@@ -18,7 +18,7 @@ public class LocalizedPropertiesPreferencePage extends
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription(Activator
-				.getString("preferences.description")); //$NON-NLS-1$
+				.getString("preferences.description")); 
 	}
 
 	/**

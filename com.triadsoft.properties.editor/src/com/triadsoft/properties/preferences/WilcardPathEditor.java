@@ -1,12 +1,16 @@
 package com.triadsoft.properties.preferences;
 
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.swt.widgets.Composite;
 
 public class WilcardPathEditor extends ListEditor {
 
+	protected Composite parent;
+
 	public WilcardPathEditor(String name, String label, Composite parent) {
 		super(name, label, parent);
+		this.parent = parent;
 	}
 
 	protected String[] parseString(String stringList) {
@@ -27,7 +31,11 @@ public class WilcardPathEditor extends ListEditor {
 
 	@Override
 	protected String getNewInputObject() {
-		return null;
+		WilcardPathDialog dialog = new WilcardPathDialog(getShell());
+		if (dialog.open() != InputDialog.OK) {
+			return null;
+		}
+		return dialog.getWildcardPath();
 	}
 
 }

@@ -66,7 +66,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 	public LocalizedPropertiesPage(ISelection selection) {
 		super("wizardPage");
 		setTitle("Multi-page Editor File");
-		setDescription("This wizard creates a new file with *.properties extension that can be opened by a multi-page editor.");
+		setDescription(Activator.getString("wizard.page.description"));
 		this.selection = selection;
 	}
 
