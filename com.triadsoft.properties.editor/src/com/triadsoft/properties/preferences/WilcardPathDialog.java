@@ -1,10 +1,11 @@
 package com.triadsoft.properties.preferences;
 
+import java.util.Locale;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -13,11 +14,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.triadsoft.properties.model.utils.WildcardPath;
+
 public class WilcardPathDialog extends Dialog {
 
 	private String _wildcardPath = null;
 	private Label label;
 	private Text wildcardPath;
+	private Text preview;
 
 	public WilcardPathDialog(Shell parent) {
 		super(parent);
@@ -26,7 +30,6 @@ public class WilcardPathDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite area = (Composite) super.createDialogArea(parent);
-		area.setLayout(new FormLayout());
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
@@ -40,12 +43,18 @@ public class WilcardPathDialog extends Dialog {
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
 		wildcardPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		wildcardPath.setText("{root}");
+		wildcardPath.setText("/{root}");
 		wildcardPath.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				_wildcardPath = wildcardPath.getText();
+				changeData();
 			}
 		});
+		Label previewLabel = new Label(area, SWT.NONE);
+		previewLabel.setText("Preview");
+		preview = new Text(area, SWT.BORDER);
+		preview.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		preview.setEnabled(false);
 		area.setLayout(gridLayout);
 		return area;
 	}
@@ -54,6 +63,19 @@ public class WilcardPathDialog extends Dialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText("Agregar WildcardPath");
+	}
+
+	private void changeData() {
+		if (_wildcardPath == null || _wildcardPath.length() == 0) {
+			preview.setText(null);
+			return;
+		}
+		WildcardPath _path = new WildcardPath(_wildcardPath);
+		_path.replace(Locale.getDefault());
+		_path.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
+		_path.replace(WildcardPath.FILENAME_WILDCARD, "application");
+		_path.replace(WildcardPath.ROOT_WILDCARD, "locale");
+		preview.setText(_path.getPath());
 	}
 
 	public String getWildcardPath() {
