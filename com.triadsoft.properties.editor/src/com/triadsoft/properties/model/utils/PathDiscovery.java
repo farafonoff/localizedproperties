@@ -10,10 +10,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.triadsoft.properties.editor.Activator;
-import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
  * Se encarga de de obtener a partir del archivo pasado en el constructor todos
