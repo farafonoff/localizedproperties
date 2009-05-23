@@ -1,7 +1,5 @@
 package com.triadsoft.properties.wizards;
 
-import java.util.Locale;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -30,6 +28,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
  * Permite crear un archivo de propiedades localizado por el idioma
+ * 
  * @author Leonardo Flores
  */
 
@@ -307,8 +306,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 	public String getContainerName() {
 		return containerText.getText();
 	}
-	
-	public String getFilePath(){
+
+	public String getFilePath() {
 		return filepathText.getText();
 	}
 
