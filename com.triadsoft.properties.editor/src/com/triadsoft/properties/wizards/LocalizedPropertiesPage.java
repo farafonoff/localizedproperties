@@ -252,7 +252,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 		wp.replace(WildcardPath.ROOT_WILDCARD, rootText.getText());
 		wp.replace(WildcardPath.FILENAME_WILDCARD, fileText.getText());
 		wp.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
-		// TODO: Ver que el wilcard path deja los puntos escapeados
+		// FIXME: Ver que el wilcard path deja los puntos escapeados
 		wp.replace("\\.", ".");
 		filepathText.setText(wp.getPath());
 	}

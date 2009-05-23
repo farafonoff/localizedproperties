@@ -434,7 +434,6 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	public void fileChanged(PropertyFile propertyFile) {
-		// TODO Auto-generated method stub
 
 	}
 }

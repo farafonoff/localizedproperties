@@ -42,6 +42,11 @@ public class WildcardPath {
 		return wildcardpath;
 	}
 
+	/**
+	 * FIXME: Revisar porque al traducir quedan los puntos escapeados
+	 * 
+	 * @return
+	 */
 	public String getPath() {
 		return path;
 	}
@@ -146,7 +151,7 @@ public class WildcardPath {
 	 * This method replace the language and country into the path string
 	 * 
 	 * @param locale
-	 * @return Devuelve el WilcardPath a la cual reemplazo el pais y el lenguaje 
+	 * @return Devuelve el WilcardPath a la cual reemplazo el pais y el lenguaje
 	 */
 	public WildcardPath replace(Locale locale) {
 		this.replace(LANGUAGE_WILDCARD, locale.getLanguage());
