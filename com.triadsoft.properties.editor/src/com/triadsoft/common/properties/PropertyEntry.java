@@ -56,8 +56,13 @@ public class PropertyEntry extends PropertyElement {
 	}
 
 	public void setValue(String text) {
-		if (value.equals(text))
+		if (text != null && text.trim().length() == 0) {
+			value = null;
 			return;
+		}
+		if (value != null && value.equals(text)) {
+			return;
+		}
 		value = text;
 		((PropertyCategory) getParent()).valueChanged(this);
 	}

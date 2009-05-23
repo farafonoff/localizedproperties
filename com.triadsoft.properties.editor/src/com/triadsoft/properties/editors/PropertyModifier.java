@@ -11,7 +11,12 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.StringUtils;
 
 /**
- * Cell modifier para la celda de datos de la grilla PropertyTableViewer
+ * <p>
+ * Cell modifier para la celda de datos de la grilla PropertyTableViewer.
+ * </p>
+ * <p>
+ * Permite controlar los valores de la celda que se va a editar.
+ * </p>
  * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
  * @see PropertyTableViewer
@@ -24,6 +29,13 @@ public class PropertyModifier implements ICellModifier {
 		this.listener = listener;
 	}
 
+	/**
+	 * Permite saber si la columna es modificable, para la columna 0 devuelve
+	 * false, que es la columna de la clave. Para los demas devuelve true
+	 * 
+	 * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object,
+	 *      java.lang.String)
+	 */
 	public boolean canModify(Object obj, String property) {
 		if (property.equals(PropertiesEditor.KEY_COLUMN_ID)) {
 			return false;

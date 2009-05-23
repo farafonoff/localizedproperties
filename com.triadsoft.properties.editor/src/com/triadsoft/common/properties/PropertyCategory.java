@@ -138,6 +138,7 @@ public class PropertyCategory extends PropertyElement {
 
 	public void addEntry(PropertyEntry entry) {
 		if (!entries.contains(entry)) {
+			entry.setParent(this);
 			entries.add(entry);
 			((PropertyFile) getParent()).entryAdded(this, entry);
 		}

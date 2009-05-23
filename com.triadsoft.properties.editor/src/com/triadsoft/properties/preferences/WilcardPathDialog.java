@@ -16,6 +16,14 @@ import org.eclipse.swt.widgets.Text;
 
 import com.triadsoft.properties.model.utils.WildcardPath;
 
+/**
+ * <p>
+ * Dialogo para poder agregar wildcard path a la lista
+ * </p>
+ * 
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ *@see WildcardPath
+ */
 public class WilcardPathDialog extends Dialog {
 
 	private String _wildcardPath = null;
@@ -33,12 +41,14 @@ public class WilcardPathDialog extends Dialog {
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
+		// TODO:Traducir
 		description.setText("Crear un nuevo wildcard path");
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
 		label = new Label(area, SWT.NONE);
+		// TODO:Traducir
 		label.setText("WildcardPath");
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
@@ -51,6 +61,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Label previewLabel = new Label(area, SWT.NONE);
+		// TODO:Traducir
 		previewLabel.setText("Preview");
 		preview = new Text(area, SWT.BORDER);
 		preview.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

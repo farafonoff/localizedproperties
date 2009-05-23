@@ -1,6 +1,7 @@
 package com.triadsoft.properties.editors;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -25,12 +26,31 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
+import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
+ * <p>
  * Editor que muestra la grilla de datos de las propiedades, viendo en la
- * primera columna las claves y en las demás los distintos idiomas
+ * primera columna las claves y en las demás los distintos idiomas.
+ * </p>
+ * <p>
+ * El editor intentará descubrir según el path de los archivos de recursos,los
+ * distintos idiomas a los que se encuentran los resource bundle. Para ésto
+ * utiliza el WildcardPath.
+ * </p>
+ * <p>
+ * Segun los distintos lenguajes de programacion, los archivos de recursos están
+ * en distintas ubicaciones con distintas convenciones en el nombre de los
+ * archivos y la ubicacion de los mismos.
+ * </p>
+ * <p>
+ * Por éste motivo es que el Properties editor intenta buscar según el path del
+ * archivos cual es el wildcard path de cada uno.
+ * </p>
  * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @see WildcardPath
+ * @see ResourceBundle
  */
 public class PropertiesEditor extends MultiPageEditorPart implements
 		IResourceChangeListener, ILocalizedPropertyFileListener {
@@ -50,7 +70,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	private boolean isModified;
 
 	/**
-	 * Creates a multi-page editor example.
+	 * Crea un editor de propiedades
 	 */
 	public PropertiesEditor() {
 		super();
@@ -74,15 +94,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	/**
-	 * Creates page 0 of the multi-page editor, which contains a text editor.
+	 * Crea la pagina que contiene la tabla donde se muestran los recursos
 	 */
 	private void createPage0() {
-		createTable();
-		int index = addPage(tableViewer.getControl());
-		setPageText(index, "Properties");
-	}
-
-	private void createTable() {
 		Locale locale = resource.getDefaultLocale();
 		tableViewer = new PropertyTableViewer(getContainer(), locale);
 		tableViewer.setContentProvider(new PropertiesContentProvider());
@@ -90,25 +104,24 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
 		tableViewer.setCellModifier(new PropertyModifier(this));
+		int index = addPage(tableViewer.getControl());
+		setPageText(index, "Properties");
 	}
 
 	/**
-	 * Creates page 1 of the multi-page editor, which allows you to change the
-	 * font used in page 2.
+	 * Crea la solapa que contiene el texto
 	 */
 	void createPage1() {
 		try {
 			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
-			setPageText(index, "Source");
+			// TODO:Localize it
+			setPageText(index, "Content");
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Creates page 2 of the multi-page editor, which shows the sorted text.
-	 */
 	void createPage2() {
 		Composite composite = new Composite(getContainer(), SWT.NONE);
 		FillLayout layout = new FillLayout();
@@ -196,7 +209,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			textEditor.setFocus();
 			break;
 		}
-
 	}
 
 	/**
@@ -211,11 +223,13 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		super.init(site, editorInput);
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on IEditorPart.
+	/**
+	 * No se permite el save as porque hay varios archivos que se están editando
+	 * 
+	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
 	 */
 	public boolean isSaveAsAllowed() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -227,8 +241,11 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	/**
-	 * Eschucha los cambios de los recursos en el workspace, por el momento no
-	 * aplica
+	 * TODO: Escucha los cambios de los recursos en el workspace, por el momento
+	 * no aplica. Debería escuchar cada archivo de properties que se crea o
+	 * modifica para poder sincronizarlo con la tabla que se estám mostrando
+	 * 
+	 * @param event
 	 */
 	public void resourceChanged(final IResourceChangeEvent event) {
 		if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
@@ -250,6 +267,16 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		}
 	}
 
+	/**
+	 * Cada vez que se agrega o modifica el valor de una columna se actualiza
+	 * 
+	 * @param key
+	 *            Clave que se modifica
+	 * @param value
+	 *            Valor modificado
+	 * @param locale
+	 *            Locale en el que se modifico el valor
+	 */
 	public void valueChanged(String key, String value, Locale locale) {
 		tableChanged();
 		resource.changeValue(key, value, locale);
@@ -258,7 +285,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	public void keyAdded(String key, Locale locale) {
 		tableChanged();
-
 		tableViewer.refresh();
 	}
 }

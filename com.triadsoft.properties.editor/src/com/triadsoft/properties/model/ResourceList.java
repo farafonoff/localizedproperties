@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class ResourceList {
 	private String filename = null;
 
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
+
+	private HashSet<String> allKeys = new HashSet<String>();
 
 	public ResourceList(IFile file) {
 		try {
@@ -83,7 +86,24 @@ public class ResourceList {
 			Locale locale = iterator.next();
 			IFile ifile = (IFile) files.get(locale);
 			PropertyFile pf = new PropertyFile(ifile);
+			addKeys(pf);
 			map.put(locale, pf);
+		}
+	}
+
+	/**
+	 * Metodo encargado de cargar todas las claves del property file un set que
+	 * no repite las claves. Puede ocurrir que los distintos archivos tengan
+	 * distintas claves, entonces de ésta manera cuando voy a armar la tabla,
+	 * parto del listado de claves de la mezcla de todos los archivos
+	 * 
+	 * @param file
+	 *            PropertyFile
+	 */
+	private void addKeys(PropertyFile file) {
+		String[] keys = file.getKeys();
+		for (int i = 0; i < keys.length; i++) {
+			allKeys.add(keys[i]);
 		}
 	}
 
@@ -94,7 +114,7 @@ public class ResourceList {
 	 * @param key
 	 * @param value
 	 * @param locale
-	 * @return Boolean que indica si se pudo cambiar el valor 
+	 * @return Boolean que indica si se pudo cambiar el valor
 	 */
 	public boolean changeValue(String key, String value, Locale locale) {
 		PropertyFile properties = ((PropertyFile) map.get(locale));
@@ -146,34 +166,43 @@ public class ResourceList {
 		}
 	}
 
+	/**
+	 * Metodo que devuelve el listado de propiedades para
+	 * 
+	 * @return
+	 */
 	public Object[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
 		PropertyFile defaultProperties = ((PropertyFile) map.get(defaultLocale));
-		String[] keys = defaultProperties.getKeys();
-		for (int i = 0; i < keys.length; i++) {
-			Property property = new Property(keys[i]);
+		for (Iterator<String> iter = allKeys.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			Property property = new Property(key);
+			// Si no encuentra la entrada en el archivo por default
+			// agrega la clave al archivo
+			PropertyEntry entry = defaultProperties.getPropertyEntry(key);
+			if (entry == null) {
+				entry = new PropertyEntry(null, key, null);
+				defaultProperties.getDefaultCategory().addEntry(entry);
+			}
 			property.setValue(defaultLocale, defaultProperties
-					.getPropertyEntry(keys[i]).getValue());
+					.getPropertyEntry(key).getValue());
 
-			for (Iterator<Locale> iter = map.keySet().iterator(); iter
+			for (Iterator<Locale> itera = map.keySet().iterator(); itera
 					.hasNext();) {
-				Locale loc = iter.next();
+				Locale loc = itera.next();
 				if (defaultLocale.equals(loc)) {
 					continue;
 				}
 				PropertyFile properties = ((PropertyFile) map.get(loc));
-				if (!properties.exist(keys[i])) {
-					property.addError(loc, new PropertyError(
-							PropertyError.INVALID_KEY,
-							"No se encontro la clave"));
-				} else if (properties.getPropertyEntry(keys[i]).getValue() == null) {
-					property.addError(loc, new PropertyError(
-							PropertyError.VOID_VALUE,
-							"No se encontro valor para"));
-				} else {
-					property.setValue(loc, properties.getPropertyEntry(keys[i])
-							.getValue());
+				if (!properties.exist(key)) {
+					entry = new PropertyEntry(null, key, null);
+					properties.getDefaultCategory().addEntry(entry);
+					// property.addError(loc, new PropertyError(
+					// PropertyError.INVALID_KEY,
+					// "No se encontro la clave"));
 				}
+				property.setValue(loc, properties.getPropertyEntry(key)
+						.getValue());
 			}
 			list.add(property);
 		}
