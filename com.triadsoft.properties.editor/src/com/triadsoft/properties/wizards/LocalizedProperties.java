@@ -151,6 +151,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
+	@SuppressWarnings("all")
 	private void throwCoreException(String message) throws CoreException {
 		IStatus status = new Status(IStatus.ERROR, "com.triadsoft.properties",
 				IStatus.OK, message, null);
