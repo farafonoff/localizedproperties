@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?artifactRepository class='org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository' version='1.0.0'?>
-<repository name='file:/C:/workspace/com.triadsoft.properties.editor.update/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
+<repository name='file:/C:/workspace_java/com.triadsoft.properties.editor.update/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1239051055446'/>
+    <property name='p2.timestamp' value='1243439850938'/>
   </properties>
   <mappings size='3'>
     <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
@@ -13,28 +13,28 @@
   <artifacts size='4'>
     <artifact classifier='osgi.bundle' id='com.triadsoft.properties' version='0.1.0'>
       <properties size='3'>
-        <property name='artifact.size' value='41049'/>
-        <property name='download.size' value='41049'/>
+        <property name='artifact.size' value='45530'/>
+        <property name='download.size' value='45530'/>
         <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='com.triadsoft.properties.editor.feature' version='0.1.0'>
+      <properties size='2'>
+        <property name='artifact.size' value='13471'/>
+        <property name='download.size' value='13471'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='com.triadsoft.properties' version='0.1.0'>
       <properties size='3'>
-        <property name='artifact.size' value='45269'/>
-        <property name='download.size' value='45269'/>
+        <property name='artifact.size' value='64552'/>
+        <property name='download.size' value='64552'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
     <artifact classifier='org.eclipse.update.feature' id='com.triadsoft.properties.editor.feature' version='0.1.0'>
       <properties size='2'>
-        <property name='artifact.size' value='789'/>
-        <property name='download.size' value='789'/>
-      </properties>
-    </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='com.triadsoft.properties.editor.feature' version='0.1.0'>
-      <properties size='2'>
-        <property name='artifact.size' value='786'/>
-        <property name='download.size' value='786'/>
+        <property name='artifact.size' value='1035'/>
+        <property name='download.size' value='1035'/>
       </properties>
     </artifact>
   </artifacts>
