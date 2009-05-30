@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
+import com.triadsoft.common.properties.PropertyCategory;
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.model.utils.PathDiscovery;
@@ -135,6 +136,7 @@ public class ResourceList {
 		PropertyFile file = map.get(locale);
 		PropertyEntry entry = new PropertyEntry(null, key, null);
 		file.getDefaultCategory().addEntry(entry);
+		allKeys.add(key);
 
 		for (Iterator<PropertyFile> iterator = map.values().iterator(); iterator
 				.hasNext();) {
@@ -149,6 +151,22 @@ public class ResourceList {
 			listener.entryAdded(file.getDefaultCategory(), entry);
 		}
 		return true;
+	}
+
+	public boolean removeKey(String key) {
+		boolean isRemoved = false;
+
+		for (Iterator<PropertyFile> iterator = map.values().iterator(); iterator
+				.hasNext();) {
+			PropertyFile file = (PropertyFile) iterator.next();
+			PropertyEntry entry = file.getPropertyEntry(key);
+			if (entry != null) {
+				((PropertyCategory) entry.getParent()).removeEntry(entry);
+				isRemoved = true;
+			}
+		}
+		allKeys.remove(key);
+		return isRemoved;
 	}
 
 	public void save() {

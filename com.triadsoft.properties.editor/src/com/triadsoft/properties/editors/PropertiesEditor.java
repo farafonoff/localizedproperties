@@ -9,21 +9,30 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
+import com.triadsoft.properties.editors.actions.AddKeyAction;
+import com.triadsoft.properties.editors.actions.RemoveKeyAction;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.WildcardPath;
@@ -55,7 +64,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
 public class PropertiesEditor extends MultiPageEditorPart implements
 		IResourceChangeListener, ILocalizedPropertyFileListener {
 
-	protected static final String KEY_COLUMN_ID = "key_column";
+	public static final String KEY_COLUMN_ID = "key_column";
 
 	/** The text editor used in page 0. */
 	private PropertyTableViewer tableViewer;
@@ -68,6 +77,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	private ResourceList resource;
 
 	private boolean isModified;
+
+	private AddKeyAction addKeyAction;
+	private RemoveKeyAction removeKeyAction;
 
 	/**
 	 * Crea un editor de propiedades
@@ -91,6 +103,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		createPage1();
 		setPartName(resource.getFileName());
 		// createPage2();
+		createActions();
+		createContextMenu();
 	}
 
 	/**
@@ -131,6 +145,38 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 		int index = addPage(composite);
 		setPageText(index, "Preview");
+	}
+
+	private void createActions() {
+		addKeyAction = new AddKeyAction(this, tableViewer, "Agregar clave");
+		removeKeyAction = new RemoveKeyAction(this, tableViewer,
+				"Eliminar Clave");
+
+	}
+
+	private void createContextMenu() {
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+
+			public void menuAboutToShow(IMenuManager mgr) {
+				PropertiesEditor.this.fillContextMenu(mgr);
+			}
+		});
+		Table table = tableViewer.getTable();
+		Menu menu = menuMgr.createContextMenu(table);
+		table.setMenu(menu);
+		getSite().registerContextMenu(menuMgr, tableViewer);
+	}
+
+	private void fillContextMenu(IMenuManager menuMgr) {
+		boolean isEmpty = tableViewer.getSelection().isEmpty();
+		addKeyAction.setEnabled(!isEmpty);
+		menuMgr.add(addKeyAction);
+
+		removeKeyAction.setEnabled(!isEmpty);
+		menuMgr.add(removeKeyAction);
+		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	protected void tableChanged() {
@@ -280,6 +326,12 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	public void valueChanged(String key, String value, Locale locale) {
 		tableChanged();
 		resource.changeValue(key, value, locale);
+		tableViewer.refresh();
+	}
+
+	public void removeKey(String key) {
+		tableChanged();
+		resource.removeKey(key);
 		tableViewer.refresh();
 	}
 

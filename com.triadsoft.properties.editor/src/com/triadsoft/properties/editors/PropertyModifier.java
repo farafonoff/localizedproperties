@@ -45,8 +45,11 @@ public class PropertyModifier implements ICellModifier {
 
 	public Object getValue(Object obj, String property) {
 		String[] loc = property.split("_");
-		Locale locale = new Locale(loc[0], loc[1]);
-		return ((Property) obj).getValue(locale);
+		if (loc[0] != null && loc[0].length() > 0) {
+			Locale locale = new Locale(loc[0], loc[1]);
+			return ((Property) obj).getValue(locale);
+		}
+		return "";
 	}
 
 	/**

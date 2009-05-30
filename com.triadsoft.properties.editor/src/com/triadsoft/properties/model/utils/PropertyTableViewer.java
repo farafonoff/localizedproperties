@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editors.PropertiesEditor;
 
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
@@ -64,7 +65,7 @@ public class PropertyTableViewer extends TableViewer {
 		List<String> columnProperties = new LinkedList<String>();
 		// Editor para la clave que es readonly
 		editors.add(new TextCellEditor(getTable(), SWT.READ_ONLY));
-		columnProperties.add("");
+		columnProperties.add(PropertiesEditor.KEY_COLUMN_ID);
 		// Creo la columna para el locale por default
 		editors.add(new TextCellEditor(getTable()));
 		columnProperties.add(defaultLocale.toString());

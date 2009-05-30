@@ -436,4 +436,9 @@ public class PropertyFile extends PropertyElement implements
 	public void fileChanged(PropertyFile propertyFile) {
 
 	}
+
+	public void keyRemoved(String key) {
+		PropertyEntry entry = getPropertyEntry(key);
+		entryRemoved((PropertyCategory) entry.getParent(), entry);
+	}
 }

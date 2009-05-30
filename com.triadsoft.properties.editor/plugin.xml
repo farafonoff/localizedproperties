@@ -31,9 +31,6 @@
       <initializer
             class="com.triadsoft.properties.preferences.PreferenceInitializer">
       </initializer>
-      <initializer
-            class="com.triadsoft.properties.preferences1.PreferenceInitializer">
-      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
@@ -44,7 +41,7 @@
       <wizard
             category="com.triadsoft.properties"
             class="com.triadsoft.properties.wizards.LocalizedProperties"
-            icon="icons/sample.gif"
+            icon="icons/page_white_world.png"
             id="com.triadsoft.properties.wizards.LocalizedProperties"
             name="Localized Properties">
       </wizard>
