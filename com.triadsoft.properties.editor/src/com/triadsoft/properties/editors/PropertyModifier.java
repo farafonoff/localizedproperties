@@ -72,9 +72,8 @@ public class PropertyModifier implements ICellModifier {
 		Locale locale = StringUtils.getLocale(property);
 
 		Property properties = (Property) ((Item) obj).getData();
-		properties.setValue(locale, (String) value);
-
-		editor.valueChanged(properties.getKey(), properties.getValue(locale),
-				locale);
+		if (!properties.getValue(locale).equals(value)) {
+			editor.valueChanged(properties.getKey(), (String) value, locale);
+		}
 	}
 }

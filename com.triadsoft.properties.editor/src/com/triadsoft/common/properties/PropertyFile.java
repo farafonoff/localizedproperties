@@ -427,7 +427,7 @@ public class PropertyFile extends PropertyElement implements
 	public static void main(String[] args) {
 		try {
 			PropertyFile file = new PropertyFile(new File(args[0]));
-			System.out.println(file.asText());
+			//System.out.println(file.asText());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -122,33 +122,26 @@ public class ResourceList {
 		if (properties == null) {
 			return false;
 		}
-		if (!properties.exist(key)) {
-			addEntry(key, locale);
-			// return true;
-		}
 		PropertyEntry entry = properties.getPropertyEntry(key);
 		entry.setValue(value);
-
 		return true;
 	}
 
-	public boolean addEntry(String key, Locale locale) {
-		PropertyFile file = map.get(locale);
-		PropertyEntry entry = new PropertyEntry(null, key, null);
-		file.getDefaultCategory().addEntry(entry);
+	/**
+	 * <p>
+	 * Permite agregar una clave nueva, haciendolo para todos los resources
+	 * </p>
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public boolean addKey(String key) {
 		allKeys.add(key);
-
 		for (Iterator<PropertyFile> iterator = map.values().iterator(); iterator
 				.hasNext();) {
-			IPropertyFileListener type = (IPropertyFileListener) iterator
-					.next();
-			type.entryAdded(file.getDefaultCategory(), entry);
-		}
-		for (Iterator<IPropertyFileListener> iterator = listeners.iterator(); iterator
-				.hasNext();) {
-			IPropertyFileListener listener = (IPropertyFileListener) iterator
-					.next();
-			listener.entryAdded(file.getDefaultCategory(), entry);
+			PropertyFile myFile = iterator.next();
+			PropertyEntry entry = new PropertyEntry(null, key, "");
+			myFile.getDefaultCategory().addEntry(entry);
 		}
 		return true;
 	}
@@ -167,6 +160,14 @@ public class ResourceList {
 		}
 		allKeys.remove(key);
 		return isRemoved;
+	}
+
+	public void keyChanged(String oldKey, String key) {
+		PropertyFile pf = map.get(defaultLocale);
+		PropertyEntry e = pf.getPropertyEntry(oldKey);
+		e.setKey(key);
+		allKeys.remove(oldKey);
+		allKeys.add(key);
 	}
 
 	public void save() {
@@ -197,13 +198,13 @@ public class ResourceList {
 			Property property = new Property(key);
 			// Si no encuentra la entrada en el archivo por default
 			// agrega la clave al archivo
-			PropertyEntry entry = defaultProperties.getPropertyEntry(key);
-			if (entry == null) {
-				entry = new PropertyEntry(null, key, null);
-				defaultProperties.getDefaultCategory().addEntry(entry);
+			PropertyEntry defaultEntry = defaultProperties
+					.getPropertyEntry(key);
+			if (defaultEntry == null) {
+				defaultEntry = new PropertyEntry(null, key, null);
+				defaultProperties.getDefaultCategory().addEntry(defaultEntry);
 			}
-			property.setValue(defaultLocale, defaultProperties
-					.getPropertyEntry(key).getValue());
+			property.setValue(defaultLocale, defaultEntry.getValue());
 
 			for (Iterator<Locale> itera = map.keySet().iterator(); itera
 					.hasNext();) {
@@ -212,15 +213,12 @@ public class ResourceList {
 					continue;
 				}
 				PropertyFile properties = ((PropertyFile) map.get(loc));
-				if (!properties.exist(key)) {
+				PropertyEntry entry = properties.getPropertyEntry(key);
+				if (entry == null) {
 					entry = new PropertyEntry(null, key, null);
 					properties.getDefaultCategory().addEntry(entry);
-					// property.addError(loc, new PropertyError(
-					// PropertyError.INVALID_KEY,
-					// "No se encontro la clave"));
 				}
-				property.setValue(loc, properties.getPropertyEntry(key)
-						.getValue());
+				property.setValue(loc, entry.getValue());
 			}
 			list.add(property);
 		}

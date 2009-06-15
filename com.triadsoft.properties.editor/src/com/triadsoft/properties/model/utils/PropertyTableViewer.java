@@ -27,7 +27,7 @@ public class PropertyTableViewer extends TableViewer {
 	private Locale[] locales;
 
 	public PropertyTableViewer(Composite c, Locale defaultLocale) {
-		super(c, SWT.SINGLE | SWT.FULL_SELECTION);
+		super(c, SWT.SINGLE | SWT.FULL_SELECTION | SWT.MouseDown);
 		Table table = getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -43,13 +43,13 @@ public class PropertyTableViewer extends TableViewer {
 	private void createDefaultColumn() {
 		defaultColumn = new TableColumn(getTable(), SWT.NONE);
 		defaultColumn.setText(defaultLocale.toString());
-		defaultColumn.setWidth(200);
+		defaultColumn.setWidth(150);
 	}
 
 	private void createColumn(Locale locale) {
 		TableColumn valueColumn = new TableColumn(getTable(), SWT.NONE);
 		valueColumn.setText(locale.toString());
-		valueColumn.setWidth(200);
+		valueColumn.setWidth(150);
 	}
 
 	public Locale[] getLocales() {

@@ -12,5 +12,5 @@ import java.util.Locale;
 public interface ILocalizedPropertyFileListener {
 	void valueChanged(String key, String value, Locale locale);
 
-	void keyAdded(String key, Locale locale);
+	void addKey(String key);
 }

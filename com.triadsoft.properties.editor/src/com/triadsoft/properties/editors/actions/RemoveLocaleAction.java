@@ -11,30 +11,29 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Table;
 
 import com.triadsoft.properties.editors.PropertiesEditor;
-import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
- * Accion que permite eliminar una clave a las properties
+ * Accion que permite eliminar un locale
  * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
  * 
  */
-public class RemoveKeyAction extends Action {
+public class RemoveLocaleAction extends Action {
 	private final PropertiesEditor editor;
 	private final PropertyTableViewer viewer;
-
-	private final ImageDescriptor imageDescriptor = ImageDescriptor
-			.createFromFile(this.getClass(), "/icons/key_delete.png");
+	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
+			this.getClass(), "/icons/key_add.png");
 
 	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent e) {
+			// System.out.println(e.getSelection());
 			setEnabled(!e.getSelection().isEmpty());
 		}
 	};
 
-	public RemoveKeyAction(PropertiesEditor editor, PropertyTableViewer viewer,
-			String text) {
+	public RemoveLocaleAction(PropertiesEditor editor,
+			PropertyTableViewer viewer, String text) {
 		super(text);
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
@@ -43,7 +42,6 @@ public class RemoveKeyAction extends Action {
 		viewer.addSelectionChangedListener(listener);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		ISelection sel = viewer.getSelection();
@@ -52,8 +50,8 @@ public class RemoveKeyAction extends Action {
 		Iterator iter = ((IStructuredSelection) sel).iterator();
 		try {
 			while (iter.hasNext()) {
-				Property property = (Property) iter.next();
-				editor.removeKey(property.getKey());
+				// TODO:Acá hay que hacer la magia para eliminar
+				iter.next();
 			}
 		} finally {
 			table.setRedraw(true);

@@ -49,6 +49,9 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 		if (index == 0) {
 			return null;
 		}
+		if (index > 5) {
+			return null;
+		}
 		Locale locale = getLocale((String) viewer.getColumnProperties()[index]);
 		if (property.getError(locale) != null) {
 			return imageDescriptor.createImage();
@@ -72,6 +75,8 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 		Property property = (Property) obj;
 		if (index == 0) {
 			return property.getKey();
+		} else if (index > 5) {
+			return "LA";
 		} else {
 			return property.getValue(getLocale((String) viewer
 					.getColumnProperties()[index]));

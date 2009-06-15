@@ -1,5 +1,6 @@
 package com.triadsoft.properties.editors;
 
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -13,6 +14,10 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
@@ -24,6 +29,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -33,6 +39,8 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.properties.editors.actions.AddKeyAction;
 import com.triadsoft.properties.editors.actions.RemoveKeyAction;
+import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
+import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.WildcardPath;
@@ -80,6 +88,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	private AddKeyAction addKeyAction;
 	private RemoveKeyAction removeKeyAction;
+
+	private RemoveLocaleAction removeLocaleAction;
 
 	/**
 	 * Crea un editor de propiedades
@@ -144,18 +154,23 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		text.setEditable(false);
 
 		int index = addPage(composite);
+		// TODO:i18n
 		setPageText(index, "Preview");
 	}
 
 	private void createActions() {
+		// TODO: i18n
 		addKeyAction = new AddKeyAction(this, tableViewer, "Agregar clave");
 		removeKeyAction = new RemoveKeyAction(this, tableViewer,
 				"Eliminar Clave");
-
+		removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
+				"Eliminar locale");
 	}
 
+	private MenuManager menuMgr;
+
 	private void createContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 
@@ -170,12 +185,14 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	private void fillContextMenu(IMenuManager menuMgr) {
-		boolean isEmpty = tableViewer.getSelection().isEmpty();
-		addKeyAction.setEnabled(!isEmpty);
+		addKeyAction.setEnabled(true);
 		menuMgr.add(addKeyAction);
 
-		removeKeyAction.setEnabled(!isEmpty);
-		menuMgr.add(removeKeyAction);
+		boolean isEmpty = tableViewer.getSelection().isEmpty();
+		if (!isEmpty) {
+			removeKeyAction.setEnabled(true);
+			menuMgr.add(removeKeyAction);
+		}
 		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
@@ -329,14 +346,31 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		tableViewer.refresh();
 	}
 
+	public void keyChanged(String oldKey, String key) {
+		tableChanged();
+		resource.keyChanged(oldKey, key);
+		tableViewer.refresh();
+	}
+
 	public void removeKey(String key) {
 		tableChanged();
 		resource.removeKey(key);
 		tableViewer.refresh();
 	}
 
-	public void keyAdded(String key, Locale locale) {
+	public void addKey(String key) {
 		tableChanged();
+		resource.addKey(key);
 		tableViewer.refresh();
+		Object[] properties = resource.getProperties();
+		for (int i = 0; i < properties.length; i++) {
+			if (((Property) properties[i]).getKey().equals(key)) {
+				tableViewer.setSelection(
+						new StructuredSelection(properties[i]), true);
+				tableViewer.getTable().setSelection(new int[] { i });
+				break;
+			}
+
+		}
 	}
 }
