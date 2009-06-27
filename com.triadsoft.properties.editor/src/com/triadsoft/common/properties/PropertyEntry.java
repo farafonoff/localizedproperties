@@ -30,7 +30,7 @@ public class PropertyEntry extends PropertyElement {
 			int start, int end, int lineNumber) {
 		super(parent);
 		this.key = key;
-		this.value = value;
+		setValue(value);
 		this.lineNumber = lineNumber;
 		this.start = start;
 		this.end = end;
@@ -56,15 +56,23 @@ public class PropertyEntry extends PropertyElement {
 	}
 
 	public void setValue(String text) {
-		if (text != null && text.trim().length() == 0) {
+		try {
+			if (text != null && text.trim().length() == 0) {
+				value = null;
+				return;
+			} else if (value != null && value.equals(text)) {
+				return;
+			} else if (text != null && text.equals("null")) {
+				value = null;
+				return;
+			}
+			value = text;
+			((PropertyCategory) getParent()).valueChanged(this);
+		} catch (Exception e) {
+			// no hago nada
 			value = null;
 			return;
 		}
-		if (value != null && value.equals(text)) {
-			return;
-		}
-		value = text;
-		((PropertyCategory) getParent()).valueChanged(this);
 	}
 
 	public void removeFromParent() {
@@ -98,7 +106,10 @@ public class PropertyEntry extends PropertyElement {
 	public void appendText(PrintWriter writer) {
 		writer.print(key);
 		writer.print("=");
-		writer.println(value);
+		if (value != null) {
+			writer.print(value);
+		}
+		writer.println();
 	}
 
 	public int getLine() {

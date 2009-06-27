@@ -147,7 +147,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	 */
 
 	private InputStream openContentStream() {
-		String contents = "This is the initial file contents for *.properties file that should be word-sorted in the Preview page of the multi-page editor";
+		String contents = "#Default Category";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 

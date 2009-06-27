@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,10 +45,11 @@ public class PropertyFile extends PropertyElement implements
 	 */
 	public PropertyFile(File file) throws IOException {
 		super(null);
-		FileInputStream stream = null;
-		stream = new FileInputStream(file);
+		FileInputStream stream = new FileInputStream(file);
+		InputStreamReader isr = new InputStreamReader(stream, "UTF8");
+		BufferedReader reader = new BufferedReader(isr);
+
 		StringBuffer buffer = new StringBuffer();
-		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			buffer.append(line).append("\n");
@@ -416,10 +419,9 @@ public class PropertyFile extends PropertyElement implements
 	public void save() throws IOException, CoreException {
 		FileOutputStream stream = new FileOutputStream(new File(file
 				.getLocationURI()));
-		PrintWriter pw = new PrintWriter(stream);
-		pw.print(asText());
-		pw.close();
-		stream.close();
+		Writer out = new OutputStreamWriter(stream, "UTF8");
+		out.write(asText());
+		out.close();
 		file.touch(null);
 		file.getParent().refreshLocal(IFile.DEPTH_ONE, null);
 	}
@@ -427,7 +429,7 @@ public class PropertyFile extends PropertyElement implements
 	public static void main(String[] args) {
 		try {
 			PropertyFile file = new PropertyFile(new File(args[0]));
-			//System.out.println(file.asText());
+			System.out.println(file.asText());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
