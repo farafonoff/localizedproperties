@@ -2,7 +2,7 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties"
-      version="0.3.0"
+      version="0.4.0"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties">
 
@@ -703,7 +703,7 @@ Public License instead of this License.  But first, please read
    </license>
 
    <url>
-      <update url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/"/>
+      <update label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/"/>
       <discovery label="Localized Properties Updates" url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/"/>
    </url>
 
@@ -720,7 +720,7 @@ Public License instead of this License.  But first, please read
          id="com.triadsoft.properties"
          download-size="0"
          install-size="0"
-         version="0.3.0"
+         version="0.4.0"
          unpack="false"/>
 
 </feature>
