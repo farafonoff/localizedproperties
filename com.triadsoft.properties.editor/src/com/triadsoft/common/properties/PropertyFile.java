@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -37,16 +38,21 @@ public class PropertyFile extends PropertyElement implements
 	private List<PropertyCategory> categories;
 	private List<IPropertyFileListener> listeners = new ArrayList<IPropertyFileListener>();
 	private IFile file = null;
+	private String encoding;
 
 	/**
 	 * 
 	 * @param file
 	 * @throws IOException
 	 */
-	public PropertyFile(File file) throws IOException {
+	public PropertyFile(File file,String encoding) throws IOException {
 		super(null);
+		this.encoding = encoding;
+		if(this.encoding == null){
+			this.encoding = ResourcesPlugin.getEncoding();
+		}
 		FileInputStream stream = new FileInputStream(file);
-		InputStreamReader isr = new InputStreamReader(stream, "UTF8");
+		InputStreamReader isr = new InputStreamReader(stream, this.encoding);
 		BufferedReader reader = new BufferedReader(isr);
 
 		StringBuffer buffer = new StringBuffer();
@@ -63,9 +69,10 @@ public class PropertyFile extends PropertyElement implements
 	 * 
 	 * @param file
 	 * @throws IOException
+	 * @throws CoreException 
 	 */
-	public PropertyFile(IFile file) throws IOException {
-		this(file.getLocation().toFile());
+	public PropertyFile(IFile file) throws IOException, CoreException {
+		this(file.getLocation().toFile(),file.getCharset());
 		this.file = file;
 	}
 
@@ -419,7 +426,7 @@ public class PropertyFile extends PropertyElement implements
 	public void save() throws IOException, CoreException {
 		FileOutputStream stream = new FileOutputStream(new File(file
 				.getLocationURI()));
-		Writer out = new OutputStreamWriter(stream, "UTF8");
+		Writer out = new OutputStreamWriter(stream, encoding);
 		out.write(asText());
 		out.close();
 		file.touch(null);
@@ -428,7 +435,7 @@ public class PropertyFile extends PropertyElement implements
 
 	public static void main(String[] args) {
 		try {
-			PropertyFile file = new PropertyFile(new File(args[0]));
+			PropertyFile file = new PropertyFile(new File(args[0]),"UTF8");
 			System.out.println(file.asText());
 		} catch (IOException e) {
 			e.printStackTrace();

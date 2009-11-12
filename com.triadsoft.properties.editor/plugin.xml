@@ -20,11 +20,6 @@
             id="com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage"
             name="%localizedProperties.preferences.name">
       </page>
-      <page
-            class="com.triadsoft.properties.preferences1.SamplePreferencePage"
-            id="com.triadsoft.properties.preferences1.SamplePreferencePage"
-            name="Sample Preferences">
-      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

@@ -8,21 +8,28 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Table;
 
 import com.triadsoft.properties.editors.PropertiesEditor;
+import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
- * Accion que permite agregar un Locale al 
+ * Accion que permite agregar una clave a las properties
+ * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
- *
+ * 
  */
-public class AddLocaleAction extends Action {
+public class CopyKeyAction extends Action {
+	public static final String NEW_KEY = "new.key";
+
 	private final PropertiesEditor editor;
 	private final PropertyTableViewer viewer;
 	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
-			this.getClass(), "/icons/key_add.png");
+			this.getClass(), "/icons/key.png");
 
 	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent e) {
@@ -31,26 +38,34 @@ public class AddLocaleAction extends Action {
 		}
 	};
 
-	public AddLocaleAction(PropertiesEditor editor, PropertyTableViewer viewer,
+	public CopyKeyAction(PropertiesEditor editor, PropertyTableViewer viewer,
 			String text) {
 		super(text);
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;
-		setEnabled(false);
+		setEnabled(true);
 		viewer.addSelectionChangedListener(listener);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void run() {
-		ISelection sel = viewer.getSelection();
 		Table table = viewer.getTable();
 		table.setRedraw(false);
-		Iterator iter = ((IStructuredSelection) sel).iterator();
+		ISelection sel = viewer.getSelection();
+		Iterator<Property> iter = ((IStructuredSelection) sel).iterator();
 		try {
 			while (iter.hasNext()) {
-				// TODO:Acá hay que hacer la magia para agregar
-				iter.next();
+				Property property = (Property) iter.next();
+				final Clipboard cb = new Clipboard(editor.getSite().getShell()
+						.getDisplay());
+				TextTransfer textTransfer = TextTransfer.getInstance();
+				Transfer[] transfers = new Transfer[] { textTransfer };
+				Object[] data = new Object[] { property.getKey() };
+				cb.setContents(data, transfers);
+				System.out.println("Copiando la propiedad.."
+						+ property.getKey());
 			}
 		} finally {
 			table.setRedraw(true);

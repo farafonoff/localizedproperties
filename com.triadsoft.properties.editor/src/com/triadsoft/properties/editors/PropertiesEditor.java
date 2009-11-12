@@ -1,6 +1,5 @@
 package com.triadsoft.properties.editors;
 
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -14,9 +13,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -29,7 +25,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -37,7 +32,9 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.actions.AddKeyAction;
+import com.triadsoft.properties.editors.actions.CopyKeyAction;
 import com.triadsoft.properties.editors.actions.RemoveKeyAction;
 import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
 import com.triadsoft.properties.model.Property;
@@ -91,6 +88,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	private RemoveLocaleAction removeLocaleAction;
 
+	private CopyKeyAction copyKeyAction;
+
 	/**
 	 * Crea un editor de propiedades
 	 */
@@ -129,7 +128,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		tableViewer.setInput(resource);
 		tableViewer.setCellModifier(new PropertyModifier(this));
 		int index = addPage(tableViewer.getControl());
-		setPageText(index, "Properties");
+		setPageText(index, Activator.getString("editor.tab.properties"));
 	}
 
 	/**
@@ -139,8 +138,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		try {
 			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
-			// TODO:Localize it
-			setPageText(index, "Content");
+			setPageText(index, Activator.getString("editor.tab.preview"));
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
@@ -154,17 +152,18 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		text.setEditable(false);
 
 		int index = addPage(composite);
-		// TODO:i18n
-		setPageText(index, "Preview");
+		setPageText(index, Activator.getString("editor.tab.preview"));
 	}
 
 	private void createActions() {
-		// TODO: i18n
-		addKeyAction = new AddKeyAction(this, tableViewer, "Agregar clave");
-		removeKeyAction = new RemoveKeyAction(this, tableViewer,
-				"Eliminar Clave");
+		addKeyAction = new AddKeyAction(this, tableViewer, Activator
+				.getString("menu.menuitem.add"));
+		removeKeyAction = new RemoveKeyAction(this, tableViewer, Activator
+				.getString("menu.menuitem.deleteKey"));
 		removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
-				"Eliminar locale");
+				Activator.getString("menu.menuitem.deleteLocale"));
+		copyKeyAction = new CopyKeyAction(this, tableViewer, Activator
+				.getString("menu.menuitem.copy"));
 	}
 
 	private MenuManager menuMgr;
@@ -193,6 +192,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			removeKeyAction.setEnabled(true);
 			menuMgr.add(removeKeyAction);
 		}
+		menuMgr.add(copyKeyAction);
 		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 

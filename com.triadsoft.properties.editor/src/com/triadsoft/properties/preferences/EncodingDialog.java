@@ -19,20 +19,20 @@ import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
  * <p>
- * Dialogo para poder agregar wildcard path a la lista
+ * Dialogo para poder agregar relaciones entre el language y el encoding del
+ * archivo
  * </p>
  * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
- *@see WildcardPath
  */
-public class WilcardPathDialog extends Dialog {
+public class EncodingDialog extends Dialog {
 
-	private String _wildcardPath = null;
+	private String _languageEncoding = null;
 	private Label label;
-	private Text wildcardPath;
-	private Text preview;
+	private Text languageTxt;
+	private Text encodingTxt;
 
-	public WilcardPathDialog(Shell parent) {
+	public EncodingDialog(Shell parent) {
 		super(parent);
 	}
 
@@ -42,31 +42,37 @@ public class WilcardPathDialog extends Dialog {
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
-		description.setText(Activator
-				.getString("preferences.addwp.dialog.title"));
+		description
+				.setText(Activator.getString("preferences.encodingSubtitle"));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
 		label = new Label(area, SWT.NONE);
-		label.setText(Activator
-				.getString("preferences.addwp.dialog.newWpLabel"));
+		label.setText(Activator.getString("preferences.languageLabel"));
 		label.setLayoutData(gridData);
-		wildcardPath = new Text(area, SWT.BORDER);
-		wildcardPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		wildcardPath.setText("/{root}");
-		wildcardPath.addModifyListener(new ModifyListener() {
+		languageTxt = new Text(area, SWT.BORDER);
+		languageTxt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		// languageTxt.setText("/{root}");
+		languageTxt.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				_wildcardPath = wildcardPath.getText();
-				changeData();
+				_languageEncoding = languageTxt.getText() + "_"
+						+ encodingTxt.getText();
+				// changeData();
 			}
 		});
 		Label previewLabel = new Label(area, SWT.NONE);
-		previewLabel.setText(Activator
-				.getString("preferences.addwp.dialog.previewLabel"));
-		preview = new Text(area, SWT.BORDER);
-		preview.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		preview.setEnabled(false);
+		previewLabel.setText(Activator.getString("preferences.encodingLabel"));
+		encodingTxt = new Text(area, SWT.BORDER);
+		encodingTxt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		encodingTxt.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				_languageEncoding = languageTxt.getText() + "_"
+						+ encodingTxt.getText();
+				// changeData();
+			}
+		});
+		encodingTxt.setEnabled(true);
 		area.setLayout(gridLayout);
 		return area;
 	}
@@ -74,23 +80,23 @@ public class WilcardPathDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Agregar WildcardPath");
+		newShell.setText(Activator.getString("preferences.dialog.title"));
 	}
 
 	private void changeData() {
-		if (_wildcardPath == null || _wildcardPath.length() == 0) {
-			preview.setText(null);
+		if (_languageEncoding == null || _languageEncoding.length() == 0) {
+			encodingTxt.setText(null);
 			return;
 		}
-		WildcardPath _path = new WildcardPath(_wildcardPath);
+		WildcardPath _path = new WildcardPath(_languageEncoding);
 		_path.replace(Locale.getDefault());
 		_path.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
 		_path.replace(WildcardPath.FILENAME_WILDCARD, "application");
 		_path.replace(WildcardPath.ROOT_WILDCARD, "locale");
-		preview.setText(_path.getPath());
+		encodingTxt.setText(_path.getPath());
 	}
 
-	public String getWildcardPath() {
-		return _wildcardPath;
+	public String getLanguageEncoding() {
+		return _languageEncoding;
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
@@ -56,6 +57,8 @@ public class ResourceList {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -81,7 +84,8 @@ public class ResourceList {
 		listeners.add(listener);
 	}
 
-	private void parseLocales(Map<Locale, IFile> files) throws IOException {
+	private void parseLocales(Map<Locale, IFile> files) throws IOException,
+			CoreException {
 		for (Iterator<Locale> iterator = files.keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();

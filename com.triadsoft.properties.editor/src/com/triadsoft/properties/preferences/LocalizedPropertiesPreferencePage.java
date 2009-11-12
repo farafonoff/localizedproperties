@@ -17,8 +17,7 @@ public class LocalizedPropertiesPreferencePage extends
 	public LocalizedPropertiesPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription(Activator
-				.getString("preferences.description")); 
+		setDescription(Activator.getString("preferences.description"));
 	}
 
 	/**
@@ -29,8 +28,11 @@ public class LocalizedPropertiesPreferencePage extends
 	public void createFieldEditors() {
 		addField(new WilcardPathEditor(
 				PreferenceConstants.WILDCARD_PATHS_PREFERENCES,
-				Activator
-						.getString("preferences.field.label"), getFieldEditorParent())); //$NON-NLS-1$
+				Activator.getString("preferences.wildcardTitle.label"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(new EncodingEditor(
+				PreferenceConstants.LANGUAGE_CONTENT_TYPE_PREFERENCES,
+				Activator.getString("preferences.encodingTitle.label"),
+				getFieldEditorParent()));
 	}
 
 	/**
@@ -38,5 +40,4 @@ public class LocalizedPropertiesPreferencePage extends
 	 */
 	public void init(IWorkbench workbench) {
 	}
-
 }
