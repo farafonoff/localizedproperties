@@ -12,6 +12,9 @@
    <feature url="features/com.triadsoft.properties.editor.feature_0.4.0.jar" id="com.triadsoft.properties.editor.feature" version="0.4.0">
       <category name="Localized Properties"/>
    </feature>
+   <feature url="features/com.triadsoft.properties.editor.feature_0.5.0.jar" id="com.triadsoft.properties.editor.feature" version="0.5.0">
+      <category name="Localized Properties"/>
+   </feature>
    <category-def name="Localized Properties" label="Localized Properties">
       <description>
          Editor de propiedades por Locale
