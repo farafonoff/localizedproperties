@@ -8,12 +8,15 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
+import com.triadsoft.properties.editors.PropertiesSorter;
 
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
@@ -25,6 +28,7 @@ public class PropertyTableViewer extends TableViewer {
 	private TableColumn defaultColumn;
 	private Locale defaultLocale;
 	private Locale[] locales;
+	private PropertiesSorter sorter = new PropertiesSorter(this);
 
 	public PropertyTableViewer(Composite c, Locale defaultLocale) {
 		super(c, SWT.SINGLE | SWT.FULL_SELECTION | SWT.MouseDown);
@@ -32,24 +36,61 @@ public class PropertyTableViewer extends TableViewer {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		this.defaultLocale = defaultLocale;
+		setSorter(sorter);
 	}
 
 	private void createKeyColumn() {
 		TableColumn keyColumn = new TableColumn(getTable(), SWT.NONE);
 		keyColumn.setText(Activator.getString("editor.table.key"));
 		keyColumn.setWidth(150);
+		keyColumn.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent event) {
+				TableColumn col = (TableColumn) event.getSource();
+				sorter.setColumn(0);
+				getTable().setSortColumn(col);
+				refresh();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			}
+		});
 	}
 
 	private void createDefaultColumn() {
 		defaultColumn = new TableColumn(getTable(), SWT.NONE);
 		defaultColumn.setText(defaultLocale.toString());
 		defaultColumn.setWidth(150);
+		defaultColumn.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent event) {
+				TableColumn col = (TableColumn) event.getSource();
+				sorter.setColumn(1);
+				sorter.setLocale(locales[0]);
+				getTable().setSortColumn(col);
+				refresh();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			}
+		});
 	}
 
-	private void createColumn(Locale locale) {
+	private void createColumn(final Locale locale, final int index) {
 		TableColumn valueColumn = new TableColumn(getTable(), SWT.NONE);
 		valueColumn.setText(locale.toString());
 		valueColumn.setWidth(150);
+		valueColumn.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent event) {
+				TableColumn col = (TableColumn) event.getSource();
+				sorter.setColumn(index);
+				sorter.setLocale(locales[index-2]);
+				getTable().setSortColumn(col);
+				refresh();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+			}
+		});
 	}
 
 	public Locale[] getLocales() {
@@ -74,7 +115,7 @@ public class PropertyTableViewer extends TableViewer {
 			if (locales[i].equals(defaultLocale)) {
 				continue;
 			}
-			createColumn(locales[i]);
+			createColumn(locales[i], i + 2);
 			editors.add(new TextCellEditor(getTable()));
 			columnProperties.add(locales[i].toString());
 		}
