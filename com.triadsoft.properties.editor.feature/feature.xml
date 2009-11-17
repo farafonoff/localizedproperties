@@ -862,7 +862,7 @@ Public License instead of this License.  But first, please read
    </requires>
 
    <plugin
-         id="com.triadsoft.properties"
+         id="com.triadsoft.properties.editor"
          download-size="0"
          install-size="0"
          version="0.5.0"
