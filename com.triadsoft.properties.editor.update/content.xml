@@ -1,15 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?metadataRepository class='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'?>
-<repository name='file:/C:/workspace_java/com.triadsoft.properties.editor.update/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
+<repository name='file:/C:/workspace_java/com.triadsoft.properties.editor.update/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1258503126421'/>
+    <property name='p2.timestamp' value='1258503360859'/>
   </properties>
-  <references size='4'>
+  <references size='2'>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' type='0' options='0'/>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' type='1' options='0'/>
-    <repository url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/site.xml' type='0' options='0'/>
-    <repository url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/site.xml' type='1' options='0'/>
   </references>
   <units size='9'>
     <unit id='tooling.source.default' version='1.0.0' singleton='false'>
@@ -100,7 +98,7 @@
       <touchpointData size='1'>
         <instructions size='1'>
           <instruction key='manifest'>
-            Bundle-Vendor: TRIADSOFT&#xA;Bundle-ManifestVersion: 2&#xA;Bundle-Activator: com.triadsoft.properties.editor.Activator&#xA;Bundle-RequiredExecutionEnvironment: J2SE-1.5&#xA;Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,org.eclipse.jface.text,org.eclipse.ui.editors,org.eclipse.core.resources,org.eclipse.ui.ide&#xA;Bundle-Name: Editor Plug-in&#xA;Bundle-Localization: plugin&#xA;Bundle-ActivationPolicy: lazy&#xA;Manifest-Version: 1.0&#xA;Bundle-SymbolicName: com.triadsoft.properties.editor;singleton:=true&#xA;Bundle-Version: 0.5.0
+            Bundle-Vendor: TRIADSOFT&#xA;Bundle-ManifestVersion: 2&#xA;Bundle-Activator: com.triadsoft.properties.editor.Activator&#xA;Bundle-RequiredExecutionEnvironment: J2SE-1.5&#xA;Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,org.eclipse.jface.text,org.eclipse.ui.editors,org.eclipse.core.resources,org.eclipse.ui.ide&#xA;Bundle-Name: Editor Plug-in&#xA;Bundle-Localization: plugin&#xA;Bundle-ActivationPolicy: lazy&#xA;Manifest-Version: 1.0&#xA;Bundle-SymbolicName: com.triadsoft.properties.editor;singleton:=true&#xA;Bundle-Version: 0.5.0&#xA;
           </instruction>
         </instructions>
       </touchpointData>
@@ -331,7 +329,7 @@
         <property name='org.eclipse.equinox.p2.description' value='The goal of the plugin is to provide an editor where we can review&#xA;and modify all resource files at once and get a glimpse of the&#xA;texts for all languages. This plugin supports files of various programming languages, based in a concept called WildcardPath.&#xA;The WildcardPath is a text string with a structure, that allow discover the directories where the property files was encountered.'/>
         <property name='org.eclipse.equinox.p2.description.url' value='http://eclipse-plugins.triadsoft.com.ar/propertiesEditor.html'/>
         <property name='org.eclipse.equinox.p2.provider' value='TRIADSOFT'/>
-        <property name='org.eclipse.update.feature.plugin' value='com.triadsoft.properties'/>
+        <property name='org.eclipse.update.feature.plugin' value='com.triadsoft.properties.editor'/>
       </properties>
       <provides size='3'>
         <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.jar' version='0.5.0'/>
