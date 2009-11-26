@@ -59,6 +59,9 @@ public class PropertyTableViewer extends TableViewer {
 	private void createDefaultColumn() {
 		defaultColumn = new TableColumn(getTable(), SWT.NONE);
 		defaultColumn.setText(defaultLocale.toString());
+		if (defaultLocale.toString().equals("xx_XX")) {
+			defaultColumn.setText("<default>");
+		}
 		defaultColumn.setWidth(150);
 		defaultColumn.addSelectionListener(new SelectionListener() {
 
@@ -78,12 +81,15 @@ public class PropertyTableViewer extends TableViewer {
 	private void createColumn(final Locale locale, final int index) {
 		TableColumn valueColumn = new TableColumn(getTable(), SWT.NONE);
 		valueColumn.setText(locale.toString());
+		if (locale.toString().equals("xx_XX")) {
+			valueColumn.setText("<default>");
+		}
 		valueColumn.setWidth(150);
 		valueColumn.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent event) {
 				TableColumn col = (TableColumn) event.getSource();
 				sorter.setColumn(index);
-				sorter.setLocale(locales[index-2]);
+				sorter.setLocale(locales[index - 2]);
 				getTable().setSortColumn(col);
 				refresh();
 			}

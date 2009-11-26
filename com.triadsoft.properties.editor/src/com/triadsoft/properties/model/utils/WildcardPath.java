@@ -106,19 +106,22 @@ public class WildcardPath {
 			String discoveredPath = escapedFilepath.substring(m.start(), m
 					.end());
 			this.pathToRoot = escapedFilepath.substring(0, m.start());
+			String wilcardpathCopy = wildcardpath;
 			if (!withLocale) {
-				wildcardpath = wildcardpath.replace(LANGUAGE_WILDCARD, "");
-				wildcardpath = wildcardpath.replace(COUNTRY_WILDCARD, "");
-				wildcardpath = wildcardpath.replace("._.", ".");
+				wilcardpathCopy = wilcardpathCopy
+						.replace(LANGUAGE_WILDCARD, "");
+				wilcardpathCopy = wilcardpathCopy.replace(COUNTRY_WILDCARD, "");
+				wilcardpathCopy = wilcardpathCopy.replace("._.", ".");
+				this.resetLocale();
 			}
-			String[] wildcards = wildcardpath.split("\\/");
+			String[] wildcards = wilcardpathCopy.split("\\/");
 			String[] segments = discoveredPath.split("\\/");
 			for (int i = 0; i < segments.length; i++) {
 				parseWildcard(wildcards[i], segments[i]);
 			}
-//			if (this.language == null || this.country == null) {
-//				throw new RuntimeException("Unparsable lang and country");
-//			}
+			// if (this.language == null || this.country == null) {
+			// throw new RuntimeException("Unparsable lang and country");
+			// }
 			return true;
 		}
 		return false;
@@ -183,6 +186,11 @@ public class WildcardPath {
 	public void resetPath() {
 		this.path = wildcardpath;
 		this.path = wildcardpath.replaceAll("\\.", "\\\\.");
+	}
+
+	public void resetLocale() {
+		this.language = null;
+		this.country = null;
 	}
 
 	/**

@@ -67,6 +67,9 @@ public class PathDiscovery {
 		wp.parse(file.getFullPath().toString());
 		filename = wp.getFileName();
 		defaultLocale = wp.getLocale();
+		if (defaultLocale == null) {
+			defaultLocale = new Locale("xx","XX");
+		}
 		wp.resetPath();
 		path = new Path(wp.getPathToRoot() + "/" + wp.getRoot());
 		if (file.getWorkspace().getRoot().exists(path)) {

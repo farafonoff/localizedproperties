@@ -2,8 +2,6 @@ package com.triadsoft.properties.model.utils;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -21,10 +19,12 @@ public class FileVisitor implements IResourceVisitor {
 
 	private Map<Locale, IFile> locales;
 	private WildcardPath wp;
+	private WildcardPath comparator;
 
 	public FileVisitor(Map<Locale, IFile> locales, WildcardPath wp) {
 		this.locales = locales;
 		this.wp = wp;
+		this.comparator = new WildcardPath(wp.getWildcardpath());
 	}
 
 	/**
@@ -33,20 +33,37 @@ public class FileVisitor implements IResourceVisitor {
 	 * @param resource
 	 *            Recurso que será evaluado
 	 * @return True si el archivo puede ser evaluado o FALSE en caso que no se
-	 *         deba revisar. El unico caso en que se devuelve false es cuando el recurso es
-	 *         un archivo y no cumple con el nombre esperado.En caso que sea una
-	 *         carpeta devuelve true para que puede evaluar los archivos
-	 *         internos.
+	 *         deba revisar. El unico caso en que se devuelve false es cuando el
+	 *         recurso es un archivo y no cumple con el nombre esperado.En caso
+	 *         que sea una carpeta devuelve true para que puede evaluar los
+	 *         archivos internos.
 	 */
 	public boolean visit(IResource resource) throws CoreException {
-		Pattern p = Pattern.compile(wp.getLocaleRegex());
-		Matcher m = p.matcher(resource.getFullPath().toString());
+		// Pattern p = Pattern.compile(wp.getLocaleRegex());
+		// Matcher m = p.matcher(resource.getFullPath().toString());
+
 		if (resource.getType() == IFile.FOLDER) {
 			return true;
-		} else if (resource.getType() == IFile.FILE && m.find()) {
-			if (wp.parse(resource.getFullPath().toString())) {
-				locales.put(wp.getLocale(), (IFile) resource);
-				return true;
+		} else if (resource.getType() == IFile.FILE) {
+			IFile file = (IFile) resource;
+			comparator.parse(file.getFullPath().toString());
+			System.out.println(comparator.getFileName() + "=="
+					+ wp.getFileName());
+			boolean isFilename = comparator.getFileName().equals(
+					wp.getFileName());
+			boolean isFileExtension = comparator.getFileExtension().equals(
+					wp.getFileExtension());
+
+			if (isFilename && isFileExtension) {
+				comparator.resetPath();
+				if (comparator.parse(resource.getFullPath().toString())) {
+					if (comparator.getLocale() == null) {
+						locales.put(new Locale("xx", "XX"), (IFile) resource);
+					} else {
+						locales.put(comparator.getLocale(), (IFile) resource);
+					}
+					return true;
+				}
 			}
 			return false;
 		}
