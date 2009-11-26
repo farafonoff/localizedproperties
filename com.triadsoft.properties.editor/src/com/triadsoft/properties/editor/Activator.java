@@ -13,7 +13,7 @@ import com.triadsoft.properties.preferences.PreferenceConstants;
 /**
  * El Activator class controla el ciclo de vida del plugin
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class Activator extends AbstractUIPlugin {
 
