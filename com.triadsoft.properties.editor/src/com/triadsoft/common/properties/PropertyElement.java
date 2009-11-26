@@ -4,7 +4,7 @@
 package com.triadsoft.common.properties;
 
 /**
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public abstract class PropertyElement {
 	public static final PropertyElement[] NO_CHILDREN = {};

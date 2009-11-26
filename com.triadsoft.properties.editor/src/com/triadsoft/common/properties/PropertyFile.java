@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.CoreException;
  * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
  * en categorias y entradas. Tambien se puede persistir mediante el metodo save
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyFile extends PropertyElement implements
 		IPropertyFileListener {

@@ -6,7 +6,7 @@ package com.triadsoft.common.properties;
 import java.io.PrintWriter;
 
 /**
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyEntry extends PropertyElement {
 	private String key;

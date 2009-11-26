@@ -19,7 +19,7 @@ import java.util.List;
  * /dp/0321553462/ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1239049938&sr=8-1">Eclipse
  * Plugins</a>
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * @see <a href="http://www.amazon.com/Eclipse-Plug-ins-3rd-Eric- Clayberg
  *      /dp/0321553462
  *      /ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1239049938&sr=8-1">Eclipse

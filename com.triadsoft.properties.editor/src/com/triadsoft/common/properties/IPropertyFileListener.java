@@ -6,7 +6,7 @@ package com.triadsoft.common.properties;
 /**
  * Interfase que modela un listener para los archivos de properties
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public interface IPropertyFileListener {
 	/**
