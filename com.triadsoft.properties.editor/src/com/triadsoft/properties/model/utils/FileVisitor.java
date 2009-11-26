@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
  * Clase Visitor que se encarga de obtener los archivos que cumplen con el
  * nombre y la ubicacion del recurso consultado en el metodo visit
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * 
  */
 public class FileVisitor implements IResourceVisitor {

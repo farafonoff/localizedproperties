@@ -17,7 +17,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
 /**
  * Accion que permite eliminar una clave a las properties
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * 
  */
 public class RemoveKeyAction extends Action {

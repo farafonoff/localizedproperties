@@ -22,7 +22,7 @@ import com.triadsoft.properties.editors.PropertiesSorter;
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
  * archivos de recursos
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyTableViewer extends TableViewer {
 	private TableColumn defaultColumn;

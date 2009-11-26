@@ -8,7 +8,7 @@ import com.triadsoft.properties.editor.Activator;
 /**
  * Clase de inicializacion de los wildcard paths por default
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 

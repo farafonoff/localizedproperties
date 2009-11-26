@@ -15,7 +15,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
 /**
  * Accion que permite agregar una clave a las properties
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * 
  */
 public class AddKeyAction extends Action {

@@ -21,7 +21,7 @@ import com.triadsoft.properties.editor.Activator;
  * wildcard path y recorre cada uno de ellos hasta descubrir el match con el
  * path name del archivo pasado como parámetro en el constructor.
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * @see WildcardPath
  */
 public class PathDiscovery {

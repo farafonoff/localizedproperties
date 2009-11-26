@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * solamente manipula strings y obtiene los datos que serán utilizados por el
  * controlador de archivos
  * 
- * @author triad
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class WildcardPath {
 	public static final String COUNTRY_REGEX = "[A-Z]{2}";
@@ -90,22 +90,35 @@ public class WildcardPath {
 	 * datos correspondientes a cada wildcard
 	 */
 	public Boolean parse(String filepath) {
+		boolean parsed = parse(filepath, Boolean.TRUE);
+		if (parsed) {
+			return true;
+		}
+		return parse(filepath, Boolean.FALSE);
+	}
+
+	private Boolean parse(String filepath, Boolean withLocale) {
 		String escapedFilepath = escapedFilepath(filepath);
-		String wildcardRegex = this.replaceToRegex().getPath();
+		String wildcardRegex = this.replaceToRegex(withLocale).getPath();
 		Pattern p = Pattern.compile(wildcardRegex);
 		Matcher m = p.matcher(escapedFilepath);
 		if (m.find()) {
 			String discoveredPath = escapedFilepath.substring(m.start(), m
 					.end());
 			this.pathToRoot = escapedFilepath.substring(0, m.start());
+			if (!withLocale) {
+				wildcardpath = wildcardpath.replace(LANGUAGE_WILDCARD, "");
+				wildcardpath = wildcardpath.replace(COUNTRY_WILDCARD, "");
+				wildcardpath = wildcardpath.replace("._.", ".");
+			}
 			String[] wildcards = wildcardpath.split("\\/");
 			String[] segments = discoveredPath.split("\\/");
 			for (int i = 0; i < segments.length; i++) {
 				parseWildcard(wildcards[i], segments[i]);
 			}
-			if (this.language == null || this.country == null) {
-				throw new RuntimeException("Unparsable lang and country");
-			}
+//			if (this.language == null || this.country == null) {
+//				throw new RuntimeException("Unparsable lang and country");
+//			}
 			return true;
 		}
 		return false;
@@ -118,6 +131,11 @@ public class WildcardPath {
 			for (int i = 0; i < wildcards.length; i++) {
 				parseWildcard(wildcards[i], segments[i]);
 			}
+			return true;
+		}
+
+		if (wildcard.equals(FILENAME_WILDCARD)) {
+			fileName = segment;
 			return true;
 		}
 
@@ -170,13 +188,20 @@ public class WildcardPath {
 	/**
 	 * This method return a wildcard path as regular expresion
 	 */
-	public WildcardPath replaceToRegex() {
+	public WildcardPath replaceToRegex(Boolean useLocale) {
 		resetPath();
 		this.replace(ROOT_WILDCARD, TEXT_REGEX);
 		this.replace(FILENAME_WILDCARD, TEXT_REGEX);
 		this.replace(FILE_EXTENSION_WILDCARD, TEXT_REGEX);
-		this.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
-		this.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
+		if (useLocale != null && useLocale.equals(Boolean.TRUE)) {
+			this.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
+			this.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
+		} else {
+			this.replace(LANGUAGE_WILDCARD, "");
+			this.replace(COUNTRY_WILDCARD, "");
+			this.replace("\\._", "\\.");
+			this.replace("\\\\.\\\\.", "\\\\.");
+		}
 		return this;
 	}
 
@@ -251,9 +276,16 @@ public class WildcardPath {
 	 */
 	public Boolean match(String filepath) {
 		WildcardPath path = new WildcardPath(wildcardpath);
-		path.replaceToRegex();
+		path.replaceToRegex(Boolean.TRUE);
 		Pattern p = Pattern.compile(path.getPath());
 		Matcher m = p.matcher(filepath);
+		boolean matched = m.find();
+		if (matched) {
+			return true;
+		}
+		path.replaceToRegex(Boolean.FALSE);
+		p = Pattern.compile(path.getPath());
+		m = p.matcher(filepath);
 		return m.find();
 	}
 
@@ -266,38 +298,18 @@ public class WildcardPath {
 	 */
 	public String extractPath(String filepath) {
 		WildcardPath wp = new WildcardPath(wildcardpath);
-		wp.replaceToRegex();
+		wp.replaceToRegex(Boolean.TRUE);
 		Pattern p = Pattern.compile(wp.getPath());
 		Matcher m = p.matcher(filepath);
 		if (m.find()) {
 			return filepath.substring(m.start(), m.end());
 		}
+		wp.replaceToRegex(Boolean.TRUE);
+		p = Pattern.compile(wp.getPath());
+		m = p.matcher(filepath);
+		if (m.find()) {
+			return filepath.substring(m.start(), m.end());
+		}
 		return null;
-	}
-
-	public static void main(String[] args) {
-		WildcardPath wp = new WildcardPath(
-				"/{root}/{filename}.{lang}_{country}.{fileextension}");
-		wp.replace(ROOT_WILDCARD, "locale").replace(FILENAME_WILDCARD, "alert")
-				.replace(FILE_EXTENSION_WILDCARD, "properties");
-		wp.replace(Locale.getDefault());
-
-		WildcardPath wp1 = new WildcardPath(
-				"/{root}/prueba/{filename}.{lang}_{country}.{fileextension}");
-		wp1.replaceToRegex();
-		System.out.println(wp1.getPath());
-		System.out.println(wp1
-				.match("src/locale/prueba/component.es_AR.properties"));
-		System.out.println(wp1
-				.match("src/locale/prueba/component.en_US.properties"));
-		System.out.println(wp1
-				.match("src/locale/prueba/component.es.properties"));
-		wp1
-				.parse("c:\\tempos\\TemposProject\\src\\locale\\prueba\\component.en_US.properties");
-		System.out.println("Filename:" + wp1.getFileName());
-		System.out.println("Extension:" + wp1.getFileExtension());
-		System.out.println("Root: " + wp1.getRoot());
-		System.out.println("Locale: " + wp1.getLocale());
-		System.out.println("Path: " + wp1.getPathToRoot());
 	}
 }

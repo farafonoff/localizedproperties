@@ -17,7 +17,7 @@ import com.triadsoft.properties.editor.Activator;
 /**
  * Dialogo para agregar una nueva clave al archivo de recursos
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * 
  */
 public class AddKeyDialog extends Dialog {

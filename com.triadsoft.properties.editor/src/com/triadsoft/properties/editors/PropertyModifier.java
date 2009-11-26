@@ -18,7 +18,7 @@ import com.triadsoft.properties.model.utils.StringUtils;
  * Permite controlar los valores de la celda que se va a editar.
  * </p>
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * @see PropertyTableViewer
  */
 public class PropertyModifier implements ICellModifier {

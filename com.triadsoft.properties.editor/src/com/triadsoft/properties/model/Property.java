@@ -18,7 +18,7 @@ import java.util.Map;
  * en el path
  * </p>
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * 
  */
 public class Property {

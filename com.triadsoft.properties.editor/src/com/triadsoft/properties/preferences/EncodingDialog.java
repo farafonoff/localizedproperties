@@ -23,7 +23,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * archivo
  * </p>
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class EncodingDialog extends Dialog {
 

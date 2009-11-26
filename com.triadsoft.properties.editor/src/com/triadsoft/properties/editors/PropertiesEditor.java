@@ -63,7 +63,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * archivos cual es el wildcard path de cada uno.
  * </p>
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * @see WildcardPath
  * @see ResourceBundle
  */

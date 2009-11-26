@@ -29,7 +29,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
 /**
  * Permite crear un archivo de propiedades localizado por el idioma
  * 
- * @author Leonardo Flores
+ * @author Triad (flores.leonardo@gmail.com)
  */
 
 public class LocalizedPropertiesPage extends WizardPage {

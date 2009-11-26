@@ -16,7 +16,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * las etiquetas e imagenes segun el contenido de cada columna. En el caso en
  * que la columna no tenga valor muestra al costado de misma un icono de warning
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * @see PropertyTableViewer
  * 
  */

@@ -9,7 +9,7 @@ import com.triadsoft.properties.editor.Activator;
 /**
  * Pagina de preferencias para los Wildcards Paths
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class LocalizedPropertiesPreferencePage extends
 		FieldEditorPreferencePage implements IWorkbenchPreferencePage {

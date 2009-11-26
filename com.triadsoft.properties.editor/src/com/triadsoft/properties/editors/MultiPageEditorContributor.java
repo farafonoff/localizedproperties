@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
  * editores multi-pagina. Responsable de la redireccion de las acctiones
  * globales para el editor activo.
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 public class MultiPageEditorContributor extends
 		MultiPageEditorActionBarContributor {

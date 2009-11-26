@@ -22,7 +22,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * Dialogo para poder agregar wildcard path a la lista
  * </p>
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  *@see WildcardPath
  */
 public class WilcardPathDialog extends Dialog {

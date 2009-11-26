@@ -32,7 +32,7 @@ import org.eclipse.ui.ide.IDE;
 /**
  * Wizard para poder crear un archivo de recursos internacionalizados
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  */
 
 public class LocalizedProperties extends Wizard implements INewWizard {

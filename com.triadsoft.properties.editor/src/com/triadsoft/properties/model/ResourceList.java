@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
@@ -33,7 +32,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * cambio desde el editor, se ancarga de actualizar el archivo que corresponde
  * al idioma que se está modificando
  * 
- * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * @author Triad (flores.leonardo@gmail.com)
  * @see WildcardPath
  */
 public class ResourceList {
