@@ -22,8 +22,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+
+import com.triadsoft.properties.editor.Activator;
 
 /**
  * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
@@ -43,16 +44,64 @@ public class PropertyFile extends PropertyElement implements
 	/**
 	 * 
 	 * @param file
+	 *            File para parsear
+	 * @param encoding
+	 *            Encoding del archivo a parsear
 	 * @throws IOException
 	 */
-	public PropertyFile(File file,String encoding) throws IOException {
-		super(null);
+	public PropertyFile(File file, String encoding, String[] separators)
+			throws IOException {
+		super(null, separators);
 		this.encoding = encoding;
-		if(this.encoding == null){
-			this.encoding = ResourcesPlugin.getEncoding();
+		if (this.encoding == null) {
+			throw new RuntimeException("No pude encontrar el encoding");
 		}
+		this.load(file);
+	}
+
+	/**
+	 * Permite crear un property file a partir de un IFile
+	 * 
+	 * @param file
+	 * @throws IOException
+	 * @throws CoreException
+	 */
+	public PropertyFile(IFile ifile, String[] separators) throws IOException,
+			CoreException {
+		this.file = ifile;
+		this.encoding = ifile.getCharset();
+		setSeparators(separators);
+		this.load(ifile.getLocation().toFile());
+	}
+
+	public PropertyFile(IFile ifile, Character separator) throws IOException,
+			CoreException {
+		this.file = ifile;
+		this.encoding = ifile.getCharset();
+		setSeparator(separator);
+		this.load(ifile.getLocation().toFile());
+	}
+
+	/**
+	 * 
+	 * @param content
+	 * @throws IOException
+	 */
+	public PropertyFile(String content, String[] separators) throws IOException {
+		super();
+		setSeparators(separators);
+		this.load(content);
+	}
+
+	/**
+	 * Permite cargar el property file, a partir de un file
+	 * 
+	 * @param content
+	 * @throws IOException
+	 */
+	private void load(File file) throws IOException {
 		FileInputStream stream = new FileInputStream(file);
-		InputStreamReader isr = new InputStreamReader(stream, this.encoding);
+		InputStreamReader isr = new InputStreamReader(stream, encoding);
 		BufferedReader reader = new BufferedReader(isr);
 
 		StringBuffer buffer = new StringBuffer();
@@ -62,28 +111,6 @@ public class PropertyFile extends PropertyElement implements
 		}
 		stream.close();
 		this.load(buffer.toString());
-	}
-
-	/**
-	 * Permite crear un property file a partir de un IFile
-	 * 
-	 * @param file
-	 * @throws IOException
-	 * @throws CoreException 
-	 */
-	public PropertyFile(IFile file) throws IOException, CoreException {
-		this(file.getLocation().toFile(),file.getCharset());
-		this.file = file;
-	}
-
-	/**
-	 * 
-	 * @param content
-	 * @throws IOException
-	 */
-	public PropertyFile(String content) throws IOException {
-		super(null);
-		this.load(content);
 	}
 
 	/**
@@ -435,8 +462,9 @@ public class PropertyFile extends PropertyElement implements
 
 	public static void main(String[] args) {
 		try {
-			PropertyFile file = new PropertyFile(new File(args[0]),"UTF8");
-			System.out.println(file.asText());
+			PropertyFile file = new PropertyFile(new File(args[0]), "UTF8",
+					new String[] { "=" });
+			//Activator.debug(file.asText(), null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

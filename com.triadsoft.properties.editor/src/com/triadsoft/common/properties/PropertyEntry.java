@@ -5,6 +5,8 @@ package com.triadsoft.common.properties;
 
 import java.io.PrintWriter;
 
+import com.triadsoft.properties.editor.Activator;
+
 /**
  * @author Triad (flores.leonardo@gmail.com)
  */
@@ -105,7 +107,10 @@ public class PropertyEntry extends PropertyElement {
 
 	public void appendText(PrintWriter writer) {
 		writer.print(key);
-		writer.print("=");
+		if (getSeparator() == null) {
+			setSeparator(Activator.getDefaultSeparator());
+		}
+		writer.print(getSeparator());
 		if (value != null) {
 			writer.print(value);
 		}
@@ -120,6 +125,6 @@ public class PropertyEntry extends PropertyElement {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return getKey() + "=" + getValue();
+		return getKey() + getSeparator() + getValue();
 	}
 }

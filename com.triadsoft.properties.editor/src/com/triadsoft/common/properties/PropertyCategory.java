@@ -39,6 +39,7 @@ public class PropertyCategory extends PropertyElement {
 	public PropertyCategory(PropertyFile parent, LineNumberReader reader)
 			throws IOException {
 		super(parent);
+		setSeparators(parent.getSeparators());
 		this.lineNumber = reader.getLineNumber();
 		this.readCategoryName(reader);
 		if (name == null) {
@@ -66,7 +67,16 @@ public class PropertyCategory extends PropertyElement {
 				break;
 			}
 			String line = reader.readLine();
-			int index = line.indexOf('=');
+			if (line.length() == 0) {
+				continue;
+			}
+			if (getSeparator() == null) {
+				discoveringSeparator(line);
+			}
+			if(getSeparator()==null){
+				break;
+			}
+			int index = line.indexOf(getSeparator());
 			if (index != -1) {
 				String key = line.substring(0, index).trim();
 				String value = line.substring(index + 1).trim();
