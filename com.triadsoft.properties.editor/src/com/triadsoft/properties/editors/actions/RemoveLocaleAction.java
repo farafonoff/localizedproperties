@@ -27,7 +27,6 @@ public class RemoveLocaleAction extends Action {
 
 	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent e) {
-			// System.out.println(e.getSelection());
 			setEnabled(!e.getSelection().isEmpty());
 		}
 	};
@@ -47,7 +46,7 @@ public class RemoveLocaleAction extends Action {
 		ISelection sel = viewer.getSelection();
 		Table table = viewer.getTable();
 		table.setRedraw(false);
-		Iterator iter = ((IStructuredSelection) sel).iterator();
+		Iterator<ISelection> iter = ((IStructuredSelection) sel).iterator();
 		try {
 			while (iter.hasNext()) {
 				// TODO:Acá hay que hacer la magia para eliminar

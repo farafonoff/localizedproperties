@@ -4,6 +4,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.swt.widgets.Composite;
 
+import com.triadsoft.properties.editor.Activator;
+
 public class WilcardPathEditor extends ListEditor {
 
 	protected Composite parent;
@@ -14,7 +16,7 @@ public class WilcardPathEditor extends ListEditor {
 	}
 
 	protected String[] parseString(String stringList) {
-		String regex = "\\" + PreferenceConstants.WILDCARD_PATH_SEPARATOR;
+		String regex = "\\" + getSeparator();
 		String[] strings = stringList.split(regex);
 		return strings;
 	}
@@ -22,9 +24,10 @@ public class WilcardPathEditor extends ListEditor {
 	@Override
 	protected String createList(String[] items) {
 		StringBuffer path = new StringBuffer();
+		String separator = getSeparator();
 		for (int i = 0; i < items.length; i++) {
 			path.append(items[i]);
-			path.append(PreferenceConstants.WILDCARD_PATH_SEPARATOR);
+			path.append(separator);
 		}
 		return path.toString();
 	}
@@ -38,4 +41,12 @@ public class WilcardPathEditor extends ListEditor {
 		return dialog.getWildcardPath();
 	}
 
+	private String getSeparator() {
+		String separator = Activator
+				.getDefault()
+				.getPluginPreferences()
+				.getString(
+						PreferenceConstants.WILDCARD_PATH_SEPARATOR_PREFERENCES);
+		return separator == null ? "|" : separator;
+	}
 }

@@ -14,10 +14,14 @@ import com.triadsoft.properties.editor.Activator;
 public class LocalizedPropertiesPreferencePage extends
 		FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	private static final String PREFERENCES_DESCRIPTION = "preferences.description";
+	private static final String PREFERENCES_SEPARATORS_LABEL = "preferences.separators.label";
+	private static final String PREFERENCES_WILDCARD_TITLE_LABEL = "preferences.wildcardTitle.label";
+
 	public LocalizedPropertiesPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription(Activator.getString("preferences.description"));
+		setDescription(Activator.getString(PREFERENCES_DESCRIPTION));
 	}
 
 	/**
@@ -27,11 +31,17 @@ public class LocalizedPropertiesPreferencePage extends
 	 */
 	public void createFieldEditors() {
 		addField(new WilcardPathEditor(
-				PreferenceConstants.WILDCARD_PATHS_PREFERENCES,
-				Activator.getString("preferences.wildcardTitle.label"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(new EncodingEditor(
-				PreferenceConstants.LANGUAGE_CONTENT_TYPE_PREFERENCES,
-				Activator.getString("preferences.encodingTitle.label"),
+				PreferenceConstants.WILDCARD_PATHS_PREFERENCES, Activator
+						.getString(PREFERENCES_WILDCARD_TITLE_LABEL),
+				getFieldEditorParent())); //$NON-NLS-1$
+		// addField(new EncodingEditor(
+		// PreferenceConstants.LANGUAGE_CONTENT_TYPE_PREFERENCES,
+		// Activator.getString("preferences.encodingTitle.label"),
+		// getFieldEditorParent()));
+
+		addField(new SeparatorsEditor(
+				PreferenceConstants.KEY_VALUE_SEPARATORS_PREFERENCES, Activator
+						.getString(PREFERENCES_SEPARATORS_LABEL),
 				getFieldEditorParent()));
 	}
 

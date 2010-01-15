@@ -22,7 +22,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * Dialogo para poder agregar relaciones entre el language y el encoding del
  * archivo
  * </p>
- * 
+ * @deprecated El enconding ahora se obtiene del encoding del archivo.
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class EncodingDialog extends Dialog {

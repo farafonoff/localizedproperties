@@ -4,6 +4,11 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * @deprecated El enconding ahora se obtiene del encoding del archivo.
+ * @author Triad (flores.leonardo@triadsoft.com.ar)
+ * 
+ */
 public class EncodingEditor extends ListEditor {
 	private Composite parent;
 
@@ -14,12 +19,13 @@ public class EncodingEditor extends ListEditor {
 
 	@Override
 	protected String createList(String[] items) {
-		StringBuffer path = new StringBuffer();
-		for (int i = 0; i < items.length; i++) {
-			path.append(items[i]);
-			path.append(PreferenceConstants.LANGUAGE_CONTENT_TYPE_SEPARATOR);
-		}
-		return path.toString();
+		// StringBuffer path = new StringBuffer();
+		// for (int i = 0; i < items.length; i++) {
+		// path.append(items[i]);
+		// path.append(PreferenceConstants.LANGUAGE_CONTENT_TYPE_SEPARATOR);
+		// }
+		// return path.toString();
+		return "";
 	}
 
 	@Override
@@ -33,10 +39,11 @@ public class EncodingEditor extends ListEditor {
 
 	@Override
 	protected String[] parseString(String stringList) {
-		String regex = "\\"
-				+ PreferenceConstants.LANGUAGE_CONTENT_TYPE_SEPARATOR;
-		String[] strings = stringList.split(regex);
-		return strings;
+		// String regex = "\\"
+		// + PreferenceConstants.LANGUAGE_CONTENT_TYPE_SEPARATOR;
+		// String[] strings = stringList.split(regex);
+		// return strings;
+		return new String[0];
 	}
 
 	public void setParent(Composite parent) {

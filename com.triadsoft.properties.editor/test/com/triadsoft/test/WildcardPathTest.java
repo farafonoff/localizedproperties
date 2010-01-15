@@ -2,19 +2,23 @@ package com.triadsoft.test;
 
 import java.util.Locale;
 
+import org.junit.Test;
+
 import com.triadsoft.properties.model.utils.WildcardPath;
 
 import junit.framework.TestCase;
 
 /**
- * Prueba 
+ * Prueba
+ * 
  * @author Leonardo Flores()
- *
+ * 
  */
 public class WildcardPathTest extends TestCase {
 	private static final String FLEX_PROPERTIES = "/{root}/{lang}_{country}/{filename}.{fileextension}";
 	private static final String JAVA_PROPERTIES = "/{root}/{filename}.{lang}_{country}.{fileextension}";
 
+	@Test
 	public void testFlex() {
 		WildcardPath wp = new WildcardPath(FLEX_PROPERTIES);
 		wp
@@ -27,6 +31,7 @@ public class WildcardPathTest extends TestCase {
 				.equals(wp.getRoot()));
 	}
 
+	@Test
 	public void testFlexWithUnderscore() {
 		WildcardPath wp = new WildcardPath(FLEX_PROPERTIES);
 		wp
@@ -39,6 +44,7 @@ public class WildcardPathTest extends TestCase {
 				.equals(wp.getRoot()));
 	}
 
+	@Test
 	public void testJava() {
 		WildcardPath wp = new WildcardPath(JAVA_PROPERTIES);
 		wp
@@ -51,6 +57,7 @@ public class WildcardPathTest extends TestCase {
 				.equals(wp.getRoot()));
 	}
 
+	@Test
 	public void testJavaDefault() {
 		WildcardPath wp = new WildcardPath(JAVA_PROPERTIES);
 		wp
@@ -63,6 +70,7 @@ public class WildcardPathTest extends TestCase {
 				.equals(wp.getRoot()));
 	}
 
+	@Test
 	public void testJavaWithUnderscore() {
 		WildcardPath wp = new WildcardPath(JAVA_PROPERTIES);
 		wp
@@ -75,11 +83,22 @@ public class WildcardPathTest extends TestCase {
 				.equals(wp.getRoot()));
 	}
 
+	@Test
 	public void testReplacement() {
 		WildcardPath wp = new WildcardPath(JAVA_PROPERTIES);
 		wp.replace(WildcardPath.ROOT_WILDCARD, "locale").replace(
 				WildcardPath.FILENAME_WILDCARD, "alert").replace(
 				WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
 		wp.replace(Locale.getDefault());
+	}
+
+	@Test
+	public void testJavaWithoutCountry() {
+		WildcardPath wp = new WildcardPath(JAVA_PROPERTIES);
+		wp
+				.parse("c:\\tempos\\TemposProject\\src\\locale\\prueba\\core_component.en.properties");
+		assertTrue("No pude encontrar el nombre del archivo",
+				wp.getFileName() != null);
+		assertTrue("No pude encontrar el lenguaje", wp.getLanguage() != null);
 	}
 }

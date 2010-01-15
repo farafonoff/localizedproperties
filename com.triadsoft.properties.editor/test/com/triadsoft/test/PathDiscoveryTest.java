@@ -1,10 +1,7 @@
 package com.triadsoft.test;
 
-import java.net.URL;
-
 import junit.framework.TestCase;
 
-import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -12,8 +9,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-
-import com.triadsoft.properties.editor.Activator;
 
 public class PathDiscoveryTest extends TestCase {
 

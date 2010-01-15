@@ -8,7 +8,7 @@
             class="com.triadsoft.properties.editors.PropertiesEditor"
             contributorClass="com.triadsoft.properties.editors.MultiPageEditorContributor"
             extensions="properties"
-            icon="icons/page_white_world.png"
+            icon="icons/localizedProperties.png"
             id="com.triadsoft.properties.editors.PropertiesEditor"
             name="%localizedProperties.editor.name">
       </editor>
@@ -31,14 +31,14 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="com.triadsoft.properties"
-            name="Localized Properties">
+            name="%localizedProperties.category.name">
       </category>
       <wizard
             category="com.triadsoft.properties"
             class="com.triadsoft.properties.wizards.LocalizedProperties"
-            icon="icons/page_white_world.png"
+            icon="icons/localizedProperties.png"
             id="com.triadsoft.properties.wizards.LocalizedProperties"
-            name="Localized Properties">
+            name="%localizedProperties.wizard.name">
       </wizard>
    </extension>
 

@@ -28,7 +28,6 @@ public class AddKeyAction extends Action {
 
 	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent e) {
-			// System.out.println(e.getSelection());
 			setEnabled(!e.getSelection().isEmpty());
 		}
 	};

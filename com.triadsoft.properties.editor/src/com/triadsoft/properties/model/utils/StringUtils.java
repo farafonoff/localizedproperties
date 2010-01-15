@@ -43,9 +43,5 @@ public class StringUtils {
 		Locale locale1 = StringUtils.getLocale("en|US");
 		Locale locale2 = StringUtils.getLocale("pt.BR");
 		Locale locale3 = StringUtils.getLocale("es.AR");
-		System.out.println(locale);
-		System.out.println(locale1);
-		System.out.println(locale2);
-		System.out.println(locale3);
 	}
 }

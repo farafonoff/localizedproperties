@@ -47,8 +47,6 @@ public class FileVisitor implements IResourceVisitor {
 		} else if (resource.getType() == IFile.FILE) {
 			IFile file = (IFile) resource;
 			comparator.parse(file.getFullPath().toString());
-//			System.out.println(comparator.getFileName() + "=="
-//					+ wp.getFileName());
 			boolean isFilename = comparator.getFileName().equals(
 					wp.getFileName());
 			boolean isFileExtension = comparator.getFileExtension().equals(

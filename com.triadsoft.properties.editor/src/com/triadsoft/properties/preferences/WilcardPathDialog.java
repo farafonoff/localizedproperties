@@ -74,7 +74,7 @@ public class WilcardPathDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Agregar WildcardPath");
+		newShell.setText(Activator.getString("preferences.addwp.dialog.title"));
 	}
 
 	private void changeData() {

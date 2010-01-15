@@ -18,6 +18,7 @@ import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.common.properties.PropertyCategory;
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.model.utils.PathDiscovery;
 import com.triadsoft.properties.model.utils.WildcardPath;
 
@@ -85,11 +86,22 @@ public class ResourceList {
 
 	private void parseLocales(Map<Locale, IFile> files) throws IOException,
 			CoreException {
+		Character separator = null;
 		for (Iterator<Locale> iterator = files.keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();
 			IFile ifile = (IFile) files.get(locale);
-			PropertyFile pf = new PropertyFile(ifile);
+			if (!ifile.exists()) {
+				throw new IOException("No encontré el archivo "
+						+ ifile.getFullPath());
+			}
+			PropertyFile pf;
+			if (separator == null) {
+				pf = new PropertyFile(ifile, Activator.getKeyValueSeparators());
+				separator = pf.getSeparator();
+			} else {
+				pf = new PropertyFile(ifile, separator);
+			}
 			addKeys(pf);
 			map.put(locale, pf);
 		}

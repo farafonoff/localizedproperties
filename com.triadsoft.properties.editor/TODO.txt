@@ -1,2 +1,2 @@
-Internacionalizar mensajes
-Internacionalizar etiquetas
+Internacionalizar mensajes (hecho)
+Internacionalizar etiquetas (hecho)
