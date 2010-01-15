@@ -6,10 +6,10 @@
    <feature url="features/com.triadsoft.properties.editor.feature_0.5.0.jar" id="com.triadsoft.properties.editor.feature" version="0.5.0">
       <category name="Localized Properties"/>
    </feature>
-   <feature url="features/com.triadsoft.properties.editor.feature_0.5.5.jar" id="com.triadsoft.properties.editor.feature" version="0.5.5">
+   <feature url="features/com.triadsoft.properties.editor.feature_0.5.5.jar" id="com.triadsoft.properties.editor.feature" version="0.5.5" patch="true">
       <category name="Localized Properties"/>
    </feature>
-   <feature url="features/com.triadsoft.properties.editor.feature_0.6.0.jar" id="com.triadsoft.properties.editor.feature" version="0.6.0">
+   <feature url="features/com.triadsoft.properties.editor.feature_0.6.0.jar" id="com.triadsoft.properties.editor.feature" version="0.6.0" os="win32" patch="true">
       <category name="Localized Properties"/>
    </feature>
    <category-def name="Localized Properties" label="Localized Properties">
