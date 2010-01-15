@@ -2,7 +2,7 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties"
-      version="0.5.5"
+      version="0.6"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor">
 
@@ -864,7 +864,7 @@ Public License instead of this License.  But first, please read
          id="com.triadsoft.properties.editor"
          download-size="0"
          install-size="0"
-         version="0.5.5"
+         version="0.6"
          unpack="false"/>
 
 </feature>
