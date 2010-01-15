@@ -1,5 +1,7 @@
 package com.triadsoft.properties.editor;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -27,6 +29,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+
+	// private static ILog logger = Activator.getDefault().getLog();
 
 	/**
 	 * The constructor
@@ -67,6 +71,21 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	// public static void debug(String message, Throwable th) {
+	// IStatus status = new Status(IStatus.OK, PLUGIN_ID, message, th);
+	// logger.log(status);
+	// }
+	//
+	// public static void info(String message, Throwable th) {
+	// IStatus status = new Status(IStatus.INFO, PLUGIN_ID, message, th);
+	// logger.log(status);
+	// }
+	//
+	// public static void error(String message, Throwable th) {
+	// IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, th);
+	// logger.log(status);
+	// }
+
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
@@ -83,6 +102,23 @@ public class Activator extends AbstractUIPlugin {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		return store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES)
 				.split("\\|");
+	}
+
+	public static Character getDefaultSeparator() {
+		return getDefault().getPluginPreferences().getString(
+				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
+				.charAt(0);
+	}
+
+	public static String[] getKeyValueSeparators() {
+		String separators = getDefault().getPluginPreferences().getString(
+				PreferenceConstants.KEY_VALUE_SEPARATORS_PREFERENCES);
+		List<String> sepList = new LinkedList<String>();
+		for (int i = 0; i < separators.length(); i++) {
+			sepList.add(separators.substring(i, i + 1));
+		}
+		return (String[]) sepList.toArray(new String[sepList.size()]);
+
 	}
 
 	public static String getString(String key) {
