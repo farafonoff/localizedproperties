@@ -31,7 +31,7 @@ public class FileVisitor implements IResourceVisitor {
 	 * Metodo que revisa el nombre y la ubicacion del recurso
 	 * 
 	 * @param resource
-	 *            Recurso que será evaluado
+	 *            Recurso que serï¿½ evaluado
 	 * @return True si el archivo puede ser evaluado o FALSE en caso que no se
 	 *         deba revisar. El unico caso en que se devuelve false es cuando el
 	 *         recurso es un archivo y no cumple con el nombre esperado.En caso
@@ -43,6 +43,8 @@ public class FileVisitor implements IResourceVisitor {
 		// Matcher m = p.matcher(resource.getFullPath().toString());
 
 		if (resource.getType() == IFile.FOLDER) {
+			return true;
+		} else if (resource.getType() == IFile.PROJECT) {
 			return true;
 		} else if (resource.getType() == IFile.FILE) {
 			IFile file = (IFile) resource;

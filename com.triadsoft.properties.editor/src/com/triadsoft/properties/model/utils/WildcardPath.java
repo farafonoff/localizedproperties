@@ -5,12 +5,10 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.triadsoft.properties.editor.Activator;
-
 /**
  * Esta clase es la encargada de encapsular todos la logica para poder parsear y
  * descubrir los datos referidos al path La clase no maneja archivos sino que
- * solamente manipula strings y obtiene los datos que serán utilizados por el
+ * solamente manipula strings y obtiene los datos que serï¿½n utilizados por el
  * controlador de archivos
  * 
  * @author Triad (flores.leonardo@gmail.com)
@@ -88,7 +86,7 @@ public class WildcardPath {
 	}
 
 	/**
-	 * Este metodo se encarga de obtener del path pasado como parámetro los
+	 * Este metodo se encarga de obtener del path pasado como parï¿½metro los
 	 * datos correspondientes a cada wildcard
 	 */
 	public Boolean parse(String filepath) {
@@ -223,7 +221,7 @@ public class WildcardPath {
 	}
 
 	/**
-	 * Este método toma el wildcard path y lo transforma en una expresion
+	 * Este mï¿½todo toma el wildcard path y lo transforma en una expresion
 	 * regular
 	 * 
 	 * @return {@link WildcardPath}
@@ -233,13 +231,13 @@ public class WildcardPath {
 	}
 
 	/**
-	 * Este método toma el wildcard path y lo transforma en una expresion
+	 * Este mï¿½todo toma el wildcard path y lo transforma en una expresion
 	 * regular
 	 * 
 	 * @param Indica
-	 *            si se usará el lenguaje
+	 *            si se usarï¿½ el lenguaje
 	 * @param Indica
-	 *            si se usará el pais
+	 *            si se usarï¿½ el pais
 	 */
 	public WildcardPath replaceToRegex(boolean useLanguage, boolean useCountry) {
 		resetPath();
@@ -314,7 +312,7 @@ public class WildcardPath {
 
 	/**
 	 * Si el path es de Windows, lo convierte al de unix / Es para poder evaluar
-	 * todos los path de la misma manera. Teóricamente no debe haber diferencias
+	 * todos los path de la misma manera. Teï¿½ricamente no debe haber diferencias
 	 * 
 	 * @param filepath
 	 * @return
