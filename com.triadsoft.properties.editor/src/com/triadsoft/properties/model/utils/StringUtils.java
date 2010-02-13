@@ -38,6 +38,21 @@ public class StringUtils {
 		return searched;
 	}
 
+	public static String join(String[] values, Character separator) {
+		if (values == null) {
+			return "";
+		}
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < values.length; i++) {
+			buffer.append(values[i]);
+			buffer.append(separator);
+		}
+		if (buffer.length() > 1) {
+			buffer.delete(buffer.length() - 1, buffer.length());
+		}
+		return buffer.toString();
+	}
+
 	public static void main(String[] args) {
 		Locale locale = StringUtils.getLocale("es_AR");
 		Locale locale1 = StringUtils.getLocale("en|US");

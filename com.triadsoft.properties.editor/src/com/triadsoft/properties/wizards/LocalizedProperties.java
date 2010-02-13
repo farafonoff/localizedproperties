@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -60,15 +61,15 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	 * Éste metodo es llamado cuando se presiona el botón finalizar del wizard
 	 */
 	public boolean performFinish() {
-		final String filepath = page.getFilePath().substring(0,
-				page.getFilePath().lastIndexOf("/"));
-		final String containerName = page.getContainerName();
+		final IPath filePath = page.getFilePath();
+		final IResource resource = page.getResource();
 		final String fileName = page.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 					throws InvocationTargetException {
 				try {
-					doFinish(containerName, filepath, fileName, monitor);
+					doFinish(resource.getFullPath(), filePath, fileName,
+							monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -95,26 +96,23 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	 * file.
 	 */
 
-	private void doFinish(String containerName, String filepath,
-			String fileName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(IPath containerName, IPath filepath, String fileName,
+			IProgressMonitor monitor) throws CoreException {
 		// create a sample file
 		monitor.beginTask("Creating " + fileName, 2);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IResource resource = root
-				.findMember(new Path(containerName + filepath));
-		IResource containerFolder = root.findMember(new Path(containerName));
-		if (resource == null || !resource.exists()
-				|| !(resource instanceof IContainer)) {
-			IFolder folder = ((IContainer) containerFolder).getFolder(new Path(
-					filepath));
-			folder.create(false, false, monitor);
-			resource = root.findMember(new Path(containerName + filepath));
-			// throwCoreException("Container \"" + containerName +
-			// "\" does not exist.");
+		String containerText = containerName.lastSegment();
+		String fileContainer = filepath.segment(0);
+		IPath filefullpath = new Path(containerName.toString() + filepath);
+		if (containerText.equals(fileContainer)) {
+			filefullpath = new Path(containerName.removeLastSegments(1).toString()+filepath);
 		}
+		IPath withoutFileName = filefullpath.removeLastSegments(1);
+		this.createFullFilePath(withoutFileName);
+		IResource resource = root.findMember(filefullpath.removeLastSegments(1));
 		IContainer container = (IContainer) resource;
 		final IFile file = container
-				.getFile(new Path(fileName + ".properties"));
+				.getFile(new Path(filefullpath.lastSegment()));
 		try {
 			InputStream stream = openContentStream();
 			if (file.exists()) {
@@ -166,5 +164,36 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
+	}
+
+	private void createFullFilePath(IPath path) {
+		String[] segments = path.segments();
+		IPath testPath = new Path("/" + segments[0]);
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IResource res = root.findMember(testPath);
+		for (int i = 1; i < segments.length; i++) {
+			try {
+				if (res == null || !res.exists()) {
+					try {
+						IFolder fol = root.getFolder(testPath);
+						fol.create(false, false, null);
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
+				}
+				testPath = testPath.append("/" + segments[i]);
+				res = root.findMember(testPath);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		if (res == null || !res.exists()) {
+			try {
+				IFolder fol = root.getFolder(testPath);
+				fol.create(false, false, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

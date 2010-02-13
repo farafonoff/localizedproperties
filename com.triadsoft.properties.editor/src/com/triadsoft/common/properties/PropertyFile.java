@@ -24,8 +24,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.triadsoft.properties.editor.Activator;
-
 /**
  * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
  * en categorias y entradas. Tambien se puede persistir mediante el metodo save
@@ -461,13 +459,13 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	public static void main(String[] args) {
-		try {
-			PropertyFile file = new PropertyFile(new File(args[0]), "UTF8",
-					new String[] { "=" });
-			//Activator.debug(file.asText(), null);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// //PropertyFile file = new PropertyFile(new File(args[0]), "UTF8",
+		// // new String[] { "=" });
+		// // Activator.debug(file.asText(), null);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	public void fileChanged(PropertyFile propertyFile) {

@@ -36,7 +36,6 @@ import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.actions.AddKeyAction;
 import com.triadsoft.properties.editors.actions.CopyKeyAction;
 import com.triadsoft.properties.editors.actions.RemoveKeyAction;
-import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -85,8 +84,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	private AddKeyAction addKeyAction;
 	private RemoveKeyAction removeKeyAction;
-
-	private RemoveLocaleAction removeLocaleAction;
 
 	private CopyKeyAction copyKeyAction;
 
@@ -160,8 +157,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 				.getString("menu.menuitem.add"));
 		removeKeyAction = new RemoveKeyAction(this, tableViewer, Activator
 				.getString("menu.menuitem.deleteKey"));
-		removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
-				Activator.getString("menu.menuitem.deleteLocale"));
+		// removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
+		// Activator.getString("menu.menuitem.deleteLocale"));
 		copyKeyAction = new CopyKeyAction(this, tableViewer, Activator
 				.getString("menu.menuitem.copy"));
 	}

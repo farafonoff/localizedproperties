@@ -43,6 +43,17 @@ public class WildcardPath {
 	}
 
 	/**
+	 * Devuelve verdadero si en el wildcard path tiene establecido la carpeta
+	 * root
+	 * 
+	 * @return
+	 */
+	public boolean haveRoot() {
+		//return wildcardpath.matches(ROOT);
+		return true;
+	}
+
+	/**
 	 * FIXME: Revisar porque al traducir quedan los puntos escapeados
 	 * 
 	 * @return
@@ -132,6 +143,10 @@ public class WildcardPath {
 			}
 			String[] wildcards = wilcardpathCopy.split("\\/");
 			String[] segments = discoveredPath.split("\\/");
+			if (wildcards.length != segments.length) {
+				throw new RuntimeException(
+						"No pude separar los archivos en las mismas cantidades");
+			}
 			for (int i = 0; i < segments.length; i++) {
 				parseWildcard(wildcards[i], segments[i]);
 			}
@@ -312,7 +327,8 @@ public class WildcardPath {
 
 	/**
 	 * Si el path es de Windows, lo convierte al de unix / Es para poder evaluar
-	 * todos los path de la misma manera. Te�ricamente no debe haber diferencias
+	 * todos los path de la misma manera. Te�ricamente no debe haber
+	 * diferencias
 	 * 
 	 * @param filepath
 	 * @return

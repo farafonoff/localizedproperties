@@ -6,11 +6,14 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -23,11 +26,14 @@ import com.triadsoft.properties.editor.Activator;
  */
 public class SeparatorsEditor extends ListEditor {
 
-	private static final String PREFERENCES_SEPARATORS_DEFAULT_BUTTON = "preferences.separators.defaultButton";
+	protected static final String PREFERENCES_SEPARATORS_DEFAULT_BUTTON = "preferences.separators.defaultButton";
 	private org.eclipse.swt.widgets.List commandListControl;
+	private Composite buttonBox;
+	private Composite parent;
 
 	public SeparatorsEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
+		this.parent = parent;
 	}
 
 	@Override
@@ -48,23 +54,23 @@ public class SeparatorsEditor extends ListEditor {
 
 	@Override
 	public Composite getButtonBoxControl(Composite parent) {
-		final Composite buttonBoxControl = super.getButtonBoxControl(parent);
+		// buttonBox = super.getButtonBoxControl(parent);
+		if (buttonBox == null) {
+			buttonBox = new Composite(parent, SWT.NULL);
+			GridLayout layout = new GridLayout();
+			layout.marginWidth = 0;
+			buttonBox.setLayout(layout);
+		}
+
 		if (defaultButton == null) {
-			defaultButton = new Button(buttonBoxControl, SWT.PUSH);
+			defaultButton = new Button(buttonBox, SWT.PUSH);
 			defaultButton.setText(Activator
 					.getString(PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
 			defaultButton.setEnabled(true);
 			defaultButton.addMouseListener(new MouseListener() {
-
 				public void mouseUp(MouseEvent arg0) {
-					String defaultValue = commandListControl.getSelection()[0];
-					Activator
-							.getDefault()
-							.getPluginPreferences()
-							.setValue(
-									PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES,
-									defaultValue);
-					defaultButton.setEnabled(false);
+					storeDefault();
+					selectionChanged();
 				}
 
 				public void mouseDown(MouseEvent arg0) {
@@ -80,7 +86,20 @@ public class SeparatorsEditor extends ListEditor {
 					SWT.DEFAULT, SWT.DEFAULT, true).x);
 			defaultButton.setLayoutData(data);
 		}
-		return buttonBoxControl;
+		return buttonBox;
+	}
+
+	private void selectionChanged() {
+		if (commandListControl == null) {
+			commandListControl = getListControl(parent);
+		}
+		String value = commandListControl.getSelection()[0];
+		String defaultValue = Activator
+				.getDefault()
+				.getPluginPreferences()
+				.getString(
+						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES);
+		defaultButton.setEnabled(!defaultValue.equals(value));
 	}
 
 	protected void refreshValidState() {
@@ -99,7 +118,6 @@ public class SeparatorsEditor extends ListEditor {
 		}
 		commandListControl.setSelection(_index);
 		commandListControl.showSelection();
-		commandListControl.update();
 		defaultButton.setEnabled(false);
 	}
 
@@ -108,7 +126,6 @@ public class SeparatorsEditor extends ListEditor {
 		List<String> seps = new LinkedList<String>();
 		for (int i = 0; i < separators.length(); i++) {
 			String ch = separators.substring(i, i + 1);
-
 			seps.add(ch);
 		}
 		return seps.toArray(new String[seps.size()]);
@@ -116,26 +133,59 @@ public class SeparatorsEditor extends ListEditor {
 
 	@Override
 	public org.eclipse.swt.widgets.List getListControl(Composite parent) {
-		org.eclipse.swt.widgets.List listControl = super.getListControl(parent);
-		if (commandListControl == null) {
-			commandListControl = listControl;
-			commandListControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					String value = commandListControl.getSelection()[0];
-					if (value
-							.equals(Activator
-									.getDefault()
-									.getPluginPreferences()
-									.getString(
-											PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES))) {
-						defaultButton.setEnabled(false);
-						return;
-					}
-					defaultButton.setEnabled(true);
+		commandListControl = super.getListControl(parent);
+		commandListControl.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent arg0) {
+				selectionChanged();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				selectionChanged();
+			}
+		});
+
+		commandListControl.addMouseListener(new MouseListener() {
+			public void mouseUp(MouseEvent arg0) {
+				selectionChanged();
+			}
+
+			public void mouseDown(MouseEvent arg0) {
+			}
+
+			public void mouseDoubleClick(MouseEvent arg0) {
+			}
+		});
+
+		commandListControl.addKeyListener(new KeyListener() {
+			public void keyReleased(KeyEvent event) {
+				if (event.keyCode == 32) {
+					storeDefault();
 				}
-			});
-		}
-		return listControl;
+				selectionChanged();
+			}
+
+			public void keyPressed(KeyEvent arg0) {
+			}
+		});
+		return commandListControl;
+	}
+
+	public void dispose() {
+		super.dispose();
+		// org.eclipse.swt.widgets.List listControl =
+		// super.getListControl(parent);
+	}
+
+	@Override
+	protected void doStore() {
+		super.doStore();
+		this.storeDefault();
+	}
+
+	protected void storeDefault() {
+		String value = commandListControl.getSelection()[0];
+		Activator.getDefault().getPluginPreferences().setValue(
+				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES,
+				value);
 	}
 }

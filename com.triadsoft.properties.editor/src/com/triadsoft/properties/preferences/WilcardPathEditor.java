@@ -1,14 +1,26 @@
 package com.triadsoft.properties.preferences;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.ListEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.List;
 
 import com.triadsoft.properties.editor.Activator;
 
 public class WilcardPathEditor extends ListEditor {
 
 	protected Composite parent;
+	protected Composite buttonBox;
+	protected Button defaultButton;
+	protected List listControl;
 
 	public WilcardPathEditor(String name, String label, Composite parent) {
 		super(name, label, parent);
@@ -39,6 +51,96 @@ public class WilcardPathEditor extends ListEditor {
 			return null;
 		}
 		return dialog.getWildcardPath();
+	}
+
+	protected void refreshValidState() {
+		super.refreshValidState();
+		int defaultIndex = Activator
+				.getDefault()
+				.getPluginPreferences()
+				.getInt(
+						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+		listControl.setSelection(defaultIndex);
+		listControl.showSelection();
+		defaultButton.setEnabled(false);
+	}
+
+	public List getListControl(Composite parent) {
+		listControl = super.getListControl(parent);
+		listControl.addMouseListener(new MouseListener() {
+			public void mouseUp(MouseEvent arg0) {
+				selectionChanged();
+			}
+
+			public void mouseDown(MouseEvent arg0) {
+			}
+
+			public void mouseDoubleClick(MouseEvent arg0) {
+			}
+		});
+		listControl.addKeyListener(new KeyListener() {
+			public void keyReleased(KeyEvent event) {
+				if (event.keyCode == 32) {
+					storeDefault();
+				}
+				selectionChanged();
+			}
+
+			public void keyPressed(KeyEvent arg0) {
+			}
+		});
+		return listControl;
+	}
+
+	private void storeDefault() {
+		Activator.getDefault().getPluginPreferences().setValue(
+				PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES,
+				listControl.getSelectionIndex());
+	}
+
+	private void selectionChanged() {
+		if (listControl == null) {
+			listControl = getListControl(parent);
+		}
+		int defaultIndex = Activator
+				.getDefault()
+				.getPluginPreferences()
+				.getInt(
+						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+		defaultButton
+				.setEnabled(listControl.getSelectionIndex() != defaultIndex);
+	}
+
+	@Override
+	protected void doStore() {
+		super.doStore();
+		storeDefault();
+	}
+
+	public Composite getButtonBoxControl(Composite parent) {
+		buttonBox = super.getButtonBoxControl(parent);
+		defaultButton = new Button(buttonBox, SWT.PUSH);
+		defaultButton.setText(Activator
+				.getString(SeparatorsEditor.PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
+		defaultButton.addMouseListener(new MouseListener() {
+			public void mouseUp(MouseEvent arg0) {
+				storeDefault();
+				selectionChanged();
+			}
+
+			public void mouseDown(MouseEvent arg0) {
+			}
+
+			public void mouseDoubleClick(MouseEvent arg0) {
+			}
+		});
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		int widthHint = convertHorizontalDLUsToPixels(defaultButton,
+				IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, defaultButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		defaultButton.setLayoutData(data);
+		return buttonBox;
 	}
 
 	private String getSeparator() {
