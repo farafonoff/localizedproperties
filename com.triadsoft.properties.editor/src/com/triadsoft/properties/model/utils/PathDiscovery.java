@@ -30,6 +30,7 @@ public class PathDiscovery {
 	private IPath path;
 	private String filename;
 	private Locale defaultLocale;
+	private IFile file;
 
 	/**
 	 * Devuelve el path ya parseado como el path desde el proyecto hasta el
@@ -58,12 +59,17 @@ public class PathDiscovery {
 	 *            Archivo a analizar
 	 */
 	public PathDiscovery(IFile file) {
+		this.file = file;
 		wp = getWildcardPath(file);
 		if (wp == null) {
 			throw new RuntimeException(
 					"No se encontr� un wildcard path que coincida con "
 							+ file.getFullPath().toString());
 		}
+		this.searchFiles();
+	}
+
+	public void searchFiles() {
 		wp.parse(file.getFullPath().toString());
 		filename = wp.getFileName();
 		defaultLocale = wp.getLocale();

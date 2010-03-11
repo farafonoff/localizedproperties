@@ -13,6 +13,7 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Table;
 
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -24,6 +25,8 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class CopyKeyAction extends Action {
+	protected static final String MENU_MENUITEM_COPY = "menu.menuitem.copy";
+
 	public static final String NEW_KEY = "new.key";
 
 	private final PropertiesEditor editor;
@@ -37,9 +40,8 @@ public class CopyKeyAction extends Action {
 		}
 	};
 
-	public CopyKeyAction(PropertiesEditor editor, PropertyTableViewer viewer,
-			String text) {
-		super(text);
+	public CopyKeyAction(PropertiesEditor editor, PropertyTableViewer viewer) {
+		super(Activator.getString(MENU_MENUITEM_COPY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;

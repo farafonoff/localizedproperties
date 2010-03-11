@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.AddKeyDialog;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -19,7 +20,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class AddKeyAction extends Action {
-	public static final String NEW_KEY = "new.key";
+	public static final String NEW_KEY = "menu.menuitem.add";
 
 	private final PropertiesEditor editor;
 	private final PropertyTableViewer viewer;
@@ -32,9 +33,8 @@ public class AddKeyAction extends Action {
 		}
 	};
 
-	public AddKeyAction(PropertiesEditor editor, PropertyTableViewer viewer,
-			String text) {
-		super(text);
+	public AddKeyAction(PropertiesEditor editor, PropertyTableViewer viewer) {
+		super(Activator.getString(NEW_KEY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;

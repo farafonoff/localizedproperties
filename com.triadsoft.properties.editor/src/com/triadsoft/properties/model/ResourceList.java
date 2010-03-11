@@ -12,6 +12,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
@@ -43,21 +46,33 @@ public class ResourceList {
 
 	private String filename = null;
 
+	private PathDiscovery pd;
+
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
 	private HashSet<String> allKeys = new HashSet<String>();
 
 	public ResourceList(IFile file) {
 		try {
-			PathDiscovery pd = new PathDiscovery(file);
+			// IWorkspace workspace = file.getWorkspace();
+			// workspace.addResourceChangeListener(this);
+			pd = new PathDiscovery(file);
+			this.loadFiles();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadFiles() {
+		try {
+			allKeys.clear();
+			map.clear();
 			defaultLocale = pd.getDefaultLocale();
 			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
-		} catch (NullPointerException e) {
+		} catch (CoreException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 	}
@@ -200,6 +215,10 @@ public class ResourceList {
 		}
 	}
 
+	public void dispose() {
+		// FIXME: Hay que liberar todo
+	}
+
 	/**
 	 * Metodo que devuelve el listado de propiedades para
 	 * 
@@ -238,5 +257,27 @@ public class ResourceList {
 			list.add(property);
 		}
 		return list.toArray();
+	}
+
+	public boolean resourceChanged(IResourceChangeEvent event) {
+		IResourceDelta rootDelta = event.getDelta();
+		// get the delta, if any, for the documentation directory
+		// IResourceDelta docDelta = rootDelta.findMember(new Path("doc"));
+		if (rootDelta == null)
+			return false;
+		final Map<Integer, IFile> changed = new HashMap<Integer, IFile>();
+		IResourceDeltaVisitor visitor = new ResourceChangeDeltaVisitor(changed,
+				pd.getWildcardPath());
+		try {
+			rootDelta.accept(visitor);
+		} catch (CoreException e) {
+
+		}
+		if (changed.size() > 0) {
+			pd.searchFiles();
+			this.loadFiles();
+			return true;
+		}
+		return false;
 	}
 }

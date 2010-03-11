@@ -1,6 +1,7 @@
 package com.triadsoft.properties.editors.actions;
 
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -10,6 +11,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Table;
 
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
@@ -20,10 +22,11 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class AddLocaleAction extends Action {
+	protected static final String MENU_MENUITEM_ADD_LOCALE = "menu.menuitem.addLocale";
 	private final PropertiesEditor editor;
 	private final PropertyTableViewer viewer;
 	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
-			this.getClass(), "/icons/key_add.png");
+			this.getClass(), "/icons/locale_add.png");
 
 	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent e) {
@@ -31,9 +34,8 @@ public class AddLocaleAction extends Action {
 		}
 	};
 
-	public AddLocaleAction(PropertiesEditor editor, PropertyTableViewer viewer,
-			String text) {
-		super(text);
+	public AddLocaleAction(PropertiesEditor editor, PropertyTableViewer viewer) {
+		super(Activator.getString(MENU_MENUITEM_ADD_LOCALE));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;

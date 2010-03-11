@@ -1,2 +1,0 @@
-Internacionalizar mensajes (hecho)
-Internacionalizar etiquetas (hecho)

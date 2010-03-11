@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Table;
 
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -21,6 +22,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class RemoveKeyAction extends Action {
+	protected static final String MENU_MENUITEM_DELETE_KEY = "menu.menuitem.deleteKey";
 	private final PropertiesEditor editor;
 	private final PropertyTableViewer viewer;
 
@@ -33,9 +35,8 @@ public class RemoveKeyAction extends Action {
 		}
 	};
 
-	public RemoveKeyAction(PropertiesEditor editor, PropertyTableViewer viewer,
-			String text) {
-		super(text);
+	public RemoveKeyAction(PropertiesEditor editor, PropertyTableViewer viewer) {
+		super(Activator.getString(MENU_MENUITEM_DELETE_KEY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;

@@ -9,23 +9,15 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
@@ -33,9 +25,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.properties.editor.Activator;
-import com.triadsoft.properties.editors.actions.AddKeyAction;
-import com.triadsoft.properties.editors.actions.CopyKeyAction;
-import com.triadsoft.properties.editors.actions.RemoveKeyAction;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -82,11 +71,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	private boolean isModified;
 
-	private AddKeyAction addKeyAction;
-	private RemoveKeyAction removeKeyAction;
-
-	private CopyKeyAction copyKeyAction;
-
 	/**
 	 * Crea un editor de propiedades
 	 */
@@ -108,9 +92,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		createPage0();
 		createPage1();
 		setPartName(resource.getFileName());
-		// createPage2();
-		createActions();
-		createContextMenu();
 	}
 
 	/**
@@ -118,12 +99,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 */
 	private void createPage0() {
 		Locale locale = resource.getDefaultLocale();
-		tableViewer = new PropertyTableViewer(getContainer(), locale);
-		tableViewer.setContentProvider(new PropertiesContentProvider());
-		tableViewer.setLabelProvider(new PropertiesLabelProvider(tableViewer));
+		tableViewer = new PropertyTableViewer(this, getContainer(), locale);
 		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
-		tableViewer.setCellModifier(new PropertyModifier(this));
 		int index = addPage(tableViewer.getControl());
 		setPageText(index, Activator.getString("editor.tab.properties"));
 	}
@@ -150,47 +128,6 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 		int index = addPage(composite);
 		setPageText(index, Activator.getString("editor.tab.preview"));
-	}
-
-	private void createActions() {
-		addKeyAction = new AddKeyAction(this, tableViewer, Activator
-				.getString("menu.menuitem.add"));
-		removeKeyAction = new RemoveKeyAction(this, tableViewer, Activator
-				.getString("menu.menuitem.deleteKey"));
-		// removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
-		// Activator.getString("menu.menuitem.deleteLocale"));
-		copyKeyAction = new CopyKeyAction(this, tableViewer, Activator
-				.getString("menu.menuitem.copy"));
-	}
-
-	private MenuManager menuMgr;
-
-	private void createContextMenu() {
-		menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-
-			public void menuAboutToShow(IMenuManager mgr) {
-				PropertiesEditor.this.fillContextMenu(mgr);
-			}
-		});
-		Table table = tableViewer.getTable();
-		Menu menu = menuMgr.createContextMenu(table);
-		table.setMenu(menu);
-		getSite().registerContextMenu(menuMgr, tableViewer);
-	}
-
-	private void fillContextMenu(IMenuManager menuMgr) {
-		addKeyAction.setEnabled(true);
-		menuMgr.add(addKeyAction);
-
-		boolean isEmpty = tableViewer.getSelection().isEmpty();
-		if (!isEmpty) {
-			removeKeyAction.setEnabled(true);
-			menuMgr.add(removeKeyAction);
-		}
-		menuMgr.add(copyKeyAction);
-		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	protected void tableChanged() {
@@ -220,6 +157,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 */
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		tableViewer.dispose();
+		resource.dispose();
 		super.dispose();
 	}
 
@@ -297,7 +236,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 */
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
-		// Codigo aplicado a la pagina seleccionada
+		// FIXME: Se debe sincronizar el contenido cuando se cambia de solapa
+		// para poder usar la segunda solapa
 	}
 
 	/**
@@ -308,22 +248,12 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 * @param event
 	 */
 	public void resourceChanged(final IResourceChangeEvent event) {
-		if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					// IWorkbenchPage[] pages = getSite().getWorkbenchWindow()
-					// .getPages();
-					// for (int i = 0; i < pages.length; i++) {
-					// if (((FileEditorInput) editor.getEditorInput())
-					// .getFile().getProject().equals(
-					// event.getResource())) {
-					// IEditorPart editorPart = pages[i].findEditor(editor
-					// .getEditorInput());
-					// pages[i].closeEditor(editorPart, true);
-					// }
-					// }
-				}
-			});
+		if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
+			return;
+		}
+		if (this.resource.resourceChanged(event)) {
+			tableViewer.setLocales(resource.getLocales());
+			this.tableViewer.refresh();
 		}
 	}
 
