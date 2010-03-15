@@ -35,7 +35,7 @@
       </category>
       <wizard
             category="com.triadsoft.properties"
-            class="com.triadsoft.properties.wizards.LocalizedProperties"
+            class="com.triadsoft.properties.wizards.LocalizedPropertiesWizard"
             icon="icons/localizedProperties.png"
             id="com.triadsoft.properties.wizards.LocalizedProperties"
             name="%localizedProperties.wizard.name">

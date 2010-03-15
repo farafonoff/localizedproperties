@@ -1,15 +1,14 @@
 package com.triadsoft.properties.editors.actions;
 
-import java.util.Iterator;
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
@@ -24,7 +23,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
 public class RemoveLocaleAction extends Action {
 	public static final String MENU_MENUITEM_DELETE_LOCALE = "menu.menuitem.deleteLocale";
 	private final PropertiesEditor editor;
-	private final PropertyTableViewer viewer;
+	private final Locale locale;
 	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
 			this.getClass(), "/icons/locale_delete.png");
 
@@ -40,24 +39,26 @@ public class RemoveLocaleAction extends Action {
 				new Object[] { locale.toString() }));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
-		this.viewer = viewer;
+		this.locale = locale;
 		setEnabled(false);
 		viewer.addSelectionChangedListener(listener);
 	}
 
 	@Override
 	public void run() {
-		ISelection sel = viewer.getSelection();
-		Table table = viewer.getTable();
-		table.setRedraw(false);
-		Iterator<ISelection> iter = ((IStructuredSelection) sel).iterator();
 		try {
-			while (iter.hasNext()) {
-				// TODO:Acá hay que hacer la magia para eliminar
-				iter.next();
+			if (editor.isDirty()) {
+				MessageBox messageBox = new MessageBox(editor.getEditorSite()
+						.getShell(), SWT.OK | SWT.ICON_WARNING);
+				messageBox
+						.setMessage("Tiene cambios sin salvar, debe guardarlos antes de continuar");
+				if (messageBox.open() == SWT.OK) {
+					return;
+				}
 			}
-		} finally {
-			table.setRedraw(true);
+			editor.getResource().removeLocale(locale);
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 }

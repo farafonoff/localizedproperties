@@ -1,5 +1,6 @@
 package com.triadsoft.properties.editors;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -24,6 +25,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
+import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
@@ -69,7 +71,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	private ResourceList resource;
 
-	private boolean isModified;
+	private boolean isTableModified;
+
+	private boolean isTextModified;
 
 	/**
 	 * Crea un editor de propiedades
@@ -90,7 +94,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		resource = new ResourceList(file);
 		createPage0();
-		createPage1();
+		//createPage1();
 		setPartName(resource.getFileName());
 	}
 
@@ -131,7 +135,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	protected void tableChanged() {
-		isModified = true;
+		isTableModified = true;
 		if (!super.isDirty()) {
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		}
@@ -139,15 +143,17 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	@Override
 	protected void handlePropertyChange(int propertyId) {
-		if (propertyId == IEditorPart.PROP_DIRTY) {
-			isModified = isDirty();
+		if (propertyId == IEditorPart.PROP_DIRTY && getActivePage() == 0) {
+			isTableModified = isDirty();
+		} else if (propertyId == IEditorPart.PROP_DIRTY && getActivePage() == 1) {
+			isTextModified = isDirty();
 		}
 		super.handlePropertyChange(propertyId);
 	}
 
 	@Override
 	public boolean isDirty() {
-		return isModified || super.isDirty();
+		return isTableModified || isTextModified || super.isDirty();
 	}
 
 	/**
@@ -174,24 +180,20 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	public void doSave(IProgressMonitor monitor) {
 		// getEditor(0).doSave(monitor);
 		resource.save();
-		isModified = false;
+		isTableModified = false;
+		isTextModified = false;
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 
 	/**
-	 * Saves the multi-page editor's document as another file. Also updates the
-	 * text for page 0's tab, and updates this multi-page editor's input to
-	 * correspond to the nested editor's.
+	 * Sobre escribo el save as... porque no puedo sobrescribir varios archivos
+	 * juntos. Nada para hacer porque nunca será llamado
 	 */
 	public void doSaveAs() {
-		// IEditorPart editor = getEditor(0);
-		// editor.doSaveAs();
-		// setPageText(0, editor.getTitle());
-		// setInput(editor.getEditorInput());
-		// updateTitle();
+		// Nada para hacer porque nunca será llamado;
 	}
 
-	/*
+	/**
 	 * (non-Javadoc) Method declared on IEditorPart
 	 */
 	public void gotoMarker(IMarker marker) {
@@ -234,16 +236,36 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	/**
 	 * Calculates the contents of page 2 when the it is activated.
 	 */
-	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
-		// FIXME: Se debe sincronizar el contenido cuando se cambia de solapa
-		// para poder usar la segunda solapa
+	protected void pageChange(int pageIndex) {
+
+		PropertyFile pf = resource.getPropertyFile(resource.getDefaultLocale());
+		if (pageIndex == 1) {
+			if (isTableModified) {
+				textEditor.getDocumentProvider().getDocument(
+						textEditor.getEditorInput()).set(pf.asText());
+			}
+		} else if (pageIndex == 0) {
+			if (isTextModified) {
+				try {
+					PropertyFile npf = new PropertyFile(textEditor
+							.getDocumentProvider().getDocument(
+									textEditor.getEditorInput()).get(), pf
+							.getEncoding(), pf.getSeparator());
+					npf.setFile(pf.getFile());
+					resource.setPropertyFile(npf, resource.getDefaultLocale());
+					tableViewer.setLocales(resource.getLocales());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		super.pageChange(pageIndex);
 	}
 
 	/**
-	 * TODO: Escucha los cambios de los recursos en el workspace, por el momento
-	 * no aplica. Debería escuchar cada archivo de properties que se crea o
-	 * modifica para poder sincronizarlo con la tabla que se estám mostrando
+	 * Escucha los cambios de los recursos en el workspace, y si es alguno de
+	 * los que le interesa, obtiene los locales actualizados y se los setea a la
+	 * tabla para que actualice las columnas
 	 * 
 	 * @param event
 	 */
@@ -251,9 +273,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
 			return;
 		}
+
 		if (this.resource.resourceChanged(event)) {
 			tableViewer.setLocales(resource.getLocales());
-			this.tableViewer.refresh();
 		}
 	}
 

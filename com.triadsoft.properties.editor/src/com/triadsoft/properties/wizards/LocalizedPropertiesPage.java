@@ -380,7 +380,6 @@ public class LocalizedPropertiesPage extends WizardPage {
 			wp.replace(WildcardPath.ROOT_WILDCARD, resource.getFullPath()
 					.lastSegment());
 			}
-			// wp.replace(WildcardPath.ROOT_WILDCARD,"");
 		}
 		wp.replace(WildcardPath.FILENAME_WILDCARD, fileText.getText());
 		wp.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
@@ -426,14 +425,6 @@ public class LocalizedPropertiesPage extends WizardPage {
 					.getString(WIZARD_PAGE_FILENAME_ERROR_INVALID));
 			return;
 		}
-		// int dotLoc = fileName.lastIndexOf('.');
-		// if (dotLoc != -1) {
-		// String ext = fileName.substring(dotLoc + 1);
-		// if (ext.equalsIgnoreCase("properties") == false) {
-		// updateStatus("File extension must be \"properties\"");
-		// return;
-		// }
-		// }
 		updateStatus(null);
 	}
 

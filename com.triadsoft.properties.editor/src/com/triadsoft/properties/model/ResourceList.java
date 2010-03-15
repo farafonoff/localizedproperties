@@ -1,7 +1,10 @@
 package com.triadsoft.properties.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,10 +15,16 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.common.properties.PropertyCategory;
@@ -24,6 +33,7 @@ import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.model.utils.PathDiscovery;
 import com.triadsoft.properties.model.utils.WildcardPath;
+import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
 
 /**
  * Esta clase es la encargada de manejar el archivo que se intenta abrir desde
@@ -95,6 +105,15 @@ public class ResourceList {
 		return map.keySet().toArray(new Locale[map.keySet().size()]);
 	}
 
+	public PropertyFile getPropertyFile(Locale locale) {
+		return map.get(locale);
+	}
+
+	public void setPropertyFile(PropertyFile pf, Locale locale) {
+		map.put(locale, pf);
+		addKeys(pf);
+	}
+
 	public void addListener(IPropertyFileListener listener) {
 		listeners.add(listener);
 	}
@@ -118,7 +137,7 @@ public class ResourceList {
 				pf = new PropertyFile(ifile, separator);
 			}
 			addKeys(pf);
-			map.put(locale, pf);
+			setPropertyFile(pf, locale);
 		}
 	}
 
@@ -216,7 +235,60 @@ public class ResourceList {
 	}
 
 	public void dispose() {
-		// FIXME: Hay que liberar todo
+		map.clear();
+		map = null;
+		defaultLocale = null;
+		allKeys.clear();
+		allKeys = null;
+
+	}
+
+	public void removeLocale(Locale locale) throws CoreException {
+		PropertyFile pf = (PropertyFile) map.get(locale);
+		map.remove(locale);
+		if (pf != null) {
+			IFile file = pf.getFile();
+			if (file != null) {
+				file.delete(true, null);
+			}
+			((IResource) file).refreshLocal(IResource.ROOT, null);
+		}
+	}
+
+	public void addLocale(Locale locale) {
+		IFile file = map.get(defaultLocale).getFile();
+		String newFilePath = pd.getWildcardPath().getFilePath(file, locale);
+
+		final IFile newFile = file.getWorkspace().getRoot().getFile(
+				new Path(newFilePath));
+		if (newFile.exists()) {
+			MessageDialog.openError(Activator.getShell(), "Error", Activator
+					.getString("preferences.add.locale.action.error",
+							new Object[] { locale }));
+			return;
+		}
+		IRunnableWithProgress op = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException {
+				try {
+					LocalizedPropertiesWizard.createFullFilePath(newFile
+							.getFullPath().removeLastSegments(1));
+					newFile.create(openContentStream(), true, monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
+				} finally {
+					monitor.done();
+				}
+			}
+		};
+
+		try {
+			new ProgressMonitorDialog(Activator.getShell()).run(true, true, op);
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -259,10 +331,14 @@ public class ResourceList {
 		return list.toArray();
 	}
 
+	private InputStream openContentStream() {
+		String contents = "#Default Category\n";
+		return new ByteArrayInputStream(contents.getBytes());
+	}
+
 	public boolean resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta rootDelta = event.getDelta();
 		// get the delta, if any, for the documentation directory
-		// IResourceDelta docDelta = rootDelta.findMember(new Path("doc"));
 		if (rootDelta == null)
 			return false;
 		final Map<Integer, IFile> changed = new HashMap<Integer, IFile>();

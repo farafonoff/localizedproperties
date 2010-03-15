@@ -18,8 +18,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -86,7 +84,6 @@ public class PropertyTableViewer extends TableViewer {
 				TableColumn col = (TableColumn) event.getSource();
 				sorter.setColumn(0);
 				getTable().setSortColumn(col);
-				refresh();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -107,7 +104,6 @@ public class PropertyTableViewer extends TableViewer {
 				sorter.setColumn(1);
 				sorter.setLocale(locales[0]);
 				getTable().setSortColumn(col);
-				refresh();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -130,18 +126,11 @@ public class PropertyTableViewer extends TableViewer {
 				sorter.setColumn(index);
 				sorter.setLocale(locales[index - 2]);
 				getTable().setSortColumn(col);
-				refresh();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent event) {
 			}
 		});
-//		valueColumn.addListener(SWT.Selection, new Listener() {
-//			public void handleEvent(Event event) {
-//				System.out.println(valueColumn.getText());
-//			}
-//		});
-		// createMenuItem(mgr.getMenu(), valueColumn);
 	}
 
 	public Locale[] getLocales() {
@@ -150,20 +139,30 @@ public class PropertyTableViewer extends TableViewer {
 
 	public void setLocales(Locale[] locales) {
 		this.locales = locales;
-		this.localesChanged();
+		this.getControl().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				PropertyTableViewer.this.localesChanged();
+			}
+		});
+
 	}
-	
-	public void dispose(){
-		this.cleanColumns();
+
+	public void dispose() {
+		this.getControl().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				PropertyTableViewer.this.cleanColumns();
+			}
+		});
 		locales = null;
 		mgr = null;
-		defaultColumn =null;
-		defaultLocale=null;
-		editor=null;
+		defaultColumn = null;
+		defaultLocale = null;
+		editor = null;
 		sorter = null;
 	}
 
 	private void localesChanged() {
+		refresh(false);
 		this.cleanColumns();
 		createKeyColumn();
 		createDefaultColumn();
@@ -193,7 +192,7 @@ public class PropertyTableViewer extends TableViewer {
 		refresh(true);
 	}
 
-	private synchronized void cleanColumns() {
+	private void cleanColumns() {
 		while (getTable().getColumnCount() > 0) {
 			getTable().getColumn(0).dispose();
 		}
@@ -204,7 +203,6 @@ public class PropertyTableViewer extends TableViewer {
 			selectedColumn.dispose();
 		}
 		selectedColumn = null;
-		refresh();
 	}
 
 	private void createInitialActions() {
@@ -216,26 +214,20 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	private void createColumnActions(IMenuManager menuMgr) {
-		if (selectedColumn != null) {
-			menuMgr.add(new Separator());
-			RemoveLocaleAction rla = new RemoveLocaleAction(editor, this,
-					StringUtils.getLocale(selectedColumn.getText()));
-			if (selectedColumn.getText().equals(DEFAULT_TEXT)) {
-				rla.setText(Activator.getString(
-						RemoveLocaleAction.MENU_MENUITEM_DELETE_LOCALE,
-						new Object[] { selectedColumn.getText() }));
-			}
-
-			if (!selectedColumn.getText().equals(
-					Activator.getString("editor.table.key"))) {
-				rla.setEnabled(true);
-				menuMgr.add(rla);
-			}
-
-		}
+		menuMgr.add(new Separator());
 		AddLocaleAction ala = new AddLocaleAction(editor, this);
 		ala.setEnabled(true);
 		menuMgr.add(ala);
+		if (selectedColumn != null) {
+			RemoveLocaleAction rla = new RemoveLocaleAction(editor, this,
+					StringUtils.getLocale(selectedColumn.getText()));
+			if (!selectedColumn.equals(defaultColumn)
+					&& !selectedColumn.getText().equals(
+							Activator.getString("editor.table.key"))) {
+				rla.setEnabled(true);
+				menuMgr.add(rla);
+			}
+		}
 	}
 
 	private void createContextMenu() {

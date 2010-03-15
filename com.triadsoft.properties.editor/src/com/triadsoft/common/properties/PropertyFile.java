@@ -80,6 +80,14 @@ public class PropertyFile extends PropertyElement implements
 		this.load(ifile.getLocation().toFile());
 	}
 
+	public PropertyFile(String content, String encoding, Character separator)
+			throws IOException {
+		super();
+		this.encoding = encoding;
+		setSeparator(separator);
+		this.load(content);
+	}
+
 	/**
 	 * 
 	 * @param content
@@ -89,6 +97,10 @@ public class PropertyFile extends PropertyElement implements
 		super();
 		setSeparators(separators);
 		this.load(content);
+	}
+
+	public String getEncoding() {
+		return encoding;
 	}
 
 	/**
@@ -271,7 +283,6 @@ public class PropertyFile extends PropertyElement implements
 		PrintWriter writer = new PrintWriter(stringWriter);
 		Iterator<PropertyCategory> iter = categories.iterator();
 		while (iter.hasNext()) {
-			writer.println();
 			((PropertyCategory) iter.next()).appendText(writer);
 		}
 		return stringWriter.toString();
@@ -454,7 +465,6 @@ public class PropertyFile extends PropertyElement implements
 		Writer out = new OutputStreamWriter(stream, encoding);
 		out.write(asText());
 		out.close();
-		file.touch(null);
 		file.getParent().refreshLocal(IFile.DEPTH_ONE, null);
 	}
 

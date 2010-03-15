@@ -36,14 +36,14 @@ import org.eclipse.ui.ide.IDE;
  * @author Triad (flores.leonardo@gmail.com)
  */
 
-public class LocalizedProperties extends Wizard implements INewWizard {
+public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 	private LocalizedPropertiesPage page;
 	private ISelection selection;
 
 	/**
 	 * Contructor por default
 	 */
-	public LocalizedProperties() {
+	public LocalizedPropertiesWizard() {
 		super();
 		setNeedsProgressMonitor(true);
 	}
@@ -108,7 +108,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 			filefullpath = new Path(containerName.removeLastSegments(1).toString()+filepath);
 		}
 		IPath withoutFileName = filefullpath.removeLastSegments(1);
-		this.createFullFilePath(withoutFileName);
+		LocalizedPropertiesWizard.createFullFilePath(withoutFileName);
 		IResource resource = root.findMember(filefullpath.removeLastSegments(1));
 		IContainer container = (IContainer) resource;
 		final IFile file = container
@@ -145,7 +145,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 	 */
 
 	private InputStream openContentStream() {
-		String contents = "#Default Category";
+		String contents = "#Default Category\n";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
@@ -166,7 +166,7 @@ public class LocalizedProperties extends Wizard implements INewWizard {
 		this.selection = selection;
 	}
 
-	private void createFullFilePath(IPath path) {
+	public static void createFullFilePath(IPath path) {
 		String[] segments = path.segments();
 		IPath testPath = new Path("/" + segments[0]);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

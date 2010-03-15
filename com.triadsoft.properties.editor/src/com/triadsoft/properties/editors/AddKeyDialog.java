@@ -22,6 +22,9 @@ import com.triadsoft.properties.editor.Activator;
  */
 public class AddKeyDialog extends Dialog {
 
+	private static final String PREFERENCES_ADD_KEY_DIALOG_TITLE = "preferences.add.key.dialog.title";
+	private static final String PREFERENCES_ADD_KEY_DIALOG_LABEL = "preferences.add.key.dialog.label";
+	private static final String PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION = "preferences.add.key.dialog.description";
 	private Label label;
 	private Text wildcardPath;
 	private String newKey;
@@ -37,7 +40,8 @@ public class AddKeyDialog extends Dialog {
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
 		description.setText(Activator
-				.getString("preferences.add.dialog.description"));
+				.getString(PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION));
+		
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		GridLayout gridLayout = new GridLayout();
@@ -45,7 +49,7 @@ public class AddKeyDialog extends Dialog {
 		label = new Label(area, SWT.NONE);
 		label
 				.setText(Activator
-						.getString("preferences.add.dialog.newKeyLabel"));
+						.getString(PREFERENCES_ADD_KEY_DIALOG_LABEL));
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
 		wildcardPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -70,7 +74,7 @@ public class AddKeyDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(Activator.getString("preferences.add.dialog.title"));
+		newShell.setText(Activator.getString(PREFERENCES_ADD_KEY_DIALOG_TITLE));
 	}
 
 	public String getNewKey() {

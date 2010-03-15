@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFile;
+
 /**
  * Esta clase es la encargada de encapsular todos la logica para poder parsear y
  * descubrir los datos referidos al path La clase no maneja archivos sino que
@@ -49,13 +51,14 @@ public class WildcardPath {
 	 * @return
 	 */
 	public boolean haveRoot() {
-		//return wildcardpath.matches(ROOT);
+		// return wildcardpath.matches(ROOT);
 		return true;
 	}
 
 	/**
-	 * FIXME: Revisar porque al traducir quedan los puntos escapeados
-	 * 
+	 * TODO: Revisar porque al traducir quedan los puntos escapeados
+	 * No se debe hacer acá porque se usa internamente.
+	 * Ver de mejorar que que el que lo usa de afuera no tenga que escribir código extra
 	 * @return
 	 */
 	public String getPath() {
@@ -90,6 +93,10 @@ public class WildcardPath {
 			locale = new Locale(this.language, this.country);
 		}
 		return locale;
+	}
+
+	public void setParhToRoot(String pathToRoot) {
+		this.pathToRoot = pathToRoot;
 	}
 
 	public String getPathToRoot() {
@@ -390,5 +397,21 @@ public class WildcardPath {
 			return filepath.substring(m.start(), m.end());
 		}
 		return null;
+	}
+
+	public String getFilePath(IFile ifile, Locale locale) {
+		WildcardPath wp = new WildcardPath(this.wildcardpath);
+		wp.parse(ifile.getFullPath().toString());
+		return wp.getFilePath(wp, locale);
+	}
+
+	public String getFilePath(WildcardPath wp, Locale locale) {
+		wp.replace(locale);
+		wp.replace(ROOT_WILDCARD, wp.getRoot());
+		wp.replace(FILENAME_WILDCARD, wp.getFileName());
+		wp.replace(FILE_EXTENSION_WILDCARD, wp.getFileExtension());
+		wp.replace("\\\\.", "\\.");
+		wp.replace("\\_", "_");
+		return wp.getPathToRoot() + wp.getPath();
 	}
 }

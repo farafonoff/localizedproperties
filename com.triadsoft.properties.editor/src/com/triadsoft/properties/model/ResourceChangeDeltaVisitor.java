@@ -23,6 +23,10 @@ public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
+		if (resource.isDerived()) {
+			return false;
+		}
+
 		if (resource.getType() == IResource.FOLDER) {
 			return true;
 		}
@@ -42,11 +46,12 @@ public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 		}
 
 		// only interested in content changes
-		if ((delta.getFlags() & IResourceDelta.CONTENT) == 0) {
+		if ((delta.getFlags() & IResourceDelta.CONTENT) == 0
+				&& !resource.isDerived()) {
 			return true;
 		}
-		
-		if (delta.getKind() == IResourceDelta.CHANGED){
+
+		if (delta.getKind() == IResourceDelta.CHANGED) {
 			return false;
 		}
 
