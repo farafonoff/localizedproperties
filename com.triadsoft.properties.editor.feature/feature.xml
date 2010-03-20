@@ -6,12 +6,13 @@
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor">
 
-   <description url="http://eclipse-plugins.triadsoft.com.ar/propertiesEditor.html">
+   <description url="http://code.google.com/p/localizedproperties/">
       New in this release
-
- - Refactoring of localized properties wizard. Now is more intuitive
- - File change detection (added or deleted), and refilling of the locales table
- - Add and delete locales with context menu
+- Refactoring of localized properties wizard. Now is more intuitive
+- File change detection (added or deleted), and refilling of
+the locales table
+- Add and delete locales with context menu
+- Tested on Linux OS
    </description>
 
    <copyright url="http://www.fsf.org/licensing/licenses/gpl.html">
@@ -870,6 +871,7 @@ Public License instead of this License.  But first, please read
 
    <url>
       <update label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/"/>
+      <discovery label="Localized Properties Update Site (New)" url="http://localizedproperties.googlecode.com/svn/trunk/updates/"/>
    </url>
 
    <requires>
