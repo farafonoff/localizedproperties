@@ -1,6 +1,7 @@
 package com.triadsoft.properties.wizards;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -98,21 +99,28 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 
 	private void doFinish(IPath containerName, IPath filepath, String fileName,
 			IProgressMonitor monitor) throws CoreException {
-		// create a sample file
+		if (containerName.toString().lastIndexOf(File.separatorChar) != containerName
+				.toString().length()) {
+			containerName = new Path(containerName.toString()
+					+ File.separatorChar);
+		}
 		monitor.beginTask("Creating " + fileName, 2);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		String containerText = containerName.lastSegment();
 		String fileContainer = filepath.segment(0);
 		IPath filefullpath = new Path(containerName.toString() + filepath);
 		if (containerText.equals(fileContainer)) {
-			filefullpath = new Path(containerName.removeLastSegments(1).toString()+filepath);
+			filefullpath = new Path(containerName.removeLastSegments(1)
+					.toString()
+					+ filepath);
 		}
 		IPath withoutFileName = filefullpath.removeLastSegments(1);
 		LocalizedPropertiesWizard.createFullFilePath(withoutFileName);
-		IResource resource = root.findMember(filefullpath.removeLastSegments(1));
+		IResource resource = root
+				.findMember(filefullpath.removeLastSegments(1));
 		IContainer container = (IContainer) resource;
-		final IFile file = container
-				.getFile(new Path(filefullpath.lastSegment()));
+		final IFile file = container.getFile(new Path(filefullpath
+				.lastSegment()));
 		try {
 			InputStream stream = openContentStream();
 			if (file.exists()) {
@@ -189,6 +197,7 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 		}
 		if (res == null || !res.exists()) {
 			try {
+				System.out.println(testPath.lastSegment());
 				IFolder fol = root.getFolder(testPath);
 				fol.create(false, false, null);
 			} catch (CoreException e) {
