@@ -21,6 +21,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class RemoveLocaleAction extends Action {
+	protected static final String MESSAGES_UNSAVED_VALUES_WARNING = "messages.unsavedValues.warning";
 	public static final String MENU_MENUITEM_DELETE_LOCALE = "menu.menuitem.deleteLocale";
 	private final PropertiesEditor editor;
 	private final Locale locale;
@@ -50,9 +51,7 @@ public class RemoveLocaleAction extends Action {
 			if (editor.isDirty()) {
 				MessageBox messageBox = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.OK | SWT.ICON_WARNING);
-				// TODO: Localizar
-				messageBox
-						.setMessage("Tiene cambios sin salvar, debe guardarlos antes de continuar");
+				messageBox.setMessage(MESSAGES_UNSAVED_VALUES_WARNING);
 				if (messageBox.open() == SWT.OK) {
 					return;
 				}
