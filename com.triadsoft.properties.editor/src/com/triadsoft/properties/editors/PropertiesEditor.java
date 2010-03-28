@@ -94,7 +94,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		resource = new ResourceList(file);
 		createPage0();
-		//createPage1();
+		// createPage1();
 		setPartName(resource.getFileName());
 	}
 
@@ -119,7 +119,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			int index = addPage(textEditor, getEditorInput());
 			setPageText(index, Activator.getString("editor.tab.preview"));
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		}
 	}
 
@@ -255,7 +255,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 					resource.setPropertyFile(npf, resource.getDefaultLocale());
 					tableViewer.setLocales(resource.getLocales());
 				} catch (IOException e) {
-					e.printStackTrace();
+					Activator.getLogger().error(e.getLocalizedMessage());
 				}
 			}
 		}

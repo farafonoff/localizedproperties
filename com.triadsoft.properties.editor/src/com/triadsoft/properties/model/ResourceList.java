@@ -69,7 +69,7 @@ public class ResourceList {
 			pd = new PathDiscovery(file);
 			this.loadFiles();
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getMessage());
 		}
 	}
 
@@ -81,9 +81,9 @@ public class ResourceList {
 			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		}
 	}
 
@@ -225,11 +225,11 @@ public class ResourceList {
 			try {
 				properties.save();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				Activator.getLogger().error(e.getLocalizedMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				Activator.getLogger().error(e.getLocalizedMessage());
 			} catch (CoreException e) {
-				e.printStackTrace();
+				Activator.getLogger().error(e.getLocalizedMessage());
 			}
 		}
 	}
@@ -285,9 +285,9 @@ public class ResourceList {
 		try {
 			new ProgressMonitorDialog(Activator.getShell()).run(true, true, op);
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		}
 	}
 

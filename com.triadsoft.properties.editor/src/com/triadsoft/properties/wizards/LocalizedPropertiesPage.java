@@ -143,7 +143,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 			defaultsChanged();
 			setControl(container);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		}
 	}
 
@@ -171,8 +171,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 		folderPathContainer.setVisible(!useDefaults);
 		listContainer.setVisible(!useDefaults);
 		if (!useDefaults) {
-//			useDefaultsLabel.setText(Activator
-//					.getString(WIZARD_PAGE_DEFAULT_USE));
+			// useDefaultsLabel.setText(Activator
+			// .getString(WIZARD_PAGE_DEFAULT_USE));
 		} else {
 			useDefaultsLabel.setText(Activator
 					.getString(WIZARD_PAGE_DEFAULT_MODIFY));
@@ -376,9 +376,9 @@ public class LocalizedPropertiesPage extends WizardPage {
 		wp.replace(WildcardPath.LANGUAGE_WILDCARD, languageText.getText());
 
 		if (resource != null) {
-			if(wp.haveRoot()){
-			wp.replace(WildcardPath.ROOT_WILDCARD, resource.getFullPath()
-					.lastSegment());
+			if (wp.haveRoot()) {
+				wp.replace(WildcardPath.ROOT_WILDCARD, resource.getFullPath()
+						.lastSegment());
 			}
 		}
 		wp.replace(WildcardPath.FILENAME_WILDCARD, fileText.getText());

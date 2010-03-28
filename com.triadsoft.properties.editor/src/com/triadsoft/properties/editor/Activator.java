@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -13,6 +12,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
@@ -27,13 +27,11 @@ public class Activator extends AbstractUIPlugin {
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
-	// The plug-in ID
 	public static final String PLUGIN_ID = "com.triadsoft.properties";
 
-	// The shared instance
 	private static Activator plugin;
 
-	// private static ILog logger = Activator.getDefault().getLog();
+	private static LocalizedPropertiesLog logger = new LocalizedPropertiesLog();
 
 	/**
 	 * The constructor
@@ -74,28 +72,13 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public static Logger getLogger() {
-		return getLogger();
-	}
-
 	public static Shell getShell() {
 		return PlatformUI.getWorkbench().getDisplay().getActiveShell();
 	}
 
-	// public static void debug(String message, Throwable th) {
-	// IStatus status = new Status(IStatus.OK, PLUGIN_ID, message, th);
-	// logger.log(status);
-	// }
-	//
-	// public static void info(String message, Throwable th) {
-	// IStatus status = new Status(IStatus.INFO, PLUGIN_ID, message, th);
-	// logger.log(status);
-	// }
-	//
-	// public static void error(String message, Throwable th) {
-	// IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, th);
-	// logger.log(status);
-	// }
+	public static LocalizedPropertiesLog getLogger() {
+		return logger;
+	}
 
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in

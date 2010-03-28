@@ -31,6 +31,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
+import com.triadsoft.properties.editor.Activator;
+
 /**
  * Wizard para poder crear un archivo de recursos internacionalizados
  * 
@@ -186,22 +188,22 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 						IFolder fol = root.getFolder(testPath);
 						fol.create(false, false, null);
 					} catch (CoreException e) {
-						e.printStackTrace();
+						Activator.getLogger().error(e.getLocalizedMessage());
 					}
 				}
 				testPath = testPath.append("/" + segments[i]);
 				res = root.findMember(testPath);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				Activator.getLogger().error(ex.getLocalizedMessage());
 			}
 		}
 		if (res == null || !res.exists()) {
 			try {
-				System.out.println(testPath.lastSegment());
+				Activator.getLogger().debug(testPath.lastSegment());
 				IFolder fol = root.getFolder(testPath);
 				fol.create(false, false, null);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				Activator.getLogger().error(e.getLocalizedMessage());
 			}
 		}
 	}

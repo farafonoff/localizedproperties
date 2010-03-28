@@ -50,6 +50,7 @@ public class RemoveLocaleAction extends Action {
 			if (editor.isDirty()) {
 				MessageBox messageBox = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.OK | SWT.ICON_WARNING);
+				// TODO: Localizar
 				messageBox
 						.setMessage("Tiene cambios sin salvar, debe guardarlos antes de continuar");
 				if (messageBox.open() == SWT.OK) {
@@ -58,7 +59,7 @@ public class RemoveLocaleAction extends Action {
 			}
 			editor.getResource().removeLocale(locale);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Activator.getLogger().error(e.getLocalizedMessage());
 		}
 	}
 }

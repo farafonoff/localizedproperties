@@ -65,7 +65,7 @@ public class CopyKeyAction extends Action {
 				Transfer[] transfers = new Transfer[] { textTransfer };
 				Object[] data = new Object[] { property.getKey() };
 				cb.setContents(data, transfers);
-				System.out.println("Copiando la propiedad.."
+				Activator.getLogger().debug("Copiando la propiedad.."
 						+ property.getKey());
 			}
 		} finally {

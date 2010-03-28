@@ -93,7 +93,7 @@ public class PathDiscovery {
 				try {
 					((IContainer) resource).accept(fv);
 				} catch (CoreException e) {
-					e.printStackTrace();
+					Activator.getLogger().error(e.getMessage());
 				}
 			}
 		}
