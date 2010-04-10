@@ -21,12 +21,6 @@ import com.triadsoft.properties.editors.actions.PastePropertyAction;
  */
 public class MultiPageEditorContributor extends
 		MultiPageEditorActionBarContributor {
-	private IEditorPart activeEditorPart;
-
-	// private static final String[] WORKBENCH_ACTIONS_ID = {
-	// IWorkbenchActionConstants.CUT };
-	// private static final String[] EDITOR_ACTIONS_ID = {
-	// ITextEditorActionConstants.CUT, ITextEditorActionConstants.CUT_LINE };
 
 	private CopyPropertyAction copyAction = null;
 
@@ -58,19 +52,12 @@ public class MultiPageEditorContributor extends
 		IActionBars actionBars = getActionBars();
 		PropertiesEditor editor = ((PropertiesEditor) part);
 		if (actionBars != null && editor != null) {
-			actionBars = editor.getEditorSite().getActionBars();
+			// actionBars = editor.getEditorSite().getActionBars();
 			actionBars.setGlobalActionHandler(ITextEditorActionConstants.CUT,
 					getAction(part, ITextEditorActionConstants.CUT));
 			actionBars.setGlobalActionHandler(
 					ITextEditorActionConstants.DELETE, getAction(part,
 							ITextEditorActionConstants.DELETE));
-			if (copyAction == null) {
-				copyAction = new CopyPropertyAction();
-			}
-
-			if (pasteAction == null) {
-				pasteAction = new PastePropertyAction();
-			}
 			copyAction.setEditor(editor);
 			pasteAction.setEditor(editor);
 
@@ -83,39 +70,16 @@ public class MultiPageEditorContributor extends
 	}
 
 	public void setActivePage(IEditorPart part) {
-		// if (activeEditorPart == part)
-		// return;
-		//
-		// activeEditorPart = part;
-		//
-		// IActionBars actionBars = getActionBars();
-		// PropertiesEditor editor = ((PropertiesEditor) part);
-		// if (actionBars != null && editor != null) {
-		// actionBars = editor.getEditorSite().getActionBars();
-		// actionBars.setGlobalActionHandler(ITextEditorActionConstants.CUT,
-		// getAction(part, ITextEditorActionConstants.CUT));
-		// actionBars.setGlobalActionHandler(
-		// ITextEditorActionConstants.DELETE, getAction(part,
-		// ITextEditorActionConstants.DELETE));
-		// if (copyAction == null) {
-		// copyAction = new CopyPropertyAction();
-		// }
-		//
-		// if (pasteAction == null) {
-		// pasteAction = new PastePropertyAction();
-		// }
-		// copyAction.setEditor(editor);
-		// pasteAction.setEditor(editor);
-		//
-		// getActionBars().setGlobalActionHandler(
-		// ITextEditorActionConstants.COPY, copyAction);
-		// getActionBars().setGlobalActionHandler(
-		// ITextEditorActionConstants.PASTE, pasteAction);
-		// actionBars.updateActionBars();
-		// }
 	}
 
 	private void createActions() {
+		if (copyAction == null) {
+			copyAction = new CopyPropertyAction();
+		}
+
+		if (pasteAction == null) {
+			pasteAction = new PastePropertyAction();
+		}
 	}
 
 	public void contributeToMenu(IMenuManager manager) {
