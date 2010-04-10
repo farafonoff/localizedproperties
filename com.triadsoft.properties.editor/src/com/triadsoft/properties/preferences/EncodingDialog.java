@@ -24,6 +24,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * </p>
  * @deprecated El enconding ahora se obtiene del encoding del archivo.
  * @author Triad (flores.leonardo@gmail.com)
+ * @deprecated Se mantiene para no romper el paquete pero no se usa mas
  */
 public class EncodingDialog extends Dialog {
 

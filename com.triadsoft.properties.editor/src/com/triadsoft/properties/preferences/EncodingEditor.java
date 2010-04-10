@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @deprecated El enconding ahora se obtiene del encoding del archivo.
  * @author Triad (flores.leonardo@triadsoft.com.ar)
- * 
+ * @deprecated Se mantiene para no romper el paquete, pero no se usa mas
  */
 public class EncodingEditor extends ListEditor {
 	private Composite parent;
