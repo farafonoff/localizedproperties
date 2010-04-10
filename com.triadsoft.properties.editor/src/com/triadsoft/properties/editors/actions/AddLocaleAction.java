@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 
 import com.triadsoft.properties.editor.Activator;
-import com.triadsoft.properties.editors.AddLocaleDialog;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
