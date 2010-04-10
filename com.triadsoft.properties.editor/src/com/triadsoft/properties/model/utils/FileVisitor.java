@@ -58,7 +58,8 @@ public class FileVisitor implements IResourceVisitor {
 				comparator.resetPath();
 				if (comparator.parse(resource.getFullPath().toString())) {
 					if (comparator.getLocale() == null) {
-						locales.put(new Locale("xx", "XX"), (IFile) resource);
+						locales.put(StringUtils.getKeyLocale(),
+								(IFile) resource);
 					} else {
 						locales.put(comparator.getLocale(), (IFile) resource);
 					}

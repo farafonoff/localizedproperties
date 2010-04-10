@@ -140,10 +140,10 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage();
 				try {
-					IDE
-							.openEditor(page, file,
-									"com.triadsoft.properties.editors.PropertiesEditor");
+					IDE.openEditor(page, file, Activator.PROPERTIES_EDITOR_ID);
 				} catch (PartInitException e) {
+					Activator.getLogger().error(
+							"No pude cargar el editor de propiedades", e);
 				}
 			}
 		});

@@ -69,7 +69,9 @@ public class PropertyEntry extends PropertyElement {
 				return;
 			}
 			value = text;
-			((PropertyCategory) getParent()).valueChanged(this);
+			if (getParent() != null) {
+				((PropertyCategory) getParent()).valueChanged(this);
+			}
 		} catch (Exception e) {
 			// no hago nada
 			value = null;

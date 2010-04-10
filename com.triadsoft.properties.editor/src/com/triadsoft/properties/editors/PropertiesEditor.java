@@ -10,11 +10,14 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -23,6 +26,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.common.properties.PropertyFile;
@@ -58,6 +63,14 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  */
 public class PropertiesEditor extends MultiPageEditorPart implements
 		IResourceChangeListener, ILocalizedPropertyFileListener {
+
+	private static final String EDITOR_TAB_PROPERTIES = "editor.tab.properties";
+
+	private static final String EDITOR_TAB_PREVIEW = "editor.tab.preview";
+
+	private static final String EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_TITLE = "editor.table.overwriteKey.confirm.title";
+
+	private static final String EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_MESSAGE = "editor.table.overwriteKey.confirm.message";
 
 	public static final String KEY_COLUMN_ID = "key_column";
 
@@ -107,7 +120,25 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
 		int index = addPage(tableViewer.getControl());
-		setPageText(index, Activator.getString("editor.tab.properties"));
+		setPageText(index, Activator.getString(EDITOR_TAB_PROPERTIES));
+	}
+
+	public IAction getTableViewerAction(String workbenchActionId) {
+		if (ITextEditorActionConstants.CUT.equals(workbenchActionId)) {
+			return tableViewer.getRemoveKeyAction();
+		} else if (ITextEditorActionConstants.CUT_LINE
+				.equals(workbenchActionId)) {
+			return tableViewer.getRemoveKeyAction();
+		} else if (ITextEditorActionDefinitionIds.CUT_LINE
+				.equals(workbenchActionId)) {
+			return tableViewer.getRemoveKeyAction();
+		} else if (ITextEditorActionConstants.DELETE.equals(workbenchActionId)) {
+			return tableViewer.getRemoveKeyAction();
+		} else if (ITextEditorActionDefinitionIds.CUT_LINE
+				.equals(workbenchActionId)) {
+			return tableViewer.getRemoveKeyAction();
+		}
+		return null;
 	}
 
 	/**
@@ -117,7 +148,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		try {
 			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
-			setPageText(index, Activator.getString("editor.tab.preview"));
+			setPageText(index, Activator.getString(EDITOR_TAB_PREVIEW));
 		} catch (PartInitException e) {
 			Activator.getLogger().error(e.getLocalizedMessage());
 		}
@@ -131,7 +162,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		text.setEditable(false);
 
 		int index = addPage(composite);
-		setPageText(index, Activator.getString("editor.tab.preview"));
+		setPageText(index, Activator.getString(EDITOR_TAB_PREVIEW));
 	}
 
 	protected void tableChanged() {
@@ -201,6 +232,10 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		IDE.gotoMarker(getEditor(0), marker);
 	}
 
+	public void setActivePage(int pageIndex) {
+		super.setActivePage(pageIndex);
+	}
+
 	public void setFocus() {
 		switch (getActivePage()) {
 		case 0:
@@ -222,6 +257,10 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			throw new PartInitException(
 					"Invalid Input: Must be IFileEditorInput");
 		super.init(site, editorInput);
+	}
+
+	public TableViewer getTableViewer() {
+		return tableViewer;
 	}
 
 	/**
@@ -260,6 +299,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			}
 		}
 		super.pageChange(pageIndex);
+		MultiPageEditorContributor contributor = (MultiPageEditorContributor) getEditorSite()
+				.getActionBarContributor();
+		contributor.setActivePage(this);
 	}
 
 	/**
@@ -296,6 +338,20 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	public void keyChanged(String oldKey, String key) {
+		if (resource.existKey(key)) {
+			MessageBox existMsg = new MessageBox(getEditorSite().getShell(),
+					SWT.YES | SWT.NO | SWT.ICON_WARNING);
+
+			existMsg.setMessage(Activator.getString(
+					EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_MESSAGE,
+					new String[] { key }));
+			existMsg.setText(Activator.getString(
+					EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_TITLE,
+					new String[] { key }));
+			if (existMsg.open() == SWT.NO) {
+				return;
+			}
+		}
 		tableChanged();
 		resource.keyChanged(oldKey, key);
 		tableViewer.refresh();
@@ -304,6 +360,16 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	public void removeKey(String key) {
 		tableChanged();
 		resource.removeKey(key);
+		tableViewer.refresh();
+	}
+
+	/**
+	 * Permite agregar una propiedad que fu copiada al clipboard
+	 * @param property
+	 */
+	public void addProperty(Property property) {
+		resource.addProperty(property);
+		tableChanged();
 		tableViewer.refresh();
 	}
 

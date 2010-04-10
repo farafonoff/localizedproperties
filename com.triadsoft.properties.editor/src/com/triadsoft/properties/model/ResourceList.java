@@ -51,7 +51,7 @@ import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
  */
 public class ResourceList {
 
-	private HashMap<Locale, PropertyFile> map = new HashMap<Locale, PropertyFile>();
+	private HashMap<Locale, PropertyFile> files = new HashMap<Locale, PropertyFile>();
 	private Locale defaultLocale;
 
 	private String filename = null;
@@ -76,7 +76,7 @@ public class ResourceList {
 	private void loadFiles() {
 		try {
 			allKeys.clear();
-			map.clear();
+			files.clear();
 			defaultLocale = pd.getDefaultLocale();
 			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
@@ -102,15 +102,15 @@ public class ResourceList {
 	 * @return Array de Locale
 	 */
 	public Locale[] getLocales() {
-		return map.keySet().toArray(new Locale[map.keySet().size()]);
+		return files.keySet().toArray(new Locale[files.keySet().size()]);
 	}
 
 	public PropertyFile getPropertyFile(Locale locale) {
-		return map.get(locale);
+		return files.get(locale);
 	}
 
 	public void setPropertyFile(PropertyFile pf, Locale locale) {
-		map.put(locale, pf);
+		files.put(locale, pf);
 		addKeys(pf);
 	}
 
@@ -167,7 +167,7 @@ public class ResourceList {
 	 * @return Boolean que indica si se pudo cambiar el valor
 	 */
 	public boolean changeValue(String key, String value, Locale locale) {
-		PropertyFile properties = ((PropertyFile) map.get(locale));
+		PropertyFile properties = ((PropertyFile) files.get(locale));
 		if (properties == null) {
 			return false;
 		}
@@ -186,7 +186,7 @@ public class ResourceList {
 	 */
 	public boolean addKey(String key) {
 		allKeys.add(key);
-		for (Iterator<PropertyFile> iterator = map.values().iterator(); iterator
+		for (Iterator<PropertyFile> iterator = files.values().iterator(); iterator
 				.hasNext();) {
 			PropertyFile myFile = iterator.next();
 			PropertyEntry entry = new PropertyEntry(null, key, "");
@@ -198,7 +198,7 @@ public class ResourceList {
 	public boolean removeKey(String key) {
 		boolean isRemoved = false;
 
-		for (Iterator<PropertyFile> iterator = map.values().iterator(); iterator
+		for (Iterator<PropertyFile> iterator = files.values().iterator(); iterator
 				.hasNext();) {
 			PropertyFile file = (PropertyFile) iterator.next();
 			PropertyEntry entry = file.getPropertyEntry(key);
@@ -211,8 +211,46 @@ public class ResourceList {
 		return isRemoved;
 	}
 
+	public boolean addProperty(Property property) {
+		String key = property.getKey();
+		int index = 0;
+		while (existKey(key) || existKey(property.getKey() + index)) {
+			key = property.getKey() + index;
+			index++;
+		}
+		Locale[] locales = property.getLocales();
+		for (int i = 0; i < locales.length; i++) {
+			PropertyFile pf = files.get(locales[i]);
+			if (pf == null) {
+				continue;
+			}
+			String value = property.getValue(locales[i]);
+			PropertyEntry entry = new PropertyEntry(null, key, value);
+			pf.getDefaultCategory().addEntry(entry);
+			try {
+				pf.save();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+		loadFiles();
+		return true;
+	}
+
+	/**
+	 * Devuelve true en caso que la clave exista
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public boolean existKey(String key) {
+		return allKeys.contains(key);
+	}
+
 	public void keyChanged(String oldKey, String key) {
-		PropertyFile pf = map.get(defaultLocale);
+		PropertyFile pf = files.get(defaultLocale);
 		PropertyEntry e = pf.getPropertyEntry(oldKey);
 		e.setKey(key);
 		allKeys.remove(oldKey);
@@ -221,7 +259,7 @@ public class ResourceList {
 
 	public void save() {
 		for (int i = 0; i < getLocales().length; i++) {
-			PropertyFile properties = (PropertyFile) map.get(getLocales()[i]);
+			PropertyFile properties = (PropertyFile) files.get(getLocales()[i]);
 			try {
 				properties.save();
 			} catch (FileNotFoundException e) {
@@ -235,8 +273,8 @@ public class ResourceList {
 	}
 
 	public void dispose() {
-		map.clear();
-		map = null;
+		files.clear();
+		files = null;
 		defaultLocale = null;
 		allKeys.clear();
 		allKeys = null;
@@ -244,8 +282,8 @@ public class ResourceList {
 	}
 
 	public void removeLocale(Locale locale) throws CoreException {
-		PropertyFile pf = (PropertyFile) map.get(locale);
-		map.remove(locale);
+		PropertyFile pf = (PropertyFile) files.get(locale);
+		files.remove(locale);
 		if (pf != null) {
 			IFile file = pf.getFile();
 			if (file != null) {
@@ -256,7 +294,7 @@ public class ResourceList {
 	}
 
 	public void addLocale(Locale locale) {
-		IFile file = map.get(defaultLocale).getFile();
+		IFile file = files.get(defaultLocale).getFile();
 		String newFilePath = pd.getWildcardPath().getFilePath(file, locale);
 
 		final IFile newFile = file.getWorkspace().getRoot().getFile(
@@ -298,7 +336,8 @@ public class ResourceList {
 	 */
 	public Object[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
-		PropertyFile defaultProperties = ((PropertyFile) map.get(defaultLocale));
+		PropertyFile defaultProperties = ((PropertyFile) files
+				.get(defaultLocale));
 		for (Iterator<String> iter = allKeys.iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
 			Property property = new Property(key);
@@ -312,13 +351,13 @@ public class ResourceList {
 			}
 			property.setValue(defaultLocale, defaultEntry.getValue());
 
-			for (Iterator<Locale> itera = map.keySet().iterator(); itera
+			for (Iterator<Locale> itera = files.keySet().iterator(); itera
 					.hasNext();) {
 				Locale loc = itera.next();
 				if (defaultLocale.equals(loc)) {
 					continue;
 				}
-				PropertyFile properties = ((PropertyFile) map.get(loc));
+				PropertyFile properties = ((PropertyFile) files.get(loc));
 				PropertyEntry entry = properties.getPropertyEntry(key);
 				if (entry == null) {
 					entry = new PropertyEntry(null, key, null);

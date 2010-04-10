@@ -1,6 +1,7 @@
 package com.triadsoft.properties.model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  * 
  */
 public class Property {
+	public static String VALUES_SEPARATOR = "|";
 	private String key;
 	private Map<Locale, String> values = new HashMap<Locale, String>();
 	private Map<Locale, Error> errors = new HashMap<Locale, Error>();
@@ -58,6 +60,10 @@ public class Property {
 		return values.get(locale);
 	}
 
+	public Locale[] getLocales() {
+		return values.keySet().toArray(new Locale[values.keySet().size()]);
+	}
+
 	/**
 	 * Permite establecer el valor para un locale determinado
 	 * 
@@ -89,5 +95,18 @@ public class Property {
 
 	public Error getError(Locale locale) {
 		return errors.get(locale);
+	}
+
+	public String toString() {
+		String ret = key;
+		Iterator<Locale> iter = values.keySet().iterator();
+		while (iter.hasNext()) {
+			Locale loc = iter.next();
+			ret += "|";
+			ret += loc.toString();
+			ret += "|";
+			ret += values.get(loc).toString();
+		}
+		return ret;
 	}
 }

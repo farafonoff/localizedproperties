@@ -3,9 +3,12 @@ package com.triadsoft.properties.editors;
 import java.util.Locale;
 
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.MessageBox;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
+import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.StringUtils;
@@ -23,6 +26,8 @@ import com.triadsoft.properties.model.utils.StringUtils;
  */
 public class PropertyModifier implements ICellModifier {
 
+	protected static final String EDITOR_TABLE_MODIFY_KEY_CONFIRM_TITLE = "editor.table.modifyKey.confirm.title";
+	protected static final String EDITOR_TABLE_MODIFY_KEY_CONFIRM_MESSAGE = "editor.table.modifyKey.confirm.message";
 	private ILocalizedPropertyFileListener listener = null;
 
 	public PropertyModifier(ILocalizedPropertyFileListener listener) {
@@ -37,13 +42,16 @@ public class PropertyModifier implements ICellModifier {
 	 *      java.lang.String)
 	 */
 	public boolean canModify(Object obj, String property) {
-		if (property.equals(PropertiesEditor.KEY_COLUMN_ID)) {
-			return false;
-		}
+		// if (property.equals(PropertiesEditor.KEY_COLUMN_ID)) {
+		// return false;
+		// }
 		return true;
 	}
 
 	public Object getValue(Object obj, String property) {
+		if (property.equals(PropertiesEditor.KEY_COLUMN_ID)) {
+			return ((Property) obj).getKey();
+		}
 		Locale locale = StringUtils.getLocale(property);
 		if (locale != null) {
 			return ((Property) obj).getValue(locale);
@@ -68,9 +76,26 @@ public class PropertyModifier implements ICellModifier {
 			return;
 		}
 		PropertiesEditor editor = (PropertiesEditor) listener;
-		Locale locale = StringUtils.getLocale(property);
-
 		Property properties = (Property) ((Item) obj).getData();
+		if (PropertiesEditor.KEY_COLUMN_ID.equals(property)
+				&& !properties.getKey().equals((String) value)) {
+			MessageBox messageBox = new MessageBox(editor.getEditorSite()
+					.getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+			messageBox.setMessage(Activator.getString(
+					EDITOR_TABLE_MODIFY_KEY_CONFIRM_MESSAGE,
+					new String[] { properties.getKey().toString() }));
+			messageBox.setText(Activator.getString(
+					EDITOR_TABLE_MODIFY_KEY_CONFIRM_TITLE,
+					new String[] { properties.getKey().toString() }));
+			if (messageBox.open() == SWT.YES) {
+				editor.keyChanged(properties.getKey(), (String) value);
+			}
+			return;
+		} else if (PropertiesEditor.KEY_COLUMN_ID.equals(property)) {
+			return;
+		}
+
+		Locale locale = StringUtils.getLocale(property);
 		if (!properties.getValue(locale).equals(value)) {
 			editor.valueChanged(properties.getKey(), (String) value, locale);
 		}

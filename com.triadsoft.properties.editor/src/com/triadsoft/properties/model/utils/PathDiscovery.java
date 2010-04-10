@@ -25,6 +25,7 @@ import com.triadsoft.properties.editor.Activator;
  * @see WildcardPath
  */
 public class PathDiscovery {
+	private static final String PATHDISCOVERY_UNKNOWN_WILDCARD_MESSAGE = "pathdiscovery.unknownWildcard.message";
 	private WildcardPath wp = null;
 	final Map<Locale, IFile> resources = new HashMap<Locale, IFile>();
 	private IPath path;
@@ -62,9 +63,9 @@ public class PathDiscovery {
 		this.file = file;
 		wp = getWildcardPath(file);
 		if (wp == null) {
-			throw new RuntimeException(
-					"No se encontr� un wildcard path que coincida con "
-							+ file.getFullPath().toString());
+			throw new RuntimeException(Activator.getString(
+					PATHDISCOVERY_UNKNOWN_WILDCARD_MESSAGE, new String[] { file
+							.getFullPath().toString() }));
 		}
 		this.searchFiles();
 	}
@@ -74,7 +75,7 @@ public class PathDiscovery {
 		filename = wp.getFileName();
 		defaultLocale = wp.getLocale();
 		if (defaultLocale == null) {
-			defaultLocale = new Locale("xx", "XX");
+			defaultLocale = StringUtils.getKeyLocale();
 		}
 		wp.resetPath();
 		if (wp.getPathToRoot() != null && wp.getRoot() != null) {

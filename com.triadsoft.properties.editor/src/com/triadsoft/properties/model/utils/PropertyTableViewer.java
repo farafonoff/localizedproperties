@@ -1,9 +1,11 @@
 package com.triadsoft.properties.model.utils;
 
+import java.beans.PropertyEditor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -21,6 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesContentProvider;
@@ -41,6 +45,7 @@ import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyTableViewer extends TableViewer {
+	protected static final String EDITOR_TABLE_KEY = "editor.table.key";
 	private static final String DEFAULT_TEXT = "<default>";
 	private TableColumn defaultColumn;
 	private Locale defaultLocale;
@@ -77,7 +82,7 @@ public class PropertyTableViewer extends TableViewer {
 
 	private void createKeyColumn() {
 		TableColumn keyColumn = new TableColumn(getTable(), SWT.NONE);
-		keyColumn.setText(Activator.getString("editor.table.key"));
+		keyColumn.setText(Activator.getString(EDITOR_TABLE_KEY));
 		keyColumn.setWidth(150);
 		keyColumn.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent event) {
@@ -91,10 +96,19 @@ public class PropertyTableViewer extends TableViewer {
 		});
 	}
 
+	public PropertiesEditor getEditor() {
+		return this.editor;
+	}
+
+	public IAction getRemoveKeyAction() {
+		return removeKeyAction;
+	}
+
 	private void createDefaultColumn() {
 		defaultColumn = new TableColumn(getTable(), SWT.NONE);
 		defaultColumn.setText(defaultLocale.toString());
-		if (defaultLocale.toString().equals("xx_XX")) {
+		if (defaultLocale.toString().equals(
+				StringUtils.getKeyLocale().toString())) {
 			defaultColumn.setText(DEFAULT_TEXT);
 		}
 		defaultColumn.setWidth(150);
@@ -114,7 +128,7 @@ public class PropertyTableViewer extends TableViewer {
 	private void createColumn(final Locale locale, final int index) {
 		final TableColumn valueColumn = new TableColumn(getTable(), SWT.NONE);
 		valueColumn.setText(locale.toString());
-		if (locale.toString().equals("xx_XX")) {
+		if (locale.toString().equals(StringUtils.getKeyLocale().toString())) {
 			valueColumn.setText(DEFAULT_TEXT);
 		}
 		valueColumn.setWidth(150);
@@ -170,7 +184,7 @@ public class PropertyTableViewer extends TableViewer {
 		List<CellEditor> editors = new LinkedList<CellEditor>();
 		List<String> columnProperties = new LinkedList<String>();
 		// Editor para la clave que es readonly
-		editors.add(new TextCellEditor(getTable(), SWT.READ_ONLY));
+		editors.add(new TextCellEditor(getTable()));
 		columnProperties.add(PropertiesEditor.KEY_COLUMN_ID);
 		// Creo la columna para el locale por default
 		editors.add(new TextCellEditor(getTable()));
@@ -208,6 +222,8 @@ public class PropertyTableViewer extends TableViewer {
 	private void createInitialActions() {
 		addKeyAction = new AddKeyAction(editor, this);
 		removeKeyAction = new RemoveKeyAction(editor, this);
+		removeKeyAction
+				.setActionDefinitionId(ITextEditorActionConstants.DELETE_LINE);
 		// removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
 		// );
 		copyKeyAction = new CopyKeyAction(editor, this);
@@ -218,12 +234,13 @@ public class PropertyTableViewer extends TableViewer {
 		AddLocaleAction ala = new AddLocaleAction(editor, this);
 		ala.setEnabled(true);
 		menuMgr.add(ala);
-		if (selectedColumn != null) {
+		if (selectedColumn != null
+				&& StringUtils.getLocale(selectedColumn.getText()) != null) {
 			RemoveLocaleAction rla = new RemoveLocaleAction(editor, this,
 					StringUtils.getLocale(selectedColumn.getText()));
 			if (!selectedColumn.equals(defaultColumn)
 					&& !selectedColumn.getText().equals(
-							Activator.getString("editor.table.key"))) {
+							Activator.getString(EDITOR_TABLE_KEY))) {
 				rla.setEnabled(true);
 				menuMgr.add(rla);
 			}
@@ -282,6 +299,6 @@ public class PropertyTableViewer extends TableViewer {
 		}
 		menuMgr.add(copyKeyAction);
 		this.createColumnActions(menuMgr);
-		// menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 }

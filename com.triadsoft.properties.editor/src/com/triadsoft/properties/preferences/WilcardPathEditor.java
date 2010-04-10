@@ -120,8 +120,9 @@ public class WilcardPathEditor extends ListEditor {
 	public Composite getButtonBoxControl(Composite parent) {
 		buttonBox = super.getButtonBoxControl(parent);
 		defaultButton = new Button(buttonBox, SWT.PUSH);
-		defaultButton.setText(Activator
-				.getString(SeparatorsEditor.PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
+		defaultButton
+				.setText(Activator
+						.getString(SeparatorsEditor.PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
 		defaultButton.addMouseListener(new MouseListener() {
 			public void mouseUp(MouseEvent arg0) {
 				storeDefault();

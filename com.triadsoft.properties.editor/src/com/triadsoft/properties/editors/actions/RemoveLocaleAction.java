@@ -21,7 +21,9 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class RemoveLocaleAction extends Action {
-	protected static final String MESSAGES_UNSAVED_VALUES_WARNING = "messages.unsavedValues.warning";
+	protected static final String MENU_MENUITEM_DELETE_LOCALE_CONFIRM_TITLE = "menu.menuitem.deleteLocale.confirm.title";
+	protected static final String MENU_MENUITEM_DELETE_LOCALE_CONFIRM_MESSAGE = "menu.menuitem.deleteLocale.confirm.message";
+
 	public static final String MENU_MENUITEM_DELETE_LOCALE = "menu.menuitem.deleteLocale";
 	private final PropertiesEditor editor;
 	private final Locale locale;
@@ -51,12 +53,32 @@ public class RemoveLocaleAction extends Action {
 			if (editor.isDirty()) {
 				MessageBox messageBox = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.OK | SWT.ICON_WARNING);
-				messageBox.setMessage(MESSAGES_UNSAVED_VALUES_WARNING);
+				messageBox
+						.setMessage(Activator
+								.getString(
+										AddLocaleAction.MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_MESSAGE,
+										new String[] { locale.toString() }));
+				messageBox
+						.setText(Activator
+								.getString(
+										AddLocaleAction.MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_TITLE,
+										new String[] { locale.toString() }));
 				if (messageBox.open() == SWT.OK) {
 					return;
 				}
 			}
-			editor.getResource().removeLocale(locale);
+			MessageBox messageBox = new MessageBox(editor.getEditorSite()
+					.getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+			messageBox.setMessage(Activator.getString(
+					MENU_MENUITEM_DELETE_LOCALE_CONFIRM_MESSAGE,
+					new String[] { locale.toString() }));
+			messageBox.setText(Activator.getString(
+					MENU_MENUITEM_DELETE_LOCALE_CONFIRM_TITLE,
+					new String[] { locale.toString() }));
+			if (messageBox.open() == SWT.YES) {
+				editor.getResource().removeLocale(locale);
+			}
+
 		} catch (CoreException e) {
 			Activator.getLogger().error(e.getLocalizedMessage());
 		}

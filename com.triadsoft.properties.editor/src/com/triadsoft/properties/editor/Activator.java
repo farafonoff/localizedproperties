@@ -23,6 +23,7 @@ import com.triadsoft.properties.preferences.PreferenceConstants;
 public class Activator extends AbstractUIPlugin {
 
 	private static final String BUNDLE_NAME = "com.triadsoft.properties.editor.localizedProperties";
+	public static final String PROPERTIES_EDITOR_ID = "com.triadsoft.properties.editors.PropertiesEditor";
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
@@ -31,12 +32,13 @@ public class Activator extends AbstractUIPlugin {
 
 	private static Activator plugin;
 
-	private static LocalizedPropertiesLog logger = new LocalizedPropertiesLog();
+	private static LocalizedPropertiesLog logger;
 
 	/**
 	 * The constructor
 	 */
 	public Activator() {
+		super();
 	}
 
 	/*
@@ -49,14 +51,12 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		logger = new LocalizedPropertiesLog();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-	 * )
+	/**
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+	 *      )
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;

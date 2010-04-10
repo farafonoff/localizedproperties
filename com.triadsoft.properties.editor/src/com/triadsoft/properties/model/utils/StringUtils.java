@@ -9,6 +9,9 @@ public class StringUtils {
 	private static final String COUNTRY_REGEX = "[A-Z]{2}";
 
 	public static Locale getLocale(String languageCountry) {
+		if (languageCountry.indexOf("_") == -1) {
+			return null;
+		}
 		String language = extractValue(languageCountry, LANGUAGE_REGEX);
 		String country = extractValue(languageCountry, COUNTRY_REGEX);
 
@@ -18,6 +21,10 @@ public class StringUtils {
 			return new Locale(language);
 		}
 		return null;
+	}
+
+	public static Locale getKeyLocale() {
+		return new Locale("xx", "XX");
 	}
 
 	/**
@@ -54,9 +61,9 @@ public class StringUtils {
 	}
 
 	public static void main(String[] args) {
-		Locale locale = StringUtils.getLocale("es_AR");
-		Locale locale1 = StringUtils.getLocale("en|US");
-		Locale locale2 = StringUtils.getLocale("pt.BR");
-		Locale locale3 = StringUtils.getLocale("es.AR");
+		// Locale locale = StringUtils.getLocale("es_AR");
+		// Locale locale1 = StringUtils.getLocale("en|US");
+		// Locale locale2 = StringUtils.getLocale("pt.BR");
+		// Locale locale3 = StringUtils.getLocale("es.AR");
 	}
 }

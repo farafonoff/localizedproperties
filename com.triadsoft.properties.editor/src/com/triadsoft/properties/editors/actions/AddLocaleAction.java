@@ -21,6 +21,8 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * 
  */
 public class AddLocaleAction extends Action {
+	public static final String MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_TITLE = "menu.menuitem.locale.unsaveddata.title";
+	public static final String MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_MESSAGE = "menu.menuitem.locale.unsaveddata.message";
 	protected static final String MENU_MENUITEM_ADD_LOCALE = "menu.menuitem.addLocale";
 	private final PropertiesEditor editor;
 	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
@@ -47,7 +49,10 @@ public class AddLocaleAction extends Action {
 				MessageBox messageBox = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.OK | SWT.ICON_WARNING);
 				messageBox
-						.setMessage("Tiene cambios sin salvar, debe guardarlos antes de continuar");
+						.setMessage(Activator
+								.getString(MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_MESSAGE));
+				messageBox.setText(Activator
+						.getString(MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_TITLE));
 				if (messageBox.open() == SWT.OK) {
 					return;
 				}
