@@ -2,7 +2,7 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties"
-      version="0.6.5"
+      version="0.6.7"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor">
 
@@ -13,6 +13,7 @@
 the locales table
 - Add and delete locales with context menu
 - Tested on Linux OS
+- Global actions, copy &amp; paste properties, now are supported
    </description>
 
    <copyright url="http://www.fsf.org/licensing/licenses/gpl.html">
@@ -887,7 +888,7 @@ Public License instead of this License.  But first, please read
          id="com.triadsoft.properties.editor"
          download-size="0"
          install-size="0"
-         version="0.6.5"
+         version="0.6.7"
          unpack="false"/>
 
 </feature>
