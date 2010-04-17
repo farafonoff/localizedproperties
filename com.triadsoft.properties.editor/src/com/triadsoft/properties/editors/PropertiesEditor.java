@@ -27,7 +27,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.common.properties.PropertyFile;
@@ -125,18 +124,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	public IAction getTableViewerAction(String workbenchActionId) {
 		if (ITextEditorActionConstants.CUT.equals(workbenchActionId)) {
-			return tableViewer.getRemoveKeyAction();
-		} else if (ITextEditorActionConstants.CUT_LINE
-				.equals(workbenchActionId)) {
-			return tableViewer.getRemoveKeyAction();
-		} else if (ITextEditorActionDefinitionIds.CUT_LINE
-				.equals(workbenchActionId)) {
-			return tableViewer.getRemoveKeyAction();
+			return tableViewer.getRemovePropertyAction();
 		} else if (ITextEditorActionConstants.DELETE.equals(workbenchActionId)) {
-			return tableViewer.getRemoveKeyAction();
-		} else if (ITextEditorActionDefinitionIds.CUT_LINE
-				.equals(workbenchActionId)) {
-			return tableViewer.getRemoveKeyAction();
+			return tableViewer.getRemovePropertyAction();
 		}
 		return null;
 	}
@@ -365,6 +355,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	/**
 	 * Permite agregar una propiedad que fu copiada al clipboard
+	 * 
 	 * @param property
 	 */
 	public void addProperty(Property property) {

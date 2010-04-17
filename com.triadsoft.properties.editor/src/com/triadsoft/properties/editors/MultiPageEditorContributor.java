@@ -10,6 +10,9 @@ import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 import com.triadsoft.properties.editors.actions.CopyPropertyAction;
+import com.triadsoft.properties.editors.actions.CutPropertyAction;
+import com.triadsoft.properties.editors.actions.DecreaseFontAction;
+import com.triadsoft.properties.editors.actions.IncreaseFontAction;
 import com.triadsoft.properties.editors.actions.PastePropertyAction;
 
 /**
@@ -25,6 +28,12 @@ public class MultiPageEditorContributor extends
 	private CopyPropertyAction copyAction = null;
 
 	private PastePropertyAction pasteAction = null;
+
+	private CutPropertyAction cutAction = null;
+
+	private IncreaseFontAction increaseFontAction = null;
+
+	private DecreaseFontAction decreaseFontAction = null;
 
 	/**
 	 * Constructor por default
@@ -49,23 +58,35 @@ public class MultiPageEditorContributor extends
 	}
 
 	public void setActiveEditor(IEditorPart part) {
-		IActionBars actionBars = getActionBars();
 		PropertiesEditor editor = ((PropertiesEditor) part);
-		if (actionBars != null && editor != null) {
-			// actionBars = editor.getEditorSite().getActionBars();
-			actionBars.setGlobalActionHandler(ITextEditorActionConstants.CUT,
-					getAction(part, ITextEditorActionConstants.CUT));
-			actionBars.setGlobalActionHandler(
-					ITextEditorActionConstants.DELETE, getAction(part,
-							ITextEditorActionConstants.DELETE));
-			copyAction.setEditor(editor);
-			pasteAction.setEditor(editor);
+		if (getActionBars() != null && editor != null) {
+			getActionBars().setGlobalActionHandler(
+					ITextEditorActionConstants.DELETE,
+					getAction(part, ITextEditorActionConstants.DELETE));
 
-			getActionBars().setGlobalActionHandler(
-					ITextEditorActionConstants.COPY, copyAction);
-			getActionBars().setGlobalActionHandler(
-					ITextEditorActionConstants.PASTE, pasteAction);
-			actionBars.updateActionBars();
+			IAction removeAction = getAction(part,
+					ITextEditorActionConstants.CUT);
+			//cutAction.setRemoveAction(removeAction);
+
+//			copyAction.setEditor(editor);
+//			pasteAction.setEditor(editor);
+//			cutAction.setEditor(editor);
+			increaseFontAction.setEditor(editor);
+			decreaseFontAction.setEditor(editor);
+
+//			getActionBars().setGlobalActionHandler(
+//					ITextEditorActionConstants.CUT, cutAction);
+//			getActionBars().setGlobalActionHandler(
+//					ITextEditorActionConstants.COPY, copyAction);
+//			getActionBars().setGlobalActionHandler(
+//					ITextEditorActionConstants.PASTE, pasteAction);
+
+			getActionBars().setGlobalActionHandler("increaseFont",
+					increaseFontAction);
+			getActionBars().setGlobalActionHandler("decreaseFont",
+					decreaseFontAction);
+
+			getActionBars().updateActionBars();
 		}
 	}
 
@@ -73,12 +94,24 @@ public class MultiPageEditorContributor extends
 	}
 
 	private void createActions() {
-		if (copyAction == null) {
-			copyAction = new CopyPropertyAction();
+//		if (copyAction == null) {
+//			copyAction = new CopyPropertyAction(null);
+//		}
+//
+//		if (pasteAction == null) {
+//			pasteAction = new PastePropertyAction(null);
+//		}
+
+//		if (cutAction == null) {
+//			cutAction = new CutPropertyAction(copyAction, null);
+//		}
+
+		if (increaseFontAction == null) {
+			increaseFontAction = new IncreaseFontAction(null);
 		}
 
-		if (pasteAction == null) {
-			pasteAction = new PastePropertyAction();
+		if (decreaseFontAction == null) {
+			decreaseFontAction = new DecreaseFontAction(null);
 		}
 	}
 

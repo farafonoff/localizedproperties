@@ -26,9 +26,13 @@ import com.triadsoft.properties.model.utils.StringUtils;
  */
 public class PropertyModifier implements ICellModifier {
 
+	private static final String EDITOR_TABLE_MODIFY_KEY_NULLVALUE_TITLE = "editor.table.modifyKey.nullvalue.title";
+	private static final String EDITOR_TABLE_MODIFY_KEY_NULLVALUE_MESSAGE = "editor.table.modifyKey.nullvalue.message";
 	protected static final String EDITOR_TABLE_MODIFY_KEY_CONFIRM_TITLE = "editor.table.modifyKey.confirm.title";
 	protected static final String EDITOR_TABLE_MODIFY_KEY_CONFIRM_MESSAGE = "editor.table.modifyKey.confirm.message";
 	private ILocalizedPropertyFileListener listener = null;
+	private Object item;
+	private String editedProperty;
 
 	public PropertyModifier(ILocalizedPropertyFileListener listener) {
 		this.listener = listener;
@@ -42,6 +46,8 @@ public class PropertyModifier implements ICellModifier {
 	 *      java.lang.String)
 	 */
 	public boolean canModify(Object obj, String property) {
+		item = obj;
+		editedProperty = property;
 		// if (property.equals(PropertiesEditor.KEY_COLUMN_ID)) {
 		// return false;
 		// }
@@ -49,6 +55,7 @@ public class PropertyModifier implements ICellModifier {
 	}
 
 	public Object getValue(Object obj, String property) {
+		editedProperty = property;
 		if (property.equals(PropertiesEditor.KEY_COLUMN_ID)) {
 			return ((Property) obj).getKey();
 		}
@@ -77,7 +84,16 @@ public class PropertyModifier implements ICellModifier {
 		}
 		PropertiesEditor editor = (PropertiesEditor) listener;
 		Property properties = (Property) ((Item) obj).getData();
-		if (PropertiesEditor.KEY_COLUMN_ID.equals(property)
+		if (PropertiesEditor.KEY_COLUMN_ID.equals(property) && value == null) {
+			MessageBox messageBox = new MessageBox(editor.getEditorSite()
+					.getShell(), SWT.OK | SWT.ICON_ERROR);
+			messageBox.setMessage(Activator
+					.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE_MESSAGE));
+			messageBox.setText(Activator
+					.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE_TITLE));
+			messageBox.open();
+			return;
+		} else if (PropertiesEditor.KEY_COLUMN_ID.equals(property)
 				&& !properties.getKey().equals((String) value)) {
 			MessageBox messageBox = new MessageBox(editor.getEditorSite()
 					.getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
@@ -94,10 +110,21 @@ public class PropertyModifier implements ICellModifier {
 		} else if (PropertiesEditor.KEY_COLUMN_ID.equals(property)) {
 			return;
 		}
-
 		Locale locale = StringUtils.getLocale(property);
 		if (!properties.getValue(locale).equals(value)) {
 			editor.valueChanged(properties.getKey(), (String) value, locale);
 		}
+		item = null;
+		editedProperty = null;
+	}
+
+	public void handledValue(String value) {
+		if (item == null) {
+			return;
+		}
+		if (editedProperty == null) {
+			return;
+		}
+		modify(item, editedProperty, value);
 	}
 }
