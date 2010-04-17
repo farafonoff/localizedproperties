@@ -1,6 +1,5 @@
 package com.triadsoft.properties.model.utils;
 
-import java.beans.PropertyEditor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -11,19 +10,20 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 import com.triadsoft.properties.editor.Activator;
@@ -35,8 +35,12 @@ import com.triadsoft.properties.editors.PropertyModifier;
 import com.triadsoft.properties.editors.actions.AddKeyAction;
 import com.triadsoft.properties.editors.actions.AddLocaleAction;
 import com.triadsoft.properties.editors.actions.CopyKeyAction;
-import com.triadsoft.properties.editors.actions.RemoveKeyAction;
+import com.triadsoft.properties.editors.actions.CopyPropertyAction;
+import com.triadsoft.properties.editors.actions.DecreaseFontAction;
+import com.triadsoft.properties.editors.actions.IncreaseFontAction;
+import com.triadsoft.properties.editors.actions.PastePropertyAction;
 import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
+import com.triadsoft.properties.editors.actions.RemovePropertyAction;
 
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
@@ -45,6 +49,10 @@ import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyTableViewer extends TableViewer {
+	protected static final String PREFERENCES_FONT_SIZE = "preferences.font.size";
+	protected static final String PREFERENCES_FONT_MIN_SIZE = "preferences.font.minSize";
+	protected static final String PREFERENCES_FONT_MAX_SIZE = "preferences.font.maxSize";
+
 	protected static final String EDITOR_TABLE_KEY = "editor.table.key";
 	private static final String DEFAULT_TEXT = "<default>";
 	private TableColumn defaultColumn;
@@ -54,20 +62,22 @@ public class PropertyTableViewer extends TableViewer {
 	private PropertiesSorter sorter = new PropertiesSorter(this);
 	private MenuManager mgr;
 	private AddKeyAction addKeyAction;
-	private RemoveKeyAction removeKeyAction;
+	private RemovePropertyAction removePropertyAction;
+	private IncreaseFontAction increaseFontAction;
+	private DecreaseFontAction decreaseFontAction;
 
 	private CopyKeyAction copyKeyAction;
 	private TableColumn selectedColumn;
+	private CopyPropertyAction copyProperty;
+	private PastePropertyAction pastProperty;
 
 	public PropertyTableViewer(PropertiesEditor editor, Composite parent,
 			Locale defaultLocale) {
-		// super(parent, SWT.SINGLE | SWT.FULL_SELECTION |
-		// SWT.MouseDown|SWT.FULL_SELECTION);
-
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.BORDER);
 		this.editor = editor;
-
+		setFontSize(Activator.getDefault().getPreferenceStore().getFloat(
+				PREFERENCES_FONT_SIZE));
 		setContentProvider(new PropertiesContentProvider());
 		setLabelProvider(new PropertiesLabelProvider(this));
 		setCellModifier(new PropertyModifier(editor));
@@ -78,6 +88,47 @@ public class PropertyTableViewer extends TableViewer {
 		setSorter(sorter);
 		this.createInitialActions();
 		this.createContextMenu();
+
+		IAction pasteAction = getEditor().getEditorSite().getActionBars()
+				.getGlobalActionHandler(ITextEditorActionConstants.PASTE);
+		System.out.println(pasteAction);
+	}
+
+	public void setFontSize(float size) {
+		if (size >= Activator.getDefault().getPreferenceStore().getFloat(
+				PREFERENCES_FONT_MAX_SIZE)) {
+			return;
+		}
+		if (size <= Activator.getDefault().getPreferenceStore().getFloat(
+				PREFERENCES_FONT_MIN_SIZE)) {
+			return;
+		}
+		Font font = getTable().getFont();
+		FontData[] fontdata = font.getFontData();
+		FontData data = fontdata[0];
+		data.height = size;
+		getTable().setFont(
+				new Font(editor.getSite().getShell().getDisplay(), data));
+		Activator.getDefault().getPreferenceStore().setValue(
+				PREFERENCES_FONT_SIZE, size);
+		this.updateEditorsFontSize(size);
+	}
+
+	private void updateEditorsFontSize(float size) {
+		if (getCellEditors() == null) {
+			return;
+		}
+		for (int i = 0; i < getCellEditors().length; i++) {
+			PropertyTextEditor ce = (PropertyTextEditor) getCellEditors()[i];
+			ce.setFontSize(size);
+		}
+	}
+
+	public float getFontSize() {
+		Font font = getTable().getFont();
+		FontData[] fontdata = font.getFontData();
+		FontData data = fontdata[0];
+		return data.height;
 	}
 
 	private void createKeyColumn() {
@@ -96,12 +147,16 @@ public class PropertyTableViewer extends TableViewer {
 		});
 	}
 
+	public void editElement(java.lang.Object element, int column) {
+		super.editElement(element, column);
+	}
+
 	public PropertiesEditor getEditor() {
 		return this.editor;
 	}
 
-	public IAction getRemoveKeyAction() {
-		return removeKeyAction;
+	public IAction getRemovePropertyAction() {
+		return removePropertyAction;
 	}
 
 	private void createDefaultColumn() {
@@ -184,10 +239,20 @@ public class PropertyTableViewer extends TableViewer {
 		List<CellEditor> editors = new LinkedList<CellEditor>();
 		List<String> columnProperties = new LinkedList<String>();
 		// Editor para la clave que es readonly
-		editors.add(new TextCellEditor(getTable()));
+		PropertyTextEditor keyEditor = new PropertyTextEditor(getTable());
+		keyEditor.setValidator(new ICellEditorValidator() {
+			public String isValid(Object value) {
+				if (((String) value).trim().length() == 0) {
+					return Activator
+							.getString("editor.table.modifyKey.nullvalue");
+				}
+				return null;
+			}
+		});
+		editors.add(keyEditor);
 		columnProperties.add(PropertiesEditor.KEY_COLUMN_ID);
 		// Creo la columna para el locale por default
-		editors.add(new TextCellEditor(getTable()));
+		editors.add(new PropertyTextEditor(getTable()));
 		columnProperties.add(defaultLocale.toString());
 		mgr = new MenuManager("#PopupMenu");
 		mgr.setRemoveAllWhenShown(true);
@@ -197,7 +262,7 @@ public class PropertyTableViewer extends TableViewer {
 				continue;
 			}
 			createColumn(locales[i], i + 2);
-			editors.add(new TextCellEditor(getTable()));
+			editors.add(new PropertyTextEditor(getTable()));
 			columnProperties.add(locales[i].toString());
 		}
 		setCellEditors(editors.toArray(new CellEditor[editors.size()]));
@@ -221,12 +286,16 @@ public class PropertyTableViewer extends TableViewer {
 
 	private void createInitialActions() {
 		addKeyAction = new AddKeyAction(editor, this);
-		removeKeyAction = new RemoveKeyAction(editor, this);
-		removeKeyAction
+		removePropertyAction = new RemovePropertyAction(editor, this);
+		removePropertyAction
 				.setActionDefinitionId(ITextEditorActionConstants.DELETE_LINE);
 		// removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
 		// );
 		copyKeyAction = new CopyKeyAction(editor, this);
+		increaseFontAction = new IncreaseFontAction(this);
+		decreaseFontAction = new DecreaseFontAction(this);
+		copyProperty = new CopyPropertyAction(editor);
+		pastProperty = new PastePropertyAction(editor);
 	}
 
 	private void createColumnActions(IMenuManager menuMgr) {
@@ -293,12 +362,20 @@ public class PropertyTableViewer extends TableViewer {
 		menuMgr.add(addKeyAction);
 
 		boolean isEmpty = this.getSelection().isEmpty();
-		if (!isEmpty) {
-			removeKeyAction.setEnabled(true);
-			menuMgr.add(removeKeyAction);
-		}
+
+		// Activo o no las acciones que dependen de la seleccion
+		removePropertyAction.setEnabled(!isEmpty);
+		copyProperty.setEnabled(!isEmpty);
+
+		menuMgr.add(removePropertyAction);
 		menuMgr.add(copyKeyAction);
 		this.createColumnActions(menuMgr);
-		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		menuMgr.add(new Separator());
+		menuMgr.add(copyProperty);
+		menuMgr.add(pastProperty);
+		menuMgr.add(new Separator());
+		menuMgr.add(increaseFontAction);
+		menuMgr.add(decreaseFontAction);
+		// menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 }
