@@ -287,10 +287,6 @@ public class PropertyTableViewer extends TableViewer {
 	private void createInitialActions() {
 		addKeyAction = new AddKeyAction(editor, this);
 		removePropertyAction = new RemovePropertyAction(editor, this);
-		removePropertyAction
-				.setActionDefinitionId(ITextEditorActionConstants.DELETE_LINE);
-		// removeLocaleAction = new RemoveLocaleAction(this, tableViewer,
-		// );
 		copyKeyAction = new CopyKeyAction(editor, this);
 		increaseFontAction = new IncreaseFontAction(this);
 		decreaseFontAction = new DecreaseFontAction(this);
