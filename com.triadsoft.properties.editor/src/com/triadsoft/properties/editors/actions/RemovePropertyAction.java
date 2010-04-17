@@ -23,12 +23,12 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * @author Triad (flores.leonardo@gmail.com)
  * 
  */
-public class RemoveKeyAction extends Action {
+public class RemovePropertyAction extends Action {
 	protected static final String MENU_MENUITEM_DELETE_KEY_CONFIRM_TITLE = "menu.menuitem.deleteKey.confirm.title";
 	protected static final String MENU_MENUITEM_DELETE_KEY_CONFIRM_MESSAGE = "menu.menuitem.deleteKey.confirm.message";
 	protected static final String MENU_MENUITEM_DELETE_KEY = "menu.menuitem.deleteKey";
-	private final PropertiesEditor editor;
-	private final PropertyTableViewer viewer;
+	private PropertiesEditor editor;
+	private PropertyTableViewer viewer;
 
 	private final ImageDescriptor imageDescriptor = ImageDescriptor
 			.createFromFile(this.getClass(), "/icons/key_delete.png");
@@ -39,13 +39,26 @@ public class RemoveKeyAction extends Action {
 		}
 	};
 
-	public RemoveKeyAction(PropertiesEditor editor, PropertyTableViewer viewer) {
+	public RemovePropertyAction(PropertiesEditor editor,
+			PropertyTableViewer viewer) {
 		super(Activator.getString(MENU_MENUITEM_DELETE_KEY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;
 		viewer.addSelectionChangedListener(listener);
 		setEnabled(false);
+	}
+
+	public void setEditor(PropertiesEditor editor) {
+		this.editor = editor;
+		if (this.viewer != null) {
+			this.viewer.removeSelectionChangedListener(listener);
+		}
+		if (this.editor == null) {
+			this.viewer = null;
+			return;
+		}
+		this.viewer.addSelectionChangedListener(listener);
 	}
 
 	@SuppressWarnings("unchecked")

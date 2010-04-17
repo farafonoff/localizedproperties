@@ -6,9 +6,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -17,38 +15,29 @@ import org.eclipse.swt.dnd.Transfer;
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
-import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 public class CopyPropertyAction extends Action {
 	private PropertiesEditor editor;
-	private PropertyTableViewer viewer;
 
-	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
-		public void selectionChanged(SelectionChangedEvent e) {
-			setEnabled(!e.getSelection().isEmpty());
-		}
-	};
-
-	public CopyPropertyAction() {
+	public CopyPropertyAction(PropertiesEditor editor) {
 		super("CopyProperty");
-		setEnabled(true);
+		setEditor(editor);
 	}
 
 	public void setEditor(PropertiesEditor editor) {
 		this.editor = editor;
-		if (this.viewer != null) {
-			viewer.removeSelectionChangedListener(listener);
-		}
 		if (editor == null) {
-			this.viewer = null;
 			return;
 		}
-		this.viewer = (PropertyTableViewer) this.editor.getTableViewer();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void run() {
-		ISelection sel = viewer.getSelection();
+		// Si el editor está en modo edicion
+		if (editor != null && editor.getTableViewer().isCellEditorActive()) {
+			return;
+		}
+		ISelection sel = editor.getTableViewer().getSelection();
 		Iterator<Property> iter = ((IStructuredSelection) sel).iterator();
 
 		List props = new LinkedList();
