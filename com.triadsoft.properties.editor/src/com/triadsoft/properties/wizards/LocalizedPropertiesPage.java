@@ -128,7 +128,6 @@ public class LocalizedPropertiesPage extends WizardPage {
 			Composite container = new Composite(parent, SWT.NULL);
 
 			GridLayout layout = new GridLayout();
-			container.setLayout(layout);
 			layout.numColumns = 1;
 			layout.verticalSpacing = 9;
 			container.setLayout(layout);
