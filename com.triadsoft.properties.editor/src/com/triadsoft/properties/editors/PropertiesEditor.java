@@ -15,9 +15,17 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -33,6 +41,7 @@ import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
+import com.triadsoft.properties.model.utils.PropertyFilter;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.WildcardPath;
 
@@ -115,9 +124,48 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 */
 	private void createPage0() {
 		Locale locale = resource.getDefaultLocale();
+		// ---------------------------
+		GridLayout layout = new GridLayout(4, true);
+		layout.numColumns = 4;
+		getContainer().setLayout(layout);
+
+		Composite container = new Composite(getContainer(), SWT.NULL);
+		GridLayout layout1 = new GridLayout();
+		layout1.numColumns = 1;
+		layout1.verticalSpacing = 9;
+		container.setLayout(layout1);
+
+		final PropertyFilter filter = new PropertyFilter();
+
+		Label searchLabel = new Label(container, SWT.NONE);
+		searchLabel.setText("Search: ");
+		final Text searchText = new Text(container, SWT.BORDER | SWT.SEARCH);
+		searchText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_FILL));
+		searchText.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent ke) {
+				filter.setSearchText(searchText.getText());
+				((PropertiesLabelProvider) tableViewer.getLabelProvider())
+						.setSearchText(searchText.getText());
+				tableViewer.refresh();
+			}
+		});
+		// ----------------------------
 		tableViewer = new PropertyTableViewer(this, getContainer(), locale);
 		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
+		// Make the selection available
+		getSite().setSelectionProvider(tableViewer);
+
+		// Layout the viewer
+		GridData gridData = new GridData();
+		gridData.verticalAlignment = GridData.FILL;
+		gridData.horizontalSpan = 2;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalAlignment = GridData.FILL;
+		// tableViewer.getControl().setLayoutData(gridData);
+
 		int index = addPage(tableViewer.getControl());
 		setPageText(index, Activator.getString(EDITOR_TAB_PROPERTIES));
 	}

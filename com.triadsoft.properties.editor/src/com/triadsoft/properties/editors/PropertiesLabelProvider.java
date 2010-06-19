@@ -1,15 +1,24 @@
 package com.triadsoft.properties.editors;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.custom.StyleRange;
 
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
+import com.triadsoft.properties.model.utils.SearchUtils;
 
 /**
  * Provider para las columnas de PropertyTableViewer Tiene como funcion mostrar
@@ -20,15 +29,28 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  * @see PropertyTableViewer
  * 
  */
-public class PropertiesLabelProvider implements ITableLabelProvider {
+public class PropertiesLabelProvider extends StyledCellLabelProvider implements
+		ITableLabelProvider {
 
 	ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(this
 			.getClass(), "/icons/8x8/warning.png");
 
 	private TableViewer viewer;
+	private String searchText;
+	private Color systemColor;
 
 	public PropertiesLabelProvider(TableViewer viewer) {
 		this.viewer = viewer;
+		systemColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
+	}
+
+	/**
+	 * Establece el valor del texto a buscar
+	 * 
+	 * @param searchText
+	 */
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
 	}
 
 	/**
@@ -76,6 +98,32 @@ public class PropertiesLabelProvider implements ITableLabelProvider {
 			return property.getValue(getLocale((String) viewer
 					.getColumnProperties()[index]));
 		}
+	}
+
+	@Override
+	public void update(ViewerCell cell) {
+		Property element = (Property) cell.getElement();
+		int index = cell.getColumnIndex();
+		String columnText = getColumnText(element, index);
+		cell.setText(columnText);
+		cell.setImage(getColumnImage(element, index));
+		if (searchText != null && searchText.length() > 0) {
+			int intRangesCorrectSize[] = SearchUtils.getSearchTermOccurrences(
+					searchText, columnText);
+			List<StyleRange> styleRange = new ArrayList<StyleRange>();
+			for (int i = 0; i < intRangesCorrectSize.length / 2; i++) {
+				StyleRange myStyleRange = new StyleRange(0, 0, null,
+						systemColor);
+				myStyleRange.start = intRangesCorrectSize[i];
+				myStyleRange.length = intRangesCorrectSize[++i];
+				styleRange.add(myStyleRange);
+			}
+			cell.setStyleRanges(styleRange.toArray(new StyleRange[styleRange
+					.size()]));
+		} else {
+			cell.setStyleRanges(null);
+		}
+		super.update(cell);
 	}
 
 	/**
