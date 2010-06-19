@@ -21,10 +21,10 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesContentProvider;
@@ -41,6 +41,8 @@ import com.triadsoft.properties.editors.actions.IncreaseFontAction;
 import com.triadsoft.properties.editors.actions.PastePropertyAction;
 import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
 import com.triadsoft.properties.editors.actions.RemovePropertyAction;
+import com.triadsoft.properties.editors.actions.RemoveSearchTextAction;
+import com.triadsoft.properties.editors.actions.SearchTextAction;
 
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
@@ -66,6 +68,9 @@ public class PropertyTableViewer extends TableViewer {
 	private IncreaseFontAction increaseFontAction;
 	private DecreaseFontAction decreaseFontAction;
 
+	private SearchTextAction searchTextAction;
+	private RemoveSearchTextAction removeSearchTextAction;
+
 	private CopyKeyAction copyKeyAction;
 	private TableColumn selectedColumn;
 	private CopyPropertyAction copyProperty;
@@ -75,6 +80,8 @@ public class PropertyTableViewer extends TableViewer {
 			Locale defaultLocale) {
 		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.BORDER);
+		Composite comp = new Composite(parent, SWT.NONE);
+		comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
 		this.editor = editor;
 		setFontSize(Activator.getDefault().getPreferenceStore().getFloat(
 				PREFERENCES_FONT_SIZE));
@@ -82,16 +89,15 @@ public class PropertyTableViewer extends TableViewer {
 		setLabelProvider(new PropertiesLabelProvider(this));
 		setCellModifier(new PropertyModifier(editor));
 
+		editor.getSite().setSelectionProvider(this);
+
 		getTable().setHeaderVisible(true);
 		getTable().setLinesVisible(true);
 		this.defaultLocale = defaultLocale;
 		setSorter(sorter);
 		this.createInitialActions();
 		this.createContextMenu();
-
-		IAction pasteAction = getEditor().getEditorSite().getActionBars()
-				.getGlobalActionHandler(ITextEditorActionConstants.PASTE);
-		System.out.println(pasteAction);
+		addFilter(new PropertyFilter());
 	}
 
 	public void setFontSize(float size) {
@@ -140,6 +146,7 @@ public class PropertyTableViewer extends TableViewer {
 				TableColumn col = (TableColumn) event.getSource();
 				sorter.setColumn(0);
 				getTable().setSortColumn(col);
+				refresh();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -173,6 +180,7 @@ public class PropertyTableViewer extends TableViewer {
 				sorter.setColumn(1);
 				sorter.setLocale(locales[0]);
 				getTable().setSortColumn(col);
+				refresh();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -195,6 +203,7 @@ public class PropertyTableViewer extends TableViewer {
 				sorter.setColumn(index);
 				sorter.setLocale(locales[index - 2]);
 				getTable().setSortColumn(col);
+				refresh();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent event) {
@@ -292,6 +301,8 @@ public class PropertyTableViewer extends TableViewer {
 		decreaseFontAction = new DecreaseFontAction(this);
 		copyProperty = new CopyPropertyAction(editor);
 		pastProperty = new PastePropertyAction(editor);
+		searchTextAction = new SearchTextAction(editor);
+		removeSearchTextAction = new RemoveSearchTextAction(editor);
 	}
 
 	private void createColumnActions(IMenuManager menuMgr) {
@@ -360,6 +371,7 @@ public class PropertyTableViewer extends TableViewer {
 		boolean isEmpty = this.getSelection().isEmpty();
 
 		// Activo o no las acciones que dependen de la seleccion
+		copyKeyAction.setEnabled(!isEmpty);
 		removePropertyAction.setEnabled(!isEmpty);
 		copyProperty.setEnabled(!isEmpty);
 
@@ -372,6 +384,10 @@ public class PropertyTableViewer extends TableViewer {
 		menuMgr.add(new Separator());
 		menuMgr.add(increaseFontAction);
 		menuMgr.add(decreaseFontAction);
+		menuMgr.add(new Separator());
+		menuMgr.add(searchTextAction);
+		menuMgr.add(removeSearchTextAction);
+
 		// menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 }
