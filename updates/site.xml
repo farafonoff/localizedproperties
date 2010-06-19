@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<site
-      mirrorsURL="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/">
-   <description url="http://localizedproperties.googlecode.com/svn/trunk/updates">
+<site>
+   <description url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/">
       Localized Properties Update Site
    </description>
    <feature url="features/com.triadsoft.properties.editor.feature_0.5.0.jar" id="com.triadsoft.properties.editor.feature" version="0.5.0">
@@ -17,6 +16,9 @@
       <category name="Localized Properties"/>
    </feature>
    <feature url="features/com.triadsoft.properties.editor.feature_0.6.7.jar" id="com.triadsoft.properties.editor.feature" version="0.6.7">
+      <category name="Localized Properties"/>
+   </feature>
+   <feature url="features/com.triadsoft.properties.editor.feature_0.7.0.jar" id="com.triadsoft.properties.editor.feature" version="0.7.0">
       <category name="Localized Properties"/>
    </feature>
    <category-def name="Localized Properties" label="Localized Properties">
