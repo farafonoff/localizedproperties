@@ -1,81 +1,121 @@
 package com.triadsoft.properties.editors.actions;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
+import org.eclipse.jface.viewers.ColumnViewerEditorActivationListener;
+import org.eclipse.jface.viewers.ColumnViewerEditorDeactivationEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
-import com.triadsoft.properties.model.utils.StringUtils;
+import com.triadsoft.properties.model.utils.PropertyTransfer;
 
 public class PastePropertyAction extends Action {
 	private PropertiesEditor editor;
+	private TableViewer viewer;
+	private ViewerCell viewerCell;
+	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
+			this.getClass(), "/icons/page_paste.png");
+
+	private ColumnViewerEditorActivationListener listener = new ColumnViewerEditorActivationListener() {
+
+		@Override
+		public void beforeEditorDeactivated(
+				ColumnViewerEditorDeactivationEvent arg0) {
+
+		}
+
+		@Override
+		public void beforeEditorActivated(
+				ColumnViewerEditorActivationEvent event) {
+
+		}
+
+		@Override
+		public void afterEditorDeactivated(
+				ColumnViewerEditorDeactivationEvent event) {
+			viewerCell = null;
+		}
+
+		@Override
+		public void afterEditorActivated(ColumnViewerEditorActivationEvent event) {
+			viewerCell = (ViewerCell) event.getSource();
+		}
+	};
 
 	public PastePropertyAction(PropertiesEditor editor) {
-		super("PasteProperty");
+		super(Activator.getString("menu.menuitem.pasteProperty.label"));
 		this.editor = editor;
 		setEnabled(true);
+		setImageDescriptor(imageDescriptor);
 	}
 
 	public void setEditor(PropertiesEditor editor) {
 		this.editor = editor;
+		if (this.viewer != null && this.viewer.getColumnViewerEditor() != null) {
+			this.viewer.getColumnViewerEditor().removeEditorActivationListener(
+					listener);
+		}
+		this.viewer = editor.getTableViewer();
+		if (this.viewer != null && this.viewer.getColumnViewerEditor() != null) {
+			this.viewer.getColumnViewerEditor().addEditorActivationListener(
+					listener);
+		}
 	}
 
 	public void run() {
-		if (editor != null && editor.getTableViewer().isCellEditorActive()) {
-			return;
+
+		List<Property> properties = getProperties();
+		String text = getTextValue();
+		if (this.viewer != null && this.viewer.isCellEditorActive()) {
+			if (properties != null) {
+				viewerCell.setText(CopyPropertyAction.asText(properties
+						.toArray(new Property[properties.size()])));
+				return;
+			} else if (text != null) {
+				// Pego el contenido como texto
+				viewerCell.setText(text);
+				return;
+			}
+		} else if (this.viewer != null && !this.viewer.isCellEditorActive()) {
+			if (properties != null) {
+				for (Iterator<Property> iterator = properties.iterator(); iterator
+						.hasNext();) {
+					Property prop = (Property) iterator.next();
+					Activator.getLogger().debug(prop.toString());
+					this.editor.addProperty(prop);
+				}
+			} else {
+				// FIXME: Que hago acá?
+			}
 		}
-		if (pasteResources()) {
-			return;
-		}
+
 	}
 
-	private boolean pasteResources() {
+	@SuppressWarnings("unchecked")
+	private List<Property> getProperties() {
+		PropertyTransfer transfer = PropertyTransfer.getInstance();
+		final Clipboard cb = new Clipboard(editor.getSite().getShell()
+				.getDisplay());
+		List<Property> props = (List<Property>) cb.getContents(transfer);
+		if (props == null) {
+			return null;
+		}
+		return props;
+	}
+
+	private String getTextValue() {
 		TextTransfer transfer = TextTransfer.getInstance();
 		final Clipboard cb = new Clipboard(editor.getSite().getShell()
 				.getDisplay());
-		String props = (String) cb.getContents(transfer);
-		if (props == null) {
-			return false;
-		}
-		List<Property> properties = getProperties(props);
-		for (Iterator<Property> iterator = properties.iterator(); iterator
-				.hasNext();) {
-			Property prop = (Property) iterator.next();
-			Activator.getLogger().debug(prop.toString());
-			this.editor.addProperty(prop);
-		}
-		return true;
-	}
-
-	private List<Property> getProperties(String props) {
-		List<Property> p = new LinkedList<Property>();
-		String[] properties = props.split(System.getProperty("line.separator"));
-		for (int i = 0; i < properties.length; i++) {
-			String[] values = properties[i].split("\\"
-					+ Property.VALUES_SEPARATOR);
-			Property prop = new Property(values[0]);
-			this.parseLocales(prop, values);
-			p.add(prop);
-		}
-		return p;
-	}
-
-	private void parseLocales(Property prop, String[] values) {
-		for (int i = 1; i < values.length; i++) {
-			Locale loc = StringUtils.getLocale(values[i]);
-			if ((i + 1) >= values.length) {
-				prop.setValue(loc, "");
-			} else {
-				prop.setValue(loc, values[i + 1]);
-			}
-			i++;
-		}
+		return (String) cb.getContents(transfer);
 	}
 }
