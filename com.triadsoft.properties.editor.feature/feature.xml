@@ -2,12 +2,19 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties"
-      version="0.6.7"
+      version="0.7.0"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor">
 
-   <description url="http://code.google.com/p/localizedproperties/">
+   <description url="http://localizedproperties.googlecode.com/svn/trunk/updates/">
       New in this release
+- Text searcher
+- Size font control
+- Property Key refactor
+- Default locale from user profile
+- Enabled global actions using common shortcuts (cut,paste,delete)
+
+Previous release
 - Refactoring of localized properties wizard. Now is more intuitive
 - File change detection (added or deleted), and refilling of
 the locales table
@@ -872,7 +879,7 @@ Public License instead of this License.  But first, please read
 
    <url>
       <update label="Localized Properties Update Site (New)" url="http://localizedproperties.googlecode.com/svn/trunk/updates/"/>
-      <discovery label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/"/>
+      <discovery label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/updates/"/>
    </url>
 
    <requires>
@@ -888,7 +895,7 @@ Public License instead of this License.  But first, please read
          id="com.triadsoft.properties.editor"
          download-size="0"
          install-size="0"
-         version="0.6.7"
+         version="0.7.0"
          unpack="false"/>
 
 </feature>
