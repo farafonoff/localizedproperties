@@ -26,6 +26,7 @@ import com.triadsoft.properties.editor.Activator;
  */
 public class PathDiscovery {
 	private static final String PATHDISCOVERY_UNKNOWN_WILDCARD_MESSAGE = "pathdiscovery.unknownWildcard.message";
+	private static final String PATHDISCOVERY_UNKNOWN_FILENAME_MESSAGE = "pathdiscovery.unknownFilename.message";
 	private WildcardPath wp = null;
 	final Map<Locale, IFile> resources = new HashMap<Locale, IFile>();
 	private IPath path;
@@ -72,6 +73,11 @@ public class PathDiscovery {
 
 	public void searchFiles() {
 		wp.parse(file.getFullPath().toString());
+		if (wp.getFileName() == null) {
+			throw new RuntimeException(Activator.getString(
+					PATHDISCOVERY_UNKNOWN_FILENAME_MESSAGE, new String[] { file
+							.getFullPath().toString() }));
+		}
 		filename = wp.getFileName();
 		defaultLocale = wp.getLocale();
 		if (defaultLocale == null) {
