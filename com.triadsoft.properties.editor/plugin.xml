@@ -7,7 +7,7 @@
       <editor
             class="com.triadsoft.properties.editors.PropertiesEditor"
             contributorClass="com.triadsoft.properties.editors.MultiPageEditorContributor"
-            extensions="properties"
+            extensions="properties,ini"
             icon="icons/localizedProperties.png"
             id="com.triadsoft.properties.editors.PropertiesEditor"
             name="%localizedProperties.editor.name">
