@@ -75,7 +75,8 @@ public class PastePropertyAction extends Action {
 
 		List<Property> properties = getProperties();
 		String text = getTextValue();
-		if (this.viewer != null && this.viewer.isCellEditorActive()) {
+		if (this.viewer != null && viewerCell != null) {
+		//if (this.viewer != null && this.viewer.isCellEditorActive()) {
 			if (properties != null) {
 				viewerCell.setText(CopyPropertyAction.asText(properties
 						.toArray(new Property[properties.size()])));
