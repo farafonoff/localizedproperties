@@ -70,7 +70,7 @@ public class SeparatorsEditor extends ListEditor {
 			defaultButton.addMouseListener(new MouseListener() {
 				public void mouseUp(MouseEvent arg0) {
 					storeDefault();
-					selectionChanged();
+					selectionChanged1();
 				}
 
 				public void mouseDown(MouseEvent arg0) {
@@ -89,7 +89,7 @@ public class SeparatorsEditor extends ListEditor {
 		return buttonBox;
 	}
 
-	private void selectionChanged() {
+	private void selectionChanged1() {
 		if (commandListControl == null) {
 			commandListControl = getListControl(parent);
 		}
@@ -136,17 +136,17 @@ public class SeparatorsEditor extends ListEditor {
 		commandListControl = super.getListControl(parent);
 		commandListControl.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent arg0) {
-				selectionChanged();
+				selectionChanged1();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				selectionChanged();
+				selectionChanged1();
 			}
 		});
 
 		commandListControl.addMouseListener(new MouseListener() {
 			public void mouseUp(MouseEvent arg0) {
-				selectionChanged();
+				selectionChanged1();
 			}
 
 			public void mouseDown(MouseEvent arg0) {
@@ -161,7 +161,7 @@ public class SeparatorsEditor extends ListEditor {
 				if (event.keyCode == 32) {
 					storeDefault();
 				}
-				selectionChanged();
+				selectionChanged1();
 			}
 
 			public void keyPressed(KeyEvent arg0) {

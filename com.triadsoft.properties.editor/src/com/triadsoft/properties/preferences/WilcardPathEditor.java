@@ -69,7 +69,7 @@ public class WilcardPathEditor extends ListEditor {
 		listControl = super.getListControl(parent);
 		listControl.addMouseListener(new MouseListener() {
 			public void mouseUp(MouseEvent arg0) {
-				selectionChanged();
+				selectionChanged1();
 			}
 
 			public void mouseDown(MouseEvent arg0) {
@@ -83,7 +83,7 @@ public class WilcardPathEditor extends ListEditor {
 				if (event.keyCode == 32) {
 					storeDefault();
 				}
-				selectionChanged();
+				selectionChanged1();
 			}
 
 			public void keyPressed(KeyEvent arg0) {
@@ -98,7 +98,7 @@ public class WilcardPathEditor extends ListEditor {
 				listControl.getSelectionIndex());
 	}
 
-	private void selectionChanged() {
+	private void selectionChanged1() {
 		if (listControl == null) {
 			listControl = getListControl(parent);
 		}
@@ -126,7 +126,7 @@ public class WilcardPathEditor extends ListEditor {
 		defaultButton.addMouseListener(new MouseListener() {
 			public void mouseUp(MouseEvent arg0) {
 				storeDefault();
-				selectionChanged();
+				selectionChanged1();
 			}
 
 			public void mouseDown(MouseEvent arg0) {
