@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Table;
 
 /**
  * Text editor para las celdas de las propiedades
+ * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class PropertyTextEditor extends TextCellEditor {
@@ -16,8 +17,6 @@ public class PropertyTextEditor extends TextCellEditor {
 		Table table = (Table) composite;
 		setFontSize(table.getFont().getFontData()[0].height);
 	}
-	
-	
 
 	public void setFontSize(float fontSize) {
 		Font font = getControl().getFont();

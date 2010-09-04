@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.widgets.Item;
 
 import com.triadsoft.properties.editor.Activator;
 import com.triadsoft.properties.editors.PropertiesEditor;
@@ -19,6 +20,7 @@ import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTransfer;
 
 public class PastePropertyAction extends Action {
+	private static final String MENU_MENUITEM_PASTE_PROPERTY_LABEL = "menu.menuitem.pasteProperty.label";
 	private PropertiesEditor editor;
 	private TableViewer viewer;
 	private ViewerCell viewerCell;
@@ -52,8 +54,8 @@ public class PastePropertyAction extends Action {
 	};
 
 	public PastePropertyAction(PropertiesEditor editor) {
-		super(Activator.getString("menu.menuitem.pasteProperty.label"));
-		this.editor = editor;
+		super(Activator.getString(MENU_MENUITEM_PASTE_PROPERTY_LABEL));
+		setEditor(editor);
 		setEnabled(true);
 		setImageDescriptor(imageDescriptor);
 	}
@@ -64,6 +66,9 @@ public class PastePropertyAction extends Action {
 			this.viewer.getColumnViewerEditor().removeEditorActivationListener(
 					listener);
 		}
+		if (editor == null) {
+			return;
+		}
 		this.viewer = editor.getTableViewer();
 		if (this.viewer != null && this.viewer.getColumnViewerEditor() != null) {
 			this.viewer.getColumnViewerEditor().addEditorActivationListener(
@@ -72,33 +77,28 @@ public class PastePropertyAction extends Action {
 	}
 
 	public void run() {
-
 		List<Property> properties = getProperties();
 		String text = getTextValue();
-		if (this.viewer != null && viewerCell != null) {
-		//if (this.viewer != null && this.viewer.isCellEditorActive()) {
-			if (properties != null) {
-				viewerCell.setText(CopyPropertyAction.asText(properties
-						.toArray(new Property[properties.size()])));
-				return;
-			} else if (text != null) {
-				// Pego el contenido como texto
-				viewerCell.setText(text);
-				return;
-			}
-		} else if (this.viewer != null && !this.viewer.isCellEditorActive()) {
-			if (properties != null) {
-				for (Iterator<Property> iterator = properties.iterator(); iterator
-						.hasNext();) {
-					Property prop = (Property) iterator.next();
-					Activator.getLogger().debug(prop.toString());
-					this.editor.addProperty(prop);
-				}
-			} else {
-				// FIXME: Que hago acá?
+		if (this.editor == null) {
+			return;
+		}
+		this.viewer = editor.getTableViewer();
+		if (this.viewer != null && viewerCell != null && text != null) {
+			// Pego el contenido como texto
+			Item elem = (Item) viewerCell.getItem();
+			String columnKey = (String) this.viewer.getColumnProperties()[viewerCell
+					.getColumnIndex()];
+			this.viewer.getCellModifier().modify(elem, columnKey, text);
+			return;
+		} else if (this.viewer != null && text == null && properties != null
+				&& properties.size() > 0) {
+			for (Iterator<Property> iterator = properties.iterator(); iterator
+					.hasNext();) {
+				Property prop = (Property) iterator.next();
+				Activator.getLogger().debug(prop.toString());
+				this.editor.addProperty(prop);
 			}
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -107,6 +107,7 @@ public class PastePropertyAction extends Action {
 		final Clipboard cb = new Clipboard(editor.getSite().getShell()
 				.getDisplay());
 		List<Property> props = (List<Property>) cb.getContents(transfer);
+		cb.clearContents();
 		if (props == null) {
 			return null;
 		}
