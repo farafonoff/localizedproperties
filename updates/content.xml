@@ -3,7 +3,7 @@
 <repository name='Update Site' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1284294724687'/>
+    <property name='p2.timestamp' value='1284298951453'/>
   </properties>
   <references size='4'>
     <repository uri='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' type='0' options='0'/>
@@ -22,7 +22,7 @@
         <provided namespace='org.eclipse.equinox.p2.iu' name='Localized Properties' version='1.0.0.07C79cM0sg6'/>
       </provides>
       <requires size='1'>
-        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.7.5,0.7.5]'>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' range='[0.7.5,0.7.5]'>
           <filter>
             (&amp;(osgi.nl=es_AR)(osgi.ws=win32)(|(osgi.os=linux)(osgi.os=win32)))
           </filter>
@@ -88,8 +88,8 @@
         </instructions>
       </touchpointData>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.6.7' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.6.7)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.6.7' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.6.7)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='New in this release&#xA;- Refactoring of localized properties wizard. Now is more intuitive&#xA;- File change detection (added or deleted), and refilling of&#xA;the locales table&#xA;- Add and delete locales with context menu&#xA;- Tested on Linux OS&#xA;- Global actions, copy &amp; paste properties, now are supported'/>
@@ -98,7 +98,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.6.7'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.6.7'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
@@ -257,8 +257,8 @@
         This program is free software: you can redistribute it and/or&#xA;modify it under the terms of the GNU General Public License as&#xA;published&#xA;by the Free Software Foundation, either version 3 of the License,&#xA;or(at your option) any later version.&#xA;This program is distributed in the hope that it will be useful,but&#xA;WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY&#xA;or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public&#xA;License for more details.&#xA;You should have received a copy of the GNU General Public License&#xA;along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
       </copyright>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.7.0' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.7.0)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.7.0' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.7.0)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='New in this release&#xA;- Text searcher&#xA;- Size font control&#xA;- Property Key refactor&#xA;- Default locale from user profile&#xA;- Enabled global actions using common shortcuts (cut,paste,delete)&#xA;&#xA;Previous release&#xA;- Refactoring of localized properties wizard. Now is more intuitive&#xA;- File change detection (added or deleted), and refilling of&#xA;the locales table&#xA;- Add and delete locales with context menu&#xA;- Tested on Linux OS&#xA;- Global actions, copy &amp; paste properties, now are supported'/>
@@ -267,7 +267,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.7.0'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.7.0'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
@@ -362,8 +362,8 @@
         </instructions>
       </touchpointData>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.7.5' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.7.5)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.7.5' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.7.5)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='New in this release&#xA;- NEW! Files with ini extension now are supported &#xA;- Correction on Default Locale selection&#xA;- Paste context menu fixed&#xA;- Paste shortcut CRTL+V fixed&#xA;&#xA;Previous release&#xA;- Text searcher&#xA;- Size font control&#xA;- Property Key refactor&#xA;- Default locale from user profile&#xA;- Enabled global actions using common shortcuts (cut,paste,delete)&#xA;- Refactoring of localized properties wizard. Now is more intuitive&#xA;- File change detection (added or deleted), and refilling of&#xA;the locales table&#xA;- Add and delete locales with context menu&#xA;- Tested on Linux OS&#xA;- Global actions, copy &amp; paste properties, now are supported'/>
@@ -372,7 +372,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.7.5'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.7.5'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
@@ -473,8 +473,8 @@
         </instructions>
       </touchpointData>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.6.0' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.6.0)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.6.0' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.6.0)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='The goal of the plugin is to provide an editor where we can review&#xA;and modify all resource files at once and get a glimpse of the&#xA;texts for all languages. This plugin supports files of various programming languages, based in a concept called WildcardPath.&#xA;The WildcardPath is a text string with a structure, that allow discover the directories where the property files was encountered.'/>
@@ -483,7 +483,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.6.0'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.6.0'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
@@ -588,12 +588,12 @@
         <provided namespace='org.eclipse.equinox.p2.iu' name='Localized Properties' version='0.0.0'/>
       </provides>
       <requires size='1'>
-        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.5.0,0.5.0]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' range='[0.5.0,0.5.0]'/>
       </requires>
       <touchpoint id='null' version='0.0.0'/>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.6.5' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.6.5)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.6.5' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.6.5)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='New in this release&#xA;&#xA; - Refactoring of localized properties wizard. Now is more intuitive&#xA; - File change detection (added or deleted), and refilling of the locales table&#xA; - Add and delete locales with context menu'/>
@@ -602,7 +602,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.6.5'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.6.5'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
@@ -820,8 +820,8 @@
         This program is free software: you can redistribute it and/or&#xA;modify it under the terms of the GNU General Public License as published&#xA;by the Free Software Foundation, either version 3 of the License,&#xA;or(at your option) any later version.&#xA;This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.&#xA;You should have received a copy of the GNU General Public License along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
       </copyright>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.5.0' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.5.0)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.5.0' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.5.0)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='The goal of the plugin is to provide an editor where we can review&#xA;and modify all resource files at once and get a glimpse of the&#xA;texts for all languages. This plugin supports files of various programming languages, based in a concept called WildcardPath.&#xA;The WildcardPath is a text string with a structure, that allow discover the directories where the property files was encountered.'/>
@@ -830,7 +830,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.5.0'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.5.0'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
@@ -919,8 +919,8 @@
         </instructions>
       </touchpointData>
     </unit>
-    <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.5.5' singleton='false'>
-      <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.5.5)' severity='0'/>
+    <unit id='com.triadsoft.properties.editor.feature' version='0.5.5' singleton='false'>
+      <update id='com.triadsoft.properties.editor.feature' range='[0.0.0,0.5.5)' severity='0'/>
       <properties size='5'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
         <property name='org.eclipse.equinox.p2.description' value='The goal of the plugin is to provide an editor where we can review&#xA;and modify all resource files at once and get a glimpse of the&#xA;texts for all languages. This plugin supports files of various programming languages, based in a concept called WildcardPath.&#xA;The WildcardPath is a text string with a structure, that allow discover the directories where the property files was encountered.'/>
@@ -929,7 +929,7 @@
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
       </properties>
       <provides size='1'>
-        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' version='0.5.5'/>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature' version='0.5.5'/>
       </provides>
       <requires size='8'>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
