@@ -1,5 +1,8 @@
 package com.triadsoft.properties.editor.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.eclipse.core.resources.IFile;
@@ -35,5 +38,18 @@ public class LocalizedPropertiesTest extends TestCase {
 
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	protected void createFile(IFile file) {
+		if (!file.exists()) {
+			String contents = "#Default Category\n";
+			InputStream stream = new ByteArrayInputStream(contents.getBytes());
+			try {
+				file.create(stream, true, null);
+			} catch (CoreException e) {
+				assertTrue("No se pudo crear el archivo",false);
+				e.printStackTrace();
+			}
+		}
 	}
 }
