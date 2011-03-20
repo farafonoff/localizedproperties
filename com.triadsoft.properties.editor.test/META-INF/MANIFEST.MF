@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: com.triadsoft.properties.editor.test
+Bundle-Version: 0.0.1
+Bundle-Activator: com.triadsoft.properties.editor.test.LocalizedPropertiesTestPlugin
+Bundle-Vendor: TRIADSOFT
+Require-Bundle: org.eclipse.core.runtime,
+ com.triadsoft.properties.editor;bundle-version="0.7.5",
+ org.junit4;bundle-version="4.8.1",
+ org.eclipse.core.resources;bundle-version="3.6.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Eclipse-LazyStart: true
