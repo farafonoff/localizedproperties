@@ -38,7 +38,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
 import com.triadsoft.common.properties.PropertyFile;
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.PropertyFilter;
@@ -167,7 +167,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		// tableViewer.getControl().setLayoutData(gridData);
 
 		int index = addPage(tableViewer.getControl());
-		setPageText(index, Activator.getString(EDITOR_TAB_PROPERTIES));
+		setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PROPERTIES));
 	}
 
 	public IAction getTableViewerAction(String workbenchActionId) {
@@ -186,9 +186,9 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		try {
 			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
-			setPageText(index, Activator.getString(EDITOR_TAB_PREVIEW));
+			setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
 		} catch (PartInitException e) {
-			Activator.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesPlugin.getLogger().error(e.getLocalizedMessage());
 		}
 	}
 
@@ -200,7 +200,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		text.setEditable(false);
 
 		int index = addPage(composite);
-		setPageText(index, Activator.getString(EDITOR_TAB_PREVIEW));
+		setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
 	}
 
 	protected void tableChanged() {
@@ -332,7 +332,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 					resource.setPropertyFile(npf, resource.getDefaultLocale());
 					tableViewer.setLocales(resource.getLocales());
 				} catch (IOException e) {
-					Activator.getLogger().error(e.getLocalizedMessage());
+					LocalizedPropertiesPlugin.getLogger().error(e.getLocalizedMessage());
 				}
 			}
 		}
@@ -380,10 +380,10 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			MessageBox existMsg = new MessageBox(getEditorSite().getShell(),
 					SWT.YES | SWT.NO | SWT.ICON_WARNING);
 
-			existMsg.setMessage(Activator.getString(
+			existMsg.setMessage(LocalizedPropertiesPlugin.getString(
 					EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_MESSAGE,
 					new String[] { key }));
-			existMsg.setText(Activator.getString(
+			existMsg.setText(LocalizedPropertiesPlugin.getString(
 					EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_TITLE,
 					new String[] { key }));
 			if (existMsg.open() == SWT.NO) {
