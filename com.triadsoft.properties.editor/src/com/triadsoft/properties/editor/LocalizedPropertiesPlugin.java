@@ -20,7 +20,7 @@ import com.triadsoft.properties.preferences.PreferenceConstants;
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
-public class Activator extends AbstractUIPlugin {
+public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 
 	private static final String BUNDLE_NAME = "com.triadsoft.properties.editor.localizedProperties";
 	public static final String PROPERTIES_EDITOR_ID = "com.triadsoft.properties.editors.PropertiesEditor";
@@ -30,14 +30,14 @@ public class Activator extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "com.triadsoft.properties";
 
-	private static Activator plugin;
+	private static LocalizedPropertiesPlugin plugin;
 
 	private static LocalizedPropertiesLog logger;
 
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public LocalizedPropertiesPlugin() {
 		super();
 	}
 
@@ -68,7 +68,7 @@ public class Activator extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static LocalizedPropertiesPlugin getDefault() {
 		return plugin;
 	}
 
@@ -93,7 +93,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public static String[] getWildcardPaths() {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault().getPreferenceStore();
 		return store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES)
 				.split("\\|");
 	}
