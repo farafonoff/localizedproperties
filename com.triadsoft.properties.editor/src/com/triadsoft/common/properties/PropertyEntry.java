@@ -5,7 +5,7 @@ package com.triadsoft.common.properties;
 
 import java.io.PrintWriter;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
  * @author Triad (flores.leonardo@gmail.com)
@@ -110,7 +110,7 @@ public class PropertyEntry extends PropertyElement {
 	public void appendText(PrintWriter writer) {
 		writer.print(key);
 		if (getSeparator() == null) {
-			setSeparator(Activator.getDefaultSeparator());
+			setSeparator(LocalizedPropertiesPlugin.getDefaultSeparator());
 		}
 		writer.print(getSeparator());
 		if (value != null) {

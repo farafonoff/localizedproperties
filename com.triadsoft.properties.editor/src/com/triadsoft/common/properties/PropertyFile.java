@@ -24,7 +24,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
  * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
@@ -353,7 +353,7 @@ public class PropertyFile extends PropertyElement implements
 				IFile file = (IFile) iter.next();
 				if (this.file != null
 						&& file.getName().equals(this.file.getName())) {
-					Activator.getLogger().debug(
+					LocalizedPropertiesPlugin.getLogger().debug(
 							"Cambio " + file.getName() + "!!!!", null);
 					Iterator<IPropertyFileListener> listenersIterator = this.listeners
 							.iterator();
