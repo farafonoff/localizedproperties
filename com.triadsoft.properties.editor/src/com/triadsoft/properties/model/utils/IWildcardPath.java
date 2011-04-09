@@ -128,6 +128,8 @@ public interface IWildcardPath {
 	 */
 	public String getPathToRoot();
 
+	public String getPath(int offset);
+
 	public String getFilePath(IFile ifile, Locale locale);
 
 	public String toRegex(int offset);

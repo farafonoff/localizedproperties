@@ -82,8 +82,9 @@ public class SeparatorsEditor extends ListEditor {
 			GridData data = new GridData(GridData.FILL_HORIZONTAL);
 			int widthHint = convertHorizontalDLUsToPixels(defaultButton,
 					IDialogConstants.BUTTON_WIDTH);
-			data.widthHint = Math.max(widthHint, defaultButton.computeSize(
-					SWT.DEFAULT, SWT.DEFAULT, true).x);
+			data.widthHint = Math
+					.max(widthHint, defaultButton.computeSize(SWT.DEFAULT,
+							SWT.DEFAULT, true).x);
 			defaultButton.setLayoutData(data);
 		}
 		return buttonBox;
@@ -96,7 +97,7 @@ public class SeparatorsEditor extends ListEditor {
 		String value = commandListControl.getSelection()[0];
 		String defaultValue = LocalizedPropertiesPlugin
 				.getDefault()
-				.getPluginPreferences()
+				.getPreferenceStore()
 				.getString(
 						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES);
 		defaultButton.setEnabled(!defaultValue.equals(value));
@@ -106,7 +107,7 @@ public class SeparatorsEditor extends ListEditor {
 		super.refreshValidState();
 		String defaultValue = LocalizedPropertiesPlugin
 				.getDefault()
-				.getPluginPreferences()
+				.getPreferenceStore()
 				.getString(
 						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES);
 		String[] items = commandListControl.getItems();
@@ -184,8 +185,11 @@ public class SeparatorsEditor extends ListEditor {
 
 	protected void storeDefault() {
 		String value = commandListControl.getSelection()[0];
-		LocalizedPropertiesPlugin.getDefault().getPluginPreferences().setValue(
-				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES,
-				value);
+		LocalizedPropertiesPlugin
+				.getDefault()
+				.getPreferenceStore()
+				.setValue(
+						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES,
+						value);
 	}
 }

@@ -29,9 +29,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
-import com.triadsoft.properties.model.utils.IWildcardPath;
 import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
-import com.triadsoft.properties.model.utils.WildcardPath;
+import com.triadsoft.properties.model.utils.WildCardPath2;
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
@@ -118,7 +117,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 	public LocalizedPropertiesPage(ISelection selection) {
 		super("wizardPage");
 		setTitle(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_TITLE));
-		setDescription(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_DESCRIPTION));
+		setDescription(LocalizedPropertiesPlugin
+				.getString(WIZARD_PAGE_DESCRIPTION));
 		this.selection = selection;
 	}
 
@@ -153,7 +153,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 		GridLayout layout = new GridLayout(2, false);
 		container.setLayout(layout);
 		useDefaultsLabel = new Label(container, SWT.NULL);
-		useDefaultsLabel.setText(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_DEFAULT_USE));
+		useDefaultsLabel.setText(LocalizedPropertiesPlugin
+				.getString(WIZARD_PAGE_DEFAULT_USE));
 
 		useDefaultsButton = new Button(container, SWT.CHECK);
 		useDefaultsButton.addSelectionListener(new SelectionListener() {
@@ -261,7 +262,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 		layoutData.horizontalSpan = 2;
 		folderPathContainer.setLayoutData(layoutData);
 		Label label = new Label(folderPathContainer, SWT.NULL);
-		label.setText(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_FOLDER_LABEL));
+		label.setText(LocalizedPropertiesPlugin
+				.getString(WIZARD_PAGE_FOLDER_LABEL));
 		GridData labelData = new GridData(GridData.FILL_HORIZONTAL);
 		labelData.horizontalSpan = 2;
 		label.setLayoutData(labelData);
@@ -276,7 +278,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 		});
 
 		Button button = new Button(folderPathContainer, SWT.PUSH);
-		button.setText(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_FOLDER_BUTTON));
+		button.setText(LocalizedPropertiesPlugin
+				.getString(WIZARD_PAGE_FOLDER_BUTTON));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				handleBrowse();
@@ -287,7 +290,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 	private void createList(Composite parent) {
 		listContainer = new Composite(parent, SWT.NULL);
 		Label listLabel = new Label(listContainer, SWT.NULL);
-		listLabel.setText(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_WILCARD_LIST_LABEL));
+		listLabel.setText(LocalizedPropertiesPlugin
+				.getString(WIZARD_PAGE_WILCARD_LIST_LABEL));
 		GridLayout layout = new GridLayout(1, false);
 		listContainer.setLayout(layout);
 		GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
@@ -303,8 +307,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 				.setSelection(LocalizedPropertiesPlugin
 						.getDefault()
 						.getPreferenceStore()
-						.getInt(
-								PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES));
+						.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES));
 		GridData wildData = new GridData(GridData.FILL_HORIZONTAL);
 		wildData.horizontalSpan = 4;
 		wildcardList.setLayoutData(wildData);
@@ -354,7 +357,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 	private void handleBrowse() {
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-				LocalizedPropertiesPlugin.getString(WIZARD_PAGE_FOLDER_CONTAINER_MESSAGE));
+				LocalizedPropertiesPlugin
+						.getString(WIZARD_PAGE_FOLDER_CONTAINER_MESSAGE));
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
@@ -371,25 +375,26 @@ public class LocalizedPropertiesPage extends WizardPage {
 			filepathText.setText("");
 			return;
 		}
-		WildcardPath wp = new WildcardPath(selected[0]);
-		// TODO:Validar que no vengan vacios
-		wp.replace(IWildcardPath.COUNTRY_WILDCARD, countryText.getText());
-		wp.replace(IWildcardPath.LANGUAGE_WILDCARD, languageText.getText());
-
-		if (resource != null) {
-			if (wp.haveRoot()) {
-				wp.replace(IWildcardPath.ROOT_WILDCARD, resource.getFullPath()
-						.lastSegment());
-			}
-		}
-		wp.replace(IWildcardPath.FILENAME_WILDCARD, fileText.getText());
-		wp.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
-		// FIXME: Ver que el wilcard path deja los puntos escapeados
-		wp.replace("\\.", ".");
-		wp.replace("\\\\.", ".");
-		wp.replace("\\\\._", ".");
-		wp.replace("\\_\\\\.", "\\.");
-		wp.replace("\\_/", "/");
+		// WildcardPath wp = new WildcardPath(selected[0]);
+		// // TODO:Validar que no vengan vacios
+		// wp.replace(IWildcardPath.COUNTRY_WILDCARD, countryText.getText());
+		// wp.replace(IWildcardPath.LANGUAGE_WILDCARD, languageText.getText());
+		//
+		// if (resource != null) {
+		// if (wp.haveRoot()) {
+		// wp.replace(IWildcardPath.ROOT_WILDCARD, resource.getFullPath()
+		// .lastSegment());
+		// }
+		// }
+		// wp.replace(IWildcardPath.FILENAME_WILDCARD, fileText.getText());
+		// wp.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
+		// // FIXME: Ver que el wilcard path deja los puntos escapeados
+		// wp.replace("\\.", ".");
+		// wp.replace("\\\\.", ".");
+		// wp.replace("\\\\._", ".");
+		// wp.replace("\\_\\\\.", "\\.");
+		// wp.replace("\\_/", "/");
+		WildCardPath2 wp = new WildCardPath2(selected[0]);
 		filepathText.setText(wp.getPath());
 	}
 

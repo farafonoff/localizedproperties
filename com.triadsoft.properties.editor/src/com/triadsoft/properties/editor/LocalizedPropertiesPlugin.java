@@ -12,7 +12,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
@@ -88,10 +87,13 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	public static String[] getWildcardPaths() {
 		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
 				.getPreferenceStore();
-		int index=0;
-		List<String> wcs = new LinkedList<String>(); 
-		while(store.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES+index)){
-			wcs.add(store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES+index));
+		int index = 0;
+		List<String> wcs = new LinkedList<String>();
+		while (store.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+				+ index)) {
+			wcs.add(store
+					.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+							+ index));
 			index++;
 		}
 		return wcs.toArray(new String[wcs.size()]);
@@ -99,14 +101,14 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 
 	public static Character getDefaultSeparator() {
 		return getDefault()
-				.getPluginPreferences()
+				.getPreferenceStore()
 				.getString(
 						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
 				.charAt(0);
 	}
 
 	public static String[] getKeyValueSeparators() {
-		String separators = getDefault().getPluginPreferences().getString(
+		String separators = getDefault().getPreferenceStore().getString(
 				PreferenceConstants.KEY_VALUE_SEPARATORS_PREFERENCES);
 		List<String> sepList = new LinkedList<String>();
 		for (int i = 0; i < separators.length(); i++) {

@@ -28,15 +28,10 @@ public class WildCardPath2 implements IWildcardPath {
 	private String pathToRoot;
 
 	private String wildcardpath;
-	private String path = "";
 
 	public WildCardPath2(String wildcardpath) {
 		this.wildcardpath = wildcardpath;
-		this.path = "";
-	}
-
-	public String getPath() {
-		return path;
+		// this.path = "";
 	}
 
 	public String getRoot() {
@@ -151,7 +146,7 @@ public class WildCardPath2 implements IWildcardPath {
 	}
 
 	public void resetPath() {
-		this.path = null;
+		// this.path = null;
 	}
 
 	private String[] getLoadedWildcards(boolean withLanguage,
@@ -305,10 +300,10 @@ public class WildCardPath2 implements IWildcardPath {
 	}
 
 	public IWildcardPath replace(String wildcard, String value, boolean replace) {
-		if (path.equals("") || path.length() == 0) {
-			resetPath();
-		}
-		path = path.replaceAll(escapedWildcard(wildcard), value);
+		// if (path.equals("") || path.length() == 0) {
+		// resetPath();
+		// }
+		// path = path.replaceAll(escapedWildcard(wildcard), value);
 		return this;
 	}
 
@@ -350,12 +345,12 @@ public class WildCardPath2 implements IWildcardPath {
 	 * @param wildcard
 	 * @return
 	 */
-	private String escapedWildcard(String wildcard) {
-		String rep = wildcard;
-		rep = rep.replaceAll("\\{", "\\\\{");
-		rep = rep.replaceAll("\\}", "\\\\}");
-		return rep;
-	}
+//	private String escapedWildcard(String wildcard) {
+//		String rep = wildcard;
+//		rep = rep.replaceAll("\\{", "\\\\{");
+//		rep = rep.replaceAll("\\}", "\\\\}");
+//		return rep;
+//	}
 
 	public IWildcardPath replace(String wildcard, String value) {
 		// TODO To implement
@@ -412,5 +407,23 @@ public class WildCardPath2 implements IWildcardPath {
 	public Object clone() throws CloneNotSupportedException {
 		WildCardPath2 wp2 = new WildCardPath2(this.wildcardpath);
 		return wp2;
+	}
+
+	public String getPath() {
+		return getPath(0);
+	}
+
+	public String getPath(int offset) {
+		String path = this.getExcludedOptional(offset);
+		path = path.replace(ROOT_WILDCARD, root == null ? TEXT_REGEX : root);
+		path = path.replace(FILENAME_WILDCARD, fileName == null ? TEXT_REGEX
+				: fileName);
+		path = path.replace(FILE_EXTENSION_WILDCARD,
+				fileExtension == null ? TEXT_REGEX : fileExtension);
+		path = path.replace(LANGUAGE_WILDCARD,
+				language == null ? LANGUAGE_REGEX : language);
+		path = path.replace(COUNTRY_WILDCARD, country == null ? COUNTRY_REGEX
+				: country);
+		return path;
 	}
 }

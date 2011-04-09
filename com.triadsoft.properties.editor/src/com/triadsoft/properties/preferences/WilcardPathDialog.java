@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Text;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.utils.IWildcardPath;
 import com.triadsoft.properties.model.utils.WildCardPath2;
-import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
  * <p>
@@ -29,7 +28,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * </p>
  * 
  * @author Triad (flores.leonardo@gmail.com)
- * @see WildcardPath
+ * @see WildCardPath2
  */
 public class WilcardPathDialog extends Dialog {
 
@@ -207,19 +206,21 @@ public class WilcardPathDialog extends Dialog {
 			preview.setText(null);
 			return;
 		}
-		WildcardPath _path = new WildcardPath(_wildcardPath);
-		// Nueva implementacion
-		// _path.setLanguage(Locale.getDefault().getLanguage());
-		// _path.setCountry(Locale.getDefault().getCountry());
-		// _path.setFileExtension("properties");
-		// _path.setFileName("application");
 
-		_path.replace(Locale.getDefault());
-		_path.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
-		_path.replace(IWildcardPath.FILENAME_WILDCARD, "application");
-		_path.replace(IWildcardPath.ROOT_WILDCARD, "locale");
-		String path = _path.getPath();
-		preview.setText(path.replaceAll("\\\\.", "\\."));
+		// WildcardPath _path = new WildcardPath(_wildcardPath);
+//		_path.replace(Locale.getDefault());
+//		_path.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
+//		_path.replace(IWildcardPath.FILENAME_WILDCARD, "application");
+//		_path.replace(IWildcardPath.ROOT_WILDCARD, "locale");
+//		String path = _path.getPath();
+		
+		// Nueva implementacion
+		WildCardPath2 _path = new WildCardPath2(_wildcardPath);
+		_path.setLanguage(Locale.getDefault().getLanguage());
+		_path.setCountry(Locale.getDefault().getCountry());
+		_path.setFileExtension("properties");
+		_path.setFileName("application");
+		preview.setText(_path.getPath());
 	}
 
 	public String getWildcardPath() {

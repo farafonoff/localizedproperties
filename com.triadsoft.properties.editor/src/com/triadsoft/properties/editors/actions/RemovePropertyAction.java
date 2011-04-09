@@ -66,6 +66,7 @@ public class RemovePropertyAction extends Action {
 		ISelection sel = viewer.getSelection();
 		Table table = viewer.getTable();
 		table.setRedraw(false);
+		
 		Iterator iter = ((IStructuredSelection) sel).iterator();
 		try {
 			while (iter.hasNext()) {

@@ -16,8 +16,9 @@ import org.eclipse.swt.widgets.List;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
- * This class make the editor used in preferences page.
- * It's handler to wildcard path collection, show and collect values of this collection.  
+ * This class make the editor used in preferences page. It's handler to wildcard
+ * path collection, show and collect values of this collection.
+ * 
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class WilcardPathEditor extends ListEditor {
@@ -27,7 +28,8 @@ public class WilcardPathEditor extends ListEditor {
 	protected Button defaultButton;
 	protected List listControl;
 
-	public WilcardPathEditor(String preferencesId, String label, Composite parent) {
+	public WilcardPathEditor(String preferencesId, String label,
+			Composite parent) {
 		super(preferencesId, label, parent);
 		this.parent = parent;
 	}
@@ -62,9 +64,8 @@ public class WilcardPathEditor extends ListEditor {
 		super.refreshValidState();
 		int defaultIndex = LocalizedPropertiesPlugin
 				.getDefault()
-				.getPluginPreferences()
-				.getInt(
-						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+				.getPreferenceStore()
+				.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
 		listControl.setSelection(defaultIndex);
 		listControl.showSelection();
 		defaultButton.setEnabled(false);
@@ -98,9 +99,12 @@ public class WilcardPathEditor extends ListEditor {
 	}
 
 	private void storeDefault() {
-		LocalizedPropertiesPlugin.getDefault().getPluginPreferences().setValue(
-				PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES,
-				listControl.getSelectionIndex());
+		LocalizedPropertiesPlugin
+				.getDefault()
+				.getPreferenceStore()
+				.setValue(
+						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES,
+						listControl.getSelectionIndex());
 	}
 
 	private void selectionChanged1() {
@@ -109,9 +113,8 @@ public class WilcardPathEditor extends ListEditor {
 		}
 		int defaultIndex = LocalizedPropertiesPlugin
 				.getDefault()
-				.getPluginPreferences()
-				.getInt(
-						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+				.getPreferenceStore()
+				.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
 		defaultButton
 				.setEnabled(listControl.getSelectionIndex() != defaultIndex);
 	}
@@ -143,8 +146,8 @@ public class WilcardPathEditor extends ListEditor {
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		int widthHint = convertHorizontalDLUsToPixels(defaultButton,
 				IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, defaultButton.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint,
+				defaultButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		defaultButton.setLayoutData(data);
 		return buttonBox;
 	}
@@ -152,7 +155,7 @@ public class WilcardPathEditor extends ListEditor {
 	private String getSeparator() {
 		String separator = LocalizedPropertiesPlugin
 				.getDefault()
-				.getPluginPreferences()
+				.getPreferenceStore()
 				.getString(
 						PreferenceConstants.WILDCARD_PATH_SEPARATOR_PREFERENCES);
 		return separator == null ? "|" : separator;

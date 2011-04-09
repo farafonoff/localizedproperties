@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
-import com.triadsoft.properties.model.utils.WildcardPath;
+import com.triadsoft.properties.model.utils.WildCardPath2;
 
 /**
  * <p>
@@ -27,7 +27,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * </p>
  * 
  * @author Triad (flores.leonardo@gmail.com)
- *@see WildcardPath
+ * @see WildCardPath2
  */
 public class SearchTextDialog extends Dialog {
 
@@ -62,8 +62,8 @@ public class SearchTextDialog extends Dialog {
 
 		final Label description = new Label(area, SWT.NONE);
 		description.setLayoutData(layoutData);
-		description
-				.setText(LocalizedPropertiesPlugin.getString(ACTION_ADD_SEARCH_DIALOG_LABEL));
+		description.setText(LocalizedPropertiesPlugin
+				.getString(ACTION_ADD_SEARCH_DIALOG_LABEL));
 		description.setLayoutData(gridData);
 
 		searchText = new Text(area, SWT.BORDER | SWT.SEARCH);

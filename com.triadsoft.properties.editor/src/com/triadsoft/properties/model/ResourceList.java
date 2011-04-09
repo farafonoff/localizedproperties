@@ -34,7 +34,7 @@ import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.utils.IFilesDiscoverer;
 import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.NewPathDiscovery;
-import com.triadsoft.properties.model.utils.WildcardPath;
+import com.triadsoft.properties.model.utils.WildCardPath2;
 import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
 
 /**
@@ -49,7 +49,7 @@ import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
  * al idioma que se está modificando
  * 
  * @author Triad (flores.leonardo@gmail.com)
- * @see WildcardPath
+ * @see WildCardPath2
  */
 public class ResourceList {
 

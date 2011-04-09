@@ -30,19 +30,19 @@ public class CopyPropertyAction extends Action {
 	private ViewerCell viewerCell = null;
 	private ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
 			this.getClass(), "/icons/page_copy.png");
-	
+
 	private ColumnViewerEditorActivationListener listener = new ColumnViewerEditorActivationListener() {
 
 		@Override
 		public void beforeEditorDeactivated(
 				ColumnViewerEditorDeactivationEvent arg0) {
-			//Nothing to do
+			// Nothing to do
 		}
 
 		@Override
 		public void beforeEditorActivated(
 				ColumnViewerEditorActivationEvent event) {
-			//Nothing to do
+			// Nothing to do
 		}
 
 		@Override
@@ -58,7 +58,8 @@ public class CopyPropertyAction extends Action {
 	};
 
 	public CopyPropertyAction(PropertiesEditor editor) {
-		super(LocalizedPropertiesPlugin.getString("menu.menuitem.copyProperty.label"));
+		super(LocalizedPropertiesPlugin
+				.getString("menu.menuitem.copyProperty.label"));
 		setEditor(editor);
 		setImageDescriptor(imageDescriptor);
 	}
@@ -92,7 +93,7 @@ public class CopyPropertyAction extends Action {
 		ISelection sel = editor.getTableViewer().getSelection();
 		Iterator<Property> iter = ((IStructuredSelection) sel).iterator();
 
-		List props = new LinkedList();
+		List<Property> props = new LinkedList<Property>();
 		while (iter.hasNext()) {
 			props.add((Property) iter.next());
 		}
@@ -110,8 +111,8 @@ public class CopyPropertyAction extends Action {
 			err.printStackTrace();
 			LocalizedPropertiesLog.error("No se pudo copiar al clipboard");
 		}
-		LocalizedPropertiesLog.debug(
-				"Se han copiado " + props.size() + " propiedad al clipboard");
+		LocalizedPropertiesLog.debug("Se han copiado " + props.size()
+				+ " propiedad al clipboard");
 	}
 
 	public static String asText(Property[] properties) {

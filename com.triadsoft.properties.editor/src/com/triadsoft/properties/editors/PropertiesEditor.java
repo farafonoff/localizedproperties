@@ -42,7 +42,7 @@ import com.triadsoft.properties.model.ResourceList;
 import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyFilter;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
-import com.triadsoft.properties.model.utils.WildcardPath;
+import com.triadsoft.properties.model.utils.WildCardPath2;
 
 /**
  * <p>
@@ -65,7 +65,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * </p>
  * 
  * @author Triad (flores.leonardo@gmail.com)
- * @see WildcardPath
+ * @see WildCardPath2
  * @see ResourceBundle
  */
 public class PropertiesEditor extends MultiPageEditorPart implements
@@ -166,7 +166,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		// tableViewer.getControl().setLayoutData(gridData);
 
 		int index = addPage(tableViewer.getControl());
-		setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PROPERTIES));
+		setPageText(index,
+				LocalizedPropertiesPlugin.getString(EDITOR_TAB_PROPERTIES));
 	}
 
 	public IAction getTableViewerAction(String workbenchActionId) {
@@ -185,7 +186,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		try {
 			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
-			setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
+			setPageText(index,
+					LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
 		} catch (PartInitException e) {
 			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		}
@@ -199,7 +201,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		text.setEditable(false);
 
 		int index = addPage(composite);
-		setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
+		setPageText(index,
+				LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
 	}
 
 	protected void tableChanged() {
@@ -317,16 +320,17 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		PropertyFile pf = resource.getPropertyFile(resource.getDefaultLocale());
 		if (pageIndex == 1) {
 			if (isTableModified) {
-				textEditor.getDocumentProvider().getDocument(
-						textEditor.getEditorInput()).set(pf.asText());
+				textEditor.getDocumentProvider()
+						.getDocument(textEditor.getEditorInput())
+						.set(pf.asText());
 			}
 		} else if (pageIndex == 0) {
 			if (isTextModified) {
 				try {
 					PropertyFile npf = new PropertyFile(textEditor
-							.getDocumentProvider().getDocument(
-									textEditor.getEditorInput()).get(), pf
-							.getEncoding(), pf.getSeparator());
+							.getDocumentProvider()
+							.getDocument(textEditor.getEditorInput()).get(),
+							pf.getEncoding(), pf.getSeparator());
 					npf.setFile(pf.getFile());
 					resource.setPropertyFile(npf, resource.getDefaultLocale());
 					tableViewer.setLocales(resource.getLocales());

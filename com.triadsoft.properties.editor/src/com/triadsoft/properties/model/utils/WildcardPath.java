@@ -504,4 +504,9 @@ public class WildcardPath implements IWildcardPath {
 
 	public void setRoot(String root) {
 	}
+
+	public String getPath(int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
