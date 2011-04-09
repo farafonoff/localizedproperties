@@ -10,8 +10,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
@@ -38,7 +39,7 @@ public class RemoveLocaleAction extends Action {
 
 	public RemoveLocaleAction(PropertiesEditor editor,
 			PropertyTableViewer viewer, Locale locale) {
-		super(Activator.getString(MENU_MENUITEM_DELETE_LOCALE,
+		super(LocalizedPropertiesPlugin.getString(MENU_MENUITEM_DELETE_LOCALE,
 				new Object[] { locale.toString() }));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
@@ -54,12 +55,12 @@ public class RemoveLocaleAction extends Action {
 				MessageBox messageBox = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.OK | SWT.ICON_WARNING);
 				messageBox
-						.setMessage(Activator
+						.setMessage(LocalizedPropertiesPlugin
 								.getString(
 										AddLocaleAction.MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_MESSAGE,
 										new String[] { locale.toString() }));
 				messageBox
-						.setText(Activator
+						.setText(LocalizedPropertiesPlugin
 								.getString(
 										AddLocaleAction.MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_TITLE,
 										new String[] { locale.toString() }));
@@ -69,10 +70,10 @@ public class RemoveLocaleAction extends Action {
 			}
 			MessageBox messageBox = new MessageBox(editor.getEditorSite()
 					.getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-			messageBox.setMessage(Activator.getString(
+			messageBox.setMessage(LocalizedPropertiesPlugin.getString(
 					MENU_MENUITEM_DELETE_LOCALE_CONFIRM_MESSAGE,
 					new String[] { locale.toString() }));
-			messageBox.setText(Activator.getString(
+			messageBox.setText(LocalizedPropertiesPlugin.getString(
 					MENU_MENUITEM_DELETE_LOCALE_CONFIRM_TITLE,
 					new String[] { locale.toString() }));
 			if (messageBox.open() == SWT.YES) {
@@ -80,7 +81,7 @@ public class RemoveLocaleAction extends Action {
 			}
 
 		} catch (CoreException e) {
-			Activator.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		}
 	}
 }

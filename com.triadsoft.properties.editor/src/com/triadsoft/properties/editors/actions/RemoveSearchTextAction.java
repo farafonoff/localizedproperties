@@ -3,7 +3,7 @@ package com.triadsoft.properties.editors.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyFilter;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -16,7 +16,7 @@ public class RemoveSearchTextAction extends Action {
 			this.getClass(), "/icons/find_cancel.png");
 
 	public RemoveSearchTextAction(PropertiesEditor editor) {
-		super(Activator.getString(ACTION_REMOVE_SEARCH_DIALOG_TITLE));
+		super(LocalizedPropertiesPlugin.getString(ACTION_REMOVE_SEARCH_DIALOG_TITLE));
 		super.setImageDescriptor(imageDescriptor);
 		setEditor(editor);
 	}

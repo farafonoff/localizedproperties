@@ -9,7 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
@@ -34,7 +34,7 @@ public class AddLocaleAction extends Action {
 	};
 
 	public AddLocaleAction(PropertiesEditor editor, PropertyTableViewer viewer) {
-		super(Activator.getString(MENU_MENUITEM_ADD_LOCALE));
+		super(LocalizedPropertiesPlugin.getString(MENU_MENUITEM_ADD_LOCALE));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		setEnabled(false);
@@ -48,9 +48,9 @@ public class AddLocaleAction extends Action {
 				MessageBox messageBox = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.OK | SWT.ICON_WARNING);
 				messageBox
-						.setMessage(Activator
+						.setMessage(LocalizedPropertiesPlugin
 								.getString(MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_MESSAGE));
-				messageBox.setText(Activator
+				messageBox.setText(LocalizedPropertiesPlugin
 						.getString(MENU_MENUITEM_ADD_LOCALE_UNSAVEDDATA_TITLE));
 				if (messageBox.open() == SWT.OK) {
 					return;

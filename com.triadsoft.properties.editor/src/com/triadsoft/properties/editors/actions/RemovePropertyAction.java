@@ -12,7 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Table;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
@@ -41,7 +41,7 @@ public class RemovePropertyAction extends Action {
 
 	public RemovePropertyAction(PropertiesEditor editor,
 			PropertyTableViewer viewer) {
-		super(Activator.getString(MENU_MENUITEM_DELETE_KEY));
+		super(LocalizedPropertiesPlugin.getString(MENU_MENUITEM_DELETE_KEY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;
@@ -61,7 +61,6 @@ public class RemovePropertyAction extends Action {
 		this.viewer.addSelectionChangedListener(listener);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
 		ISelection sel = viewer.getSelection();
@@ -73,10 +72,10 @@ public class RemovePropertyAction extends Action {
 				Property property = (Property) iter.next();
 				MessageBox mb = new MessageBox(editor.getEditorSite()
 						.getShell(), SWT.YES | SWT.NO | SWT.ICON_WARNING);
-				mb.setMessage(Activator.getString(
+				mb.setMessage(LocalizedPropertiesPlugin.getString(
 						MENU_MENUITEM_DELETE_KEY_CONFIRM_MESSAGE,
 						new String[] { property.getKey() }));
-				mb.setText(Activator.getString(
+				mb.setText(LocalizedPropertiesPlugin.getString(
 						MENU_MENUITEM_DELETE_KEY_CONFIRM_TITLE,
 						new String[] { property.getKey() }));
 				if (mb.open() == SWT.YES) {

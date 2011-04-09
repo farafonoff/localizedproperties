@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
  * Dialogo para agregar una nueva clave al archivo de recursos
@@ -39,7 +39,7 @@ public class AddKeyDialog extends Dialog {
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
-		description.setText(Activator
+		description.setText(LocalizedPropertiesPlugin
 				.getString(PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION));
 		
 		GridData gridData = new GridData();
@@ -48,7 +48,7 @@ public class AddKeyDialog extends Dialog {
 		gridLayout.numColumns = 1;
 		label = new Label(area, SWT.NONE);
 		label
-				.setText(Activator
+				.setText(LocalizedPropertiesPlugin
 						.getString(PREFERENCES_ADD_KEY_DIALOG_LABEL));
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
@@ -74,7 +74,7 @@ public class AddKeyDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(Activator.getString(PREFERENCES_ADD_KEY_DIALOG_TITLE));
+		newShell.setText(LocalizedPropertiesPlugin.getString(PREFERENCES_ADD_KEY_DIALOG_TITLE));
 	}
 
 	public String getNewKey() {

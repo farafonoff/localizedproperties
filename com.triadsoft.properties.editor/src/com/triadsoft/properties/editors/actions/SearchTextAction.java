@@ -5,7 +5,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.editors.PropertiesLabelProvider;
 import com.triadsoft.properties.model.utils.PropertyFilter;
@@ -26,7 +26,7 @@ public class SearchTextAction extends Action {
 			this.getClass(), "/icons/find.png");
 
 	public SearchTextAction(PropertiesEditor editor) {
-		super(Activator.getString(Activator
+		super(LocalizedPropertiesPlugin.getString(LocalizedPropertiesPlugin
 				.getString(ACTION_ADD_SEARCH_DIALOG_TITLE)));
 		super.setImageDescriptor(imageDescriptor);
 		setEditor(editor);

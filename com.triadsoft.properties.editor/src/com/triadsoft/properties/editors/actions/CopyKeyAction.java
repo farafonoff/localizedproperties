@@ -13,9 +13,10 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Table;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
@@ -41,7 +42,7 @@ public class CopyKeyAction extends Action {
 	};
 
 	public CopyKeyAction(PropertiesEditor editor, PropertyTableViewer viewer) {
-		super(Activator.getString(MENU_MENUITEM_COPY));
+		super(LocalizedPropertiesPlugin.getString(MENU_MENUITEM_COPY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;
@@ -65,7 +66,7 @@ public class CopyKeyAction extends Action {
 				Transfer[] transfers = new Transfer[] { textTransfer };
 				Object[] data = new Object[] { property.getKey() };
 				cb.setContents(data, transfers);
-				Activator.getLogger().debug("Copiando la propiedad.."
+				LocalizedPropertiesLog.debug("Copiando la propiedad.."
 						+ property.getKey());
 			}
 		} finally {

@@ -18,9 +18,10 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyTransfer;
 
 public class CopyPropertyAction extends Action {
@@ -57,7 +58,7 @@ public class CopyPropertyAction extends Action {
 	};
 
 	public CopyPropertyAction(PropertiesEditor editor) {
-		super(Activator.getString("menu.menuitem.copyProperty.label"));
+		super(LocalizedPropertiesPlugin.getString("menu.menuitem.copyProperty.label"));
 		setEditor(editor);
 		setImageDescriptor(imageDescriptor);
 	}
@@ -107,9 +108,9 @@ public class CopyPropertyAction extends Action {
 					});
 		} catch (SWTError err) {
 			err.printStackTrace();
-			Activator.getLogger().error("No se pudo copiar al clipboard");
+			LocalizedPropertiesLog.error("No se pudo copiar al clipboard");
 		}
-		Activator.getLogger().debug(
+		LocalizedPropertiesLog.debug(
 				"Se han copiado " + props.size() + " propiedad al clipboard");
 	}
 

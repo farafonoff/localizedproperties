@@ -4,7 +4,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
@@ -24,7 +24,7 @@ public class IncreaseFontAction extends Action {
 			this.getClass(), "/icons/font_increase.png");
 
 	public IncreaseFontAction(PropertyTableViewer viewer) {
-		super(Activator.getString(NEW_KEY));
+		super(LocalizedPropertiesPlugin.getString(NEW_KEY));
 		this.viewer = viewer;
 		super.setImageDescriptor(imageDescriptor);
 		super.setAccelerator(SWT.CTRL | 'O');
@@ -42,7 +42,7 @@ public class IncreaseFontAction extends Action {
 			return;
 		}
 		float size = viewer.getFontSize();
-		size += Activator.getDefault().getPreferenceStore().getFloat(
+		size += LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
 				PREFERENCES_FONT_SIZE_STEP);
 		viewer.setFontSize(size);
 	}
