@@ -31,7 +31,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 
 /**
  * Wizard para poder crear un archivo de recursos internacionalizados
@@ -140,9 +141,9 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage();
 				try {
-					IDE.openEditor(page, file, Activator.PROPERTIES_EDITOR_ID);
+					IDE.openEditor(page, file, LocalizedPropertiesPlugin.PROPERTIES_EDITOR_ID);
 				} catch (PartInitException e) {
-					Activator.getLogger().error(
+					LocalizedPropertiesLog.error(
 							"No pude cargar el editor de propiedades", e);
 				}
 			}
@@ -188,22 +189,22 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 						IFolder fol = root.getFolder(testPath);
 						fol.create(false, false, null);
 					} catch (CoreException e) {
-						Activator.getLogger().error(e.getLocalizedMessage());
+						LocalizedPropertiesLog.error(e.getLocalizedMessage());
 					}
 				}
 				testPath = testPath.append("/" + segments[i]);
 				res = root.findMember(testPath);
 			} catch (Exception ex) {
-				Activator.getLogger().error(ex.getLocalizedMessage());
+				LocalizedPropertiesLog.error(ex.getLocalizedMessage());
 			}
 		}
 		if (res == null || !res.exists()) {
 			try {
-				Activator.getLogger().debug(testPath.lastSegment());
+				LocalizedPropertiesLog.debug(testPath.lastSegment());
 				IFolder fol = root.getFolder(testPath);
 				fol.create(false, false, null);
 			} catch (CoreException e) {
-				Activator.getLogger().error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage());
 			}
 		}
 	}

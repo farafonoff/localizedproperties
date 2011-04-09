@@ -13,8 +13,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
+/**
+ * This class make the editor used in preferences page.
+ * It's handler to wildcard path collection, show and collect values of this collection.  
+ * @author Triad (flores.leonardo@gmail.com)
+ */
 public class WilcardPathEditor extends ListEditor {
 
 	protected Composite parent;
@@ -22,8 +27,8 @@ public class WilcardPathEditor extends ListEditor {
 	protected Button defaultButton;
 	protected List listControl;
 
-	public WilcardPathEditor(String name, String label, Composite parent) {
-		super(name, label, parent);
+	public WilcardPathEditor(String preferencesId, String label, Composite parent) {
+		super(preferencesId, label, parent);
 		this.parent = parent;
 	}
 
@@ -55,7 +60,7 @@ public class WilcardPathEditor extends ListEditor {
 
 	protected void refreshValidState() {
 		super.refreshValidState();
-		int defaultIndex = Activator
+		int defaultIndex = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPluginPreferences()
 				.getInt(
@@ -93,7 +98,7 @@ public class WilcardPathEditor extends ListEditor {
 	}
 
 	private void storeDefault() {
-		Activator.getDefault().getPluginPreferences().setValue(
+		LocalizedPropertiesPlugin.getDefault().getPluginPreferences().setValue(
 				PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES,
 				listControl.getSelectionIndex());
 	}
@@ -102,7 +107,7 @@ public class WilcardPathEditor extends ListEditor {
 		if (listControl == null) {
 			listControl = getListControl(parent);
 		}
-		int defaultIndex = Activator
+		int defaultIndex = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPluginPreferences()
 				.getInt(
@@ -121,7 +126,7 @@ public class WilcardPathEditor extends ListEditor {
 		buttonBox = super.getButtonBoxControl(parent);
 		defaultButton = new Button(buttonBox, SWT.PUSH);
 		defaultButton
-				.setText(Activator
+				.setText(LocalizedPropertiesPlugin
 						.getString(SeparatorsEditor.PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
 		defaultButton.addMouseListener(new MouseListener() {
 			public void mouseUp(MouseEvent arg0) {
@@ -145,7 +150,7 @@ public class WilcardPathEditor extends ListEditor {
 	}
 
 	private String getSeparator() {
-		String separator = Activator
+		String separator = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPluginPreferences()
 				.getString(

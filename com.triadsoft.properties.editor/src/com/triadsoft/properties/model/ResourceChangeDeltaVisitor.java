@@ -8,17 +8,17 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.triadsoft.properties.model.utils.WildcardPath;
+import com.triadsoft.properties.model.utils.IWildcardPath;
 
 public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 	private Map<Integer, IFile> changed;
-	private WildcardPath wp;
+	private IWildcardPath wp;
 
 	public ResourceChangeDeltaVisitor(Map<Integer, IFile> changed,
-			WildcardPath path) {
+			IWildcardPath path) {
 		this.changed = changed;
 		this.wp = path;
-		this.wp.replace(WildcardPath.FILENAME_WILDCARD, wp.getFileName());
+		this.wp.replace(IWildcardPath.FILENAME_WILDCARD, wp.getFileName());
 	}
 
 	public boolean visit(IResourceDelta delta) throws CoreException {

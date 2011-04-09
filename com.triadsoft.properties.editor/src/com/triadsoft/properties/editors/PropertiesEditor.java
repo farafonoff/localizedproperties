@@ -15,14 +15,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
@@ -41,6 +39,7 @@ import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyFilter;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.WildcardPath;
@@ -188,7 +187,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			int index = addPage(textEditor, getEditorInput());
 			setPageText(index, LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
 		} catch (PartInitException e) {
-			LocalizedPropertiesPlugin.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		}
 	}
 
@@ -332,7 +331,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 					resource.setPropertyFile(npf, resource.getDefaultLocale());
 					tableViewer.setLocales(resource.getLocales());
 				} catch (IOException e) {
-					LocalizedPropertiesPlugin.getLogger().error(e.getLocalizedMessage());
+					LocalizedPropertiesLog.error(e.getLocalizedMessage());
 				}
 			}
 		}

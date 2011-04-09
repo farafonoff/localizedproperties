@@ -7,7 +7,7 @@ package com.triadsoft.properties.preferences;
  */
 public class PreferenceConstants {
 
-	public static final String WILDCARD_PATHS_PREFERENCES = "preferences.wildcards";
+	public static final String WILDCARD_PATHS_PREFERENCES = "preferences.wildcards.path";
 	public static final String WILDCARD_PATH_SEPARATOR_PREFERENCES = "preferences.wilcards.separator";
 	public static final String WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES = "preferences.wilcards.default.index";
 

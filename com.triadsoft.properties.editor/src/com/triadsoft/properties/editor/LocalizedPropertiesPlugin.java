@@ -32,8 +32,6 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 
 	private static LocalizedPropertiesPlugin plugin;
 
-	private static LocalizedPropertiesLog logger;
-
 	/**
 	 * The constructor
 	 */
@@ -51,7 +49,6 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		logger = new LocalizedPropertiesLog();
 	}
 
 	/**
@@ -76,10 +73,6 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 		return PlatformUI.getWorkbench().getDisplay().getActiveShell();
 	}
 
-	public static LocalizedPropertiesLog getLogger() {
-		return logger;
-	}
-
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
@@ -93,14 +86,22 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	}
 
 	public static String[] getWildcardPaths() {
-		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault().getPreferenceStore();
-		return store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES)
-				.split("\\|");
+		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore();
+		int index=0;
+		List<String> wcs = new LinkedList<String>(); 
+		while(store.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES+index)){
+			wcs.add(store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES+index));
+			index++;
+		}
+		return wcs.toArray(new String[wcs.size()]);
 	}
 
 	public static Character getDefaultSeparator() {
-		return getDefault().getPluginPreferences().getString(
-				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
+		return getDefault()
+				.getPluginPreferences()
+				.getString(
+						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
 				.charAt(0);
 	}
 
@@ -130,8 +131,8 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 			return key;
 		}
 		for (int i = 0; i < params.length; i++) {
-			parametrized = resource.replaceAll("\\{" + i + "\\}", params[i]
-					.toString());
+			parametrized = resource.replaceAll("\\{" + i + "\\}",
+					params[i].toString());
 		}
 		return parametrized;
 	}

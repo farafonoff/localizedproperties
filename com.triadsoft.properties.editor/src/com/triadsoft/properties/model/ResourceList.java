@@ -30,8 +30,10 @@ import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.common.properties.PropertyCategory;
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
-import com.triadsoft.properties.editor.Activator;
-import com.triadsoft.properties.model.utils.PathDiscovery;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.IFilesDiscoverer;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
+import com.triadsoft.properties.model.utils.NewPathDiscovery;
 import com.triadsoft.properties.model.utils.WildcardPath;
 import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
 
@@ -56,7 +58,7 @@ public class ResourceList {
 
 	private String filename = null;
 
-	private PathDiscovery pd;
+	private IFilesDiscoverer pd;
 
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
@@ -66,10 +68,10 @@ public class ResourceList {
 		try {
 			// IWorkspace workspace = file.getWorkspace();
 			// workspace.addResourceChangeListener(this);
-			pd = new PathDiscovery(file);
+			pd = new NewPathDiscovery(file);
 			this.loadFiles();
 		} catch (NullPointerException e) {
-			Activator.getLogger().error(e.getMessage());
+			LocalizedPropertiesLog.error(e.getMessage());
 		}
 	}
 
@@ -81,9 +83,9 @@ public class ResourceList {
 			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
 		} catch (CoreException e) {
-			Activator.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		} catch (IOException e) {
-			Activator.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		}
 	}
 
@@ -131,7 +133,8 @@ public class ResourceList {
 			}
 			PropertyFile pf;
 			if (separator == null) {
-				pf = new PropertyFile(ifile, Activator.getKeyValueSeparators());
+				pf = new PropertyFile(ifile,
+						LocalizedPropertiesPlugin.getKeyValueSeparators());
 				separator = pf.getSeparator();
 			} else {
 				pf = new PropertyFile(ifile, separator);
@@ -263,11 +266,11 @@ public class ResourceList {
 			try {
 				properties.save();
 			} catch (FileNotFoundException e) {
-				Activator.getLogger().error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage());
 			} catch (IOException e) {
-				Activator.getLogger().error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage());
 			} catch (CoreException e) {
-				Activator.getLogger().error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage());
 			}
 		}
 	}
@@ -297,11 +300,12 @@ public class ResourceList {
 		IFile file = files.get(defaultLocale).getFile();
 		String newFilePath = pd.getWildcardPath().getFilePath(file, locale);
 
-		final IFile newFile = file.getWorkspace().getRoot().getFile(
-				new Path(newFilePath));
+		final IFile newFile = file.getWorkspace().getRoot()
+				.getFile(new Path(newFilePath));
 		if (newFile.exists()) {
-			MessageDialog.openError(Activator.getShell(), "Error", Activator
-					.getString("preferences.add.locale.action.error",
+			MessageDialog.openError(LocalizedPropertiesPlugin.getShell(),
+					"Error", LocalizedPropertiesPlugin.getString(
+							"preferences.add.locale.action.error",
 							new Object[] { locale }));
 			return;
 		}
@@ -321,11 +325,12 @@ public class ResourceList {
 		};
 
 		try {
-			new ProgressMonitorDialog(Activator.getShell()).run(true, true, op);
+			new ProgressMonitorDialog(LocalizedPropertiesPlugin.getShell())
+					.run(true, true, op);
 		} catch (InvocationTargetException e) {
-			Activator.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		} catch (InterruptedException e) {
-			Activator.getLogger().error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		}
 	}
 

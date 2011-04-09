@@ -14,7 +14,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.IWildcardPath;
 import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
@@ -44,13 +45,13 @@ public class EncodingDialog extends Dialog {
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
 		description
-				.setText(Activator.getString("preferences.encodingSubtitle"));
+				.setText(LocalizedPropertiesPlugin.getString("preferences.encodingSubtitle"));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
 		label = new Label(area, SWT.NONE);
-		label.setText(Activator.getString("preferences.languageLabel"));
+		label.setText(LocalizedPropertiesPlugin.getString("preferences.languageLabel"));
 		label.setLayoutData(gridData);
 		languageTxt = new Text(area, SWT.BORDER);
 		languageTxt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -63,7 +64,7 @@ public class EncodingDialog extends Dialog {
 			}
 		});
 		Label previewLabel = new Label(area, SWT.NONE);
-		previewLabel.setText(Activator.getString("preferences.encodingLabel"));
+		previewLabel.setText(LocalizedPropertiesPlugin.getString("preferences.encodingLabel"));
 		encodingTxt = new Text(area, SWT.BORDER);
 		encodingTxt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		encodingTxt.addModifyListener(new ModifyListener() {
@@ -81,7 +82,7 @@ public class EncodingDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(Activator.getString("preferences.dialog.title"));
+		newShell.setText(LocalizedPropertiesPlugin.getString("preferences.dialog.title"));
 	}
 
 	private void changeData() {
@@ -91,9 +92,9 @@ public class EncodingDialog extends Dialog {
 		}
 		WildcardPath _path = new WildcardPath(_languageEncoding);
 		_path.replace(Locale.getDefault());
-		_path.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
-		_path.replace(WildcardPath.FILENAME_WILDCARD, "application");
-		_path.replace(WildcardPath.ROOT_WILDCARD, "locale");
+		_path.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
+		_path.replace(IWildcardPath.FILENAME_WILDCARD, "application");
+		_path.replace(IWildcardPath.ROOT_WILDCARD, "locale");
 		encodingTxt.setText(_path.getPath());
 	}
 

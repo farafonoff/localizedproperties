@@ -18,7 +18,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.IWildcardPath;
+import com.triadsoft.properties.model.utils.WildCardPath2;
 import com.triadsoft.properties.model.utils.WildcardPath;
 
 /**
@@ -27,7 +29,7 @@ import com.triadsoft.properties.model.utils.WildcardPath;
  * </p>
  * 
  * @author Triad (flores.leonardo@gmail.com)
- *@see WildcardPath
+ * @see WildcardPath
  */
 public class WilcardPathDialog extends Dialog {
 
@@ -54,8 +56,8 @@ public class WilcardPathDialog extends Dialog {
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
-		description
-				.setText(Activator.getString(PREFERENCES_ADDWP_DIALOG_TITLE));
+		description.setText(LocalizedPropertiesPlugin
+				.getString(PREFERENCES_ADDWP_DIALOG_TITLE));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		GridLayout gridLayout = new GridLayout();
@@ -64,12 +66,12 @@ public class WilcardPathDialog extends Dialog {
 		this.createButtonsArea(area);
 
 		label = new Label(area, SWT.NONE);
-		label.setText(Activator
+		label.setText(LocalizedPropertiesPlugin
 				.getString(PREFERENCES_ADDWP_DIALOG_NEW_WP_LABEL));
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
 		wildcardPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		wildcardPath.setText("/{root}");
+		wildcardPath.setText("/" + IWildcardPath.ROOT_WILDCARD);
 		wildcardPath.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				_wildcardPath = wildcardPath.getText();
@@ -77,7 +79,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Label previewLabel = new Label(area, SWT.NONE);
-		previewLabel.setText(Activator
+		previewLabel.setText(LocalizedPropertiesPlugin
 				.getString(PREFERENCES_ADDWP_DIALOG_PREVIEW_LABEL));
 		preview = new Text(area, SWT.BORDER);
 		preview.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -93,7 +95,7 @@ public class WilcardPathDialog extends Dialog {
 		layout.numColumns = 5;
 		buttons.setLayout(layout);
 		Button rootButton = new Button(buttons, SWT.PUSH);
-		rootButton.setText("{root}");
+		rootButton.setText(IWildcardPath.ROOT_WILDCARD);
 		rootButton.addMouseListener(new MouseListener() {
 
 			public void mouseUp(MouseEvent event) {
@@ -107,7 +109,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Button langButton = new Button(buttons, SWT.PUSH);
-		langButton.setText("{lang}");
+		langButton.setText(IWildcardPath.LANGUAGE_WILDCARD);
 		langButton.addMouseListener(new MouseListener() {
 
 			public void mouseUp(MouseEvent event) {
@@ -123,7 +125,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Button countryButton = new Button(buttons, SWT.PUSH);
-		countryButton.setText("{country}");
+		countryButton.setText(IWildcardPath.COUNTRY_WILDCARD);
 		countryButton.addMouseListener(new MouseListener() {
 
 			public void mouseUp(MouseEvent event) {
@@ -139,7 +141,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Button filenameButton = new Button(buttons, SWT.PUSH);
-		filenameButton.setText("{filename}");
+		filenameButton.setText(IWildcardPath.FILENAME_WILDCARD);
 		filenameButton.addMouseListener(new MouseListener() {
 
 			public void mouseUp(MouseEvent event) {
@@ -155,7 +157,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Button extensionButton = new Button(buttons, SWT.PUSH);
-		extensionButton.setText("{fileextension}");
+		extensionButton.setText(IWildcardPath.FILE_EXTENSION_WILDCARD);
 		extensionButton.addMouseListener(new MouseListener() {
 
 			public void mouseUp(MouseEvent event) {
@@ -191,11 +193,13 @@ public class WilcardPathDialog extends Dialog {
 		Point position = new Point(
 				(getParentShell().getLocation().x
 						+ (getParentShell().getSize().x / 2) - (newShell
-						.getSize().x / 2)), (getParentShell().getLocation().y
+						.getSize().x / 2)),
+				(getParentShell().getLocation().y
 						+ (getParentShell().getSize().y / 2) - (newShell
 						.getSize().y / 2)));
 		newShell.setLocation(position);
-		newShell.setText(Activator.getString(PREFERENCES_ADDWP_DIALOG_TITLE));
+		newShell.setText(LocalizedPropertiesPlugin
+				.getString(PREFERENCES_ADDWP_DIALOG_TITLE));
 	}
 
 	private void changeData() {
@@ -204,10 +208,16 @@ public class WilcardPathDialog extends Dialog {
 			return;
 		}
 		WildcardPath _path = new WildcardPath(_wildcardPath);
+		// Nueva implementacion
+		// _path.setLanguage(Locale.getDefault().getLanguage());
+		// _path.setCountry(Locale.getDefault().getCountry());
+		// _path.setFileExtension("properties");
+		// _path.setFileName("application");
+
 		_path.replace(Locale.getDefault());
-		_path.replace(WildcardPath.FILE_EXTENSION_WILDCARD, "properties");
-		_path.replace(WildcardPath.FILENAME_WILDCARD, "application");
-		_path.replace(WildcardPath.ROOT_WILDCARD, "locale");
+		_path.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
+		_path.replace(IWildcardPath.FILENAME_WILDCARD, "application");
+		_path.replace(IWildcardPath.ROOT_WILDCARD, "locale");
 		String path = _path.getPath();
 		preview.setText(path.replaceAll("\\\\.", "\\."));
 	}

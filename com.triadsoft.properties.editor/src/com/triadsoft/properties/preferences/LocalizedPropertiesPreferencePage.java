@@ -4,7 +4,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
  * Pagina de preferencias para los Wildcards Paths
@@ -20,8 +20,8 @@ public class LocalizedPropertiesPreferencePage extends
 
 	public LocalizedPropertiesPreferencePage() {
 		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription(Activator.getString(PREFERENCES_DESCRIPTION));
+		setPreferenceStore(LocalizedPropertiesPlugin.getDefault().getPreferenceStore());
+		setDescription(LocalizedPropertiesPlugin.getString(PREFERENCES_DESCRIPTION));
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class LocalizedPropertiesPreferencePage extends
 	 */
 	public void createFieldEditors() {
 		addField(new WilcardPathEditor(
-				PreferenceConstants.WILDCARD_PATHS_PREFERENCES, Activator
+				PreferenceConstants.WILDCARD_PATHS_PREFERENCES, LocalizedPropertiesPlugin
 						.getString(PREFERENCES_WILDCARD_TITLE_LABEL),
 				getFieldEditorParent())); //$NON-NLS-1$
 		// addField(new EncodingEditor(
@@ -40,7 +40,7 @@ public class LocalizedPropertiesPreferencePage extends
 		// getFieldEditorParent()));
 
 		addField(new SeparatorsEditor(
-				PreferenceConstants.KEY_VALUE_SEPARATORS_PREFERENCES, Activator
+				PreferenceConstants.KEY_VALUE_SEPARATORS_PREFERENCES, LocalizedPropertiesPlugin
 						.getString(PREFERENCES_SEPARATORS_LABEL),
 				getFieldEditorParent()));
 	}

@@ -24,7 +24,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 
 /**
  * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
@@ -169,7 +169,7 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	public void removeFromParent() {
-		// 
+		//
 	}
 
 	public void addPropertyFileListener(IPropertyFileListener listener) {
@@ -353,8 +353,8 @@ public class PropertyFile extends PropertyElement implements
 				IFile file = (IFile) iter.next();
 				if (this.file != null
 						&& file.getName().equals(this.file.getName())) {
-					LocalizedPropertiesPlugin.getLogger().debug(
-							"Cambio " + file.getName() + "!!!!", null);
+					LocalizedPropertiesLog.debug("Cambio " + file.getName()
+							+ "!!!!", null);
 					Iterator<IPropertyFileListener> listenersIterator = this.listeners
 							.iterator();
 					while (listenersIterator.hasNext()) {
@@ -463,8 +463,8 @@ public class PropertyFile extends PropertyElement implements
 	}
 
 	public void save() throws IOException, CoreException {
-		FileOutputStream stream = new FileOutputStream(new File(file
-				.getLocationURI()));
+		FileOutputStream stream = new FileOutputStream(new File(
+				file.getLocationURI()));
 		Writer out = new OutputStreamWriter(stream, encoding);
 		out.write(asText());
 		out.close();

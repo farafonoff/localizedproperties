@@ -17,7 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
  * Editor para los separadores de clave-valor.
@@ -64,7 +64,7 @@ public class SeparatorsEditor extends ListEditor {
 
 		if (defaultButton == null) {
 			defaultButton = new Button(buttonBox, SWT.PUSH);
-			defaultButton.setText(Activator
+			defaultButton.setText(LocalizedPropertiesPlugin
 					.getString(PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
 			defaultButton.setEnabled(true);
 			defaultButton.addMouseListener(new MouseListener() {
@@ -94,7 +94,7 @@ public class SeparatorsEditor extends ListEditor {
 			commandListControl = getListControl(parent);
 		}
 		String value = commandListControl.getSelection()[0];
-		String defaultValue = Activator
+		String defaultValue = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPluginPreferences()
 				.getString(
@@ -104,7 +104,7 @@ public class SeparatorsEditor extends ListEditor {
 
 	protected void refreshValidState() {
 		super.refreshValidState();
-		String defaultValue = Activator
+		String defaultValue = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPluginPreferences()
 				.getString(
@@ -184,7 +184,7 @@ public class SeparatorsEditor extends ListEditor {
 
 	protected void storeDefault() {
 		String value = commandListControl.getSelection()[0];
-		Activator.getDefault().getPluginPreferences().setValue(
+		LocalizedPropertiesPlugin.getDefault().getPluginPreferences().setValue(
 				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES,
 				value);
 	}
