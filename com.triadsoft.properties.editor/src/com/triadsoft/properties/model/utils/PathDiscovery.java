@@ -11,7 +11,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.visitors.FileVisitor;
 
 /**
  * Se encarga de de obtener a partir del archivo pasado en el constructor todos
@@ -23,10 +24,9 @@ import com.triadsoft.properties.editor.Activator;
  * 
  * @author Triad (flores.leonardo@gmail.com)
  * @see WildcardPath
+ * @deprecated Se tiene que usar NewPathDiscovery
  */
-public class PathDiscovery {
-	private static final String PATHDISCOVERY_UNKNOWN_WILDCARD_MESSAGE = "pathdiscovery.unknownWildcard.message";
-	private static final String PATHDISCOVERY_UNKNOWN_FILENAME_MESSAGE = "pathdiscovery.unknownFilename.message";
+public class PathDiscovery implements IFilesDiscoverer {
 	private WildcardPath wp = null;
 	final Map<Locale, IFile> resources = new HashMap<Locale, IFile>();
 	private IPath path;
@@ -34,20 +34,15 @@ public class PathDiscovery {
 	private Locale defaultLocale;
 	private IFile file;
 
-	/**
-	 * Devuelve el path ya parseado como el path desde el proyecto hasta el
-	 * directorio que contiene al archivo de recursos
-	 * 
-	 * @return IPath con el path parseado
+	/* (non-Javadoc)
+	 * @see com.triadsoft.properties.model.utils.IFilesDiscoverer#getPath()
 	 */
 	public IPath getPath() {
 		return path;
 	}
 
-	/**
-	 * Devuelve el nombre del archivo sin extension.
-	 * 
-	 * @return String Nombre del srchivo
+	/* (non-Javadoc)
+	 * @see com.triadsoft.properties.model.utils.IFilesDiscoverer#getFilename()
 	 */
 	public String getFilename() {
 		return filename;
@@ -64,17 +59,20 @@ public class PathDiscovery {
 		this.file = file;
 		wp = getWildcardPath(file);
 		if (wp == null) {
-			throw new RuntimeException(Activator.getString(
+			throw new RuntimeException(LocalizedPropertiesPlugin.getString(
 					PATHDISCOVERY_UNKNOWN_WILDCARD_MESSAGE, new String[] { file
 							.getFullPath().toString() }));
 		}
 		this.searchFiles();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.triadsoft.properties.model.utils.IFilesDiscoverer#searchFiles()
+	 */
 	public void searchFiles() {
 		wp.parse(file.getFullPath().toString());
 		if (wp.getFileName() == null) {
-			throw new RuntimeException(Activator.getString(
+			throw new RuntimeException(LocalizedPropertiesPlugin.getString(
 					PATHDISCOVERY_UNKNOWN_FILENAME_MESSAGE, new String[] { file
 							.getFullPath().toString() }));
 		}
@@ -100,7 +98,7 @@ public class PathDiscovery {
 				try {
 					((IContainer) resource).accept(fv);
 				} catch (CoreException e) {
-					Activator.getLogger().error(e.getMessage());
+					LocalizedPropertiesLog.error(e.getMessage());
 				}
 			}
 		}
@@ -115,7 +113,7 @@ public class PathDiscovery {
 	 *         archivo
 	 */
 	private WildcardPath getWildcardPath(IFile ifile) {
-		String[] wildcardPaths = Activator.getWildcardPaths();
+		String[] wildcardPaths = LocalizedPropertiesPlugin.getWildcardPaths();
 		for (int i = 0; i < wildcardPaths.length; i++) {
 			WildcardPath wildcardPath = new WildcardPath(wildcardPaths[i]);
 			if (wildcardPath.match(ifile.getFullPath().toString())) {
@@ -125,30 +123,22 @@ public class PathDiscovery {
 		return null;
 	}
 
-	/**
-	 * Devuelve un mapa con los recursos encontrados dentro del path,
-	 * organizados por su locale
-	 * 
-	 * @return Map<Locale,IFile>
+	/* (non-Javadoc)
+	 * @see com.triadsoft.properties.model.utils.IFilesDiscoverer#getResources()
 	 */
 	public Map<Locale, IFile> getResources() {
 		return resources;
 	}
 
-	/**
-	 * Devuelve el objeto WildcardPath que se uso para descubir los datos de la
-	 * ubicacion de los recursos
-	 * 
-	 * @return Devuelve el wilcard path encontrado a partir del archivo
+	/* (non-Javadoc)
+	 * @see com.triadsoft.properties.model.utils.IFilesDiscoverer#getWildcardPath()
 	 */
-	public WildcardPath getWildcardPath() {
+	public IWildcardPath getWildcardPath() {
 		return wp;
 	}
 
-	/**
-	 * Devuelve el locale contenido en el archivo pasado en el constructor
-	 * 
-	 * @return Locale del archivo abierto
+	/* (non-Javadoc)
+	 * @see com.triadsoft.properties.model.utils.IFilesDiscoverer#getDefaultLocale()
 	 */
 	public Locale getDefaultLocale() {
 		return defaultLocale;

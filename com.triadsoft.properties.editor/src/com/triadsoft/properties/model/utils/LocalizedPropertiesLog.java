@@ -1,10 +1,9 @@
 package com.triadsoft.properties.model.utils;
 
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
  * Clase que encapsula la funcionalidad de log de datos
@@ -13,53 +12,55 @@ import com.triadsoft.properties.editor.Activator;
  * 
  */
 public class LocalizedPropertiesLog {
-	private static ILog logger = Activator.getDefault().getLog();
-
-	public void debug(String message, Throwable th) {
-		IStatus status = new Status(IStatus.OK, Activator.PLUGIN_ID, message,
-				th);
-		logger.log(status);
+	public static void debug(String message, Throwable th) {
+		IStatus status = new Status(IStatus.OK,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, th);
+		log(status);
 	}
 
-	public void debug(String message) {
-		IStatus status = new Status(IStatus.OK, Activator.PLUGIN_ID, message,
-				null);
-		logger.log(status);
+	public static void debug(String message) {
+		IStatus status = new Status(IStatus.OK,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, null);
+		log(status);
 	}
 
-	public void info(String message, Throwable th) {
-		IStatus status = new Status(IStatus.INFO, Activator.PLUGIN_ID, message,
-				th);
-		logger.log(status);
+	public static void info(String message, Throwable th) {
+		IStatus status = new Status(IStatus.INFO,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, th);
+		log(status);
 	}
 
-	public void info(String message) {
-		IStatus status = new Status(IStatus.INFO, Activator.PLUGIN_ID, message,
-				null);
-		logger.log(status);
+	public static void info(String message) {
+		IStatus status = new Status(IStatus.INFO,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, null);
+		log(status);
 	}
 
-	public void warning(String message, Throwable th) {
-		IStatus status = new Status(IStatus.WARNING, Activator.PLUGIN_ID,
-				message, th);
-		logger.log(status);
+	public static void warning(String message, Throwable th) {
+		IStatus status = new Status(IStatus.WARNING,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, th);
+		log(status);
 	}
 
-	public void warning(String message) {
-		IStatus status = new Status(IStatus.WARNING, Activator.PLUGIN_ID,
-				message, null);
-		logger.log(status);
+	public static void warning(String message) {
+		IStatus status = new Status(IStatus.WARNING,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, null);
+		log(status);
 	}
 
-	public void error(String message, Throwable th) {
-		IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-				message, th);
-		logger.log(status);
+	public static void error(String message, Throwable th) {
+		IStatus status = new Status(IStatus.ERROR,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, th);
+		log(status);
 	}
 
-	public void error(String message) {
-		IStatus status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-				message, null);
-		logger.log(status);
+	public static void error(String message) {
+		IStatus status = new Status(IStatus.ERROR,
+				LocalizedPropertiesPlugin.PLUGIN_ID, message, null);
+		log(status);
+	}
+
+	public static void log(IStatus status) {
+		LocalizedPropertiesPlugin.getDefault().getLog().log(status);
 	}
 }

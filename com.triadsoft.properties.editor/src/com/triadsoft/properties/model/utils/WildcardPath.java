@@ -14,19 +14,9 @@ import org.eclipse.core.resources.IFile;
  * controlador de archivos
  * 
  * @author Triad (flores.leonardo@gmail.com)
+ * @deprecated Se debe usar WilcardPath2
  */
-public class WildcardPath {
-	public static final String COUNTRY_REGEX = "[A-Z]{2}";
-	public static final String LANGUAGE_REGEX = "[a-z]{2}";
-	public static final String TEXT_REGEX = "[a-zA-Z\\-\\_]+";
-	public static final String ROOT_WILDCARD = "{root}";
-	public static final String FILENAME_WILDCARD = "{filename}";
-	public static final String FILE_EXTENSION_WILDCARD = "{fileextension}";
-	public static final String COUNTRY_WILDCARD = "{country}";
-	public static final String LANGUAGE_WILDCARD = "{lang}";
-
-	public static final String[] tokens = { "/", ".", "-", "_" };
-
+public class WildcardPath implements IWildcardPath {
 	private String root;
 	private String fileName;
 	private String fileExtension;
@@ -42,6 +32,11 @@ public class WildcardPath {
 		this.path = "";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#getWildcardpath()
+	 */
 	public String getWildcardpath() {
 		if (wildcardpath.indexOf("$") > -1) {
 			return wildcardpath;
@@ -75,22 +70,48 @@ public class WildcardPath {
 		return root;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#getFileName()
+	 */
 	public String getFileName() {
 		return fileName;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.triadsoft.properties.model.utils.IWildcardPath#getFileExtension()
+	 */
 	public String getFileExtension() {
 		return fileExtension;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#getCountry()
+	 */
 	public String getCountry() {
 		return country;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#getLanguage()
+	 */
 	public String getLanguage() {
 		return language;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#getLocale()
+	 */
 	public Locale getLocale() {
 		Locale locale = null;
 		if (this.language != null && this.country == null) {
@@ -101,7 +122,7 @@ public class WildcardPath {
 		return locale;
 	}
 
-	public void setParhToRoot(String pathToRoot) {
+	protected void setParhToRoot(String pathToRoot) {
 		this.pathToRoot = pathToRoot;
 	}
 
@@ -109,9 +130,12 @@ public class WildcardPath {
 		return pathToRoot;
 	}
 
-	/**
-	 * Este metodo se encarga de obtener del path pasado como par�metro los
-	 * datos correspondientes a cada wildcard
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.triadsoft.properties.model.utils.IWildcardPath#parse(java.lang.String
+	 * )
 	 */
 	public Boolean parse(String filepath) {
 		if (parse(filepath, true, true)) {
@@ -130,7 +154,7 @@ public class WildcardPath {
 	 *            Indica si va a evaluar
 	 * @return
 	 */
-	private Boolean parse(String filepath, boolean withLanguage,
+	public Boolean parse(String filepath, boolean withLanguage,
 			boolean withCoutry) {
 		String escapedFilepath = escapedFilepath(filepath);
 		String wildcardRegex = null;
@@ -243,21 +267,23 @@ public class WildcardPath {
 	 * @param locale
 	 * @return Devuelve el WilcardPath a la cual reemplazo el pais y el lenguaje
 	 */
-	public WildcardPath replace(Locale locale) {
+	public IWildcardPath replace(Locale locale) {
 		this.replace(LANGUAGE_WILDCARD, locale.getLanguage());
 		this.replace(COUNTRY_WILDCARD, locale.getCountry());
 		return this;
 	}
 
-	/**
-	 * Reset the path to initial state
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#resetPath()
 	 */
 	public void resetPath() {
 		this.path = wildcardpath;
 		this.path = wildcardpath.replaceAll("\\.", "\\\\.");
 	}
 
-	public void resetLocale() {
+	protected void resetLocale() {
 		this.language = null;
 		this.country = null;
 	}
@@ -268,7 +294,7 @@ public class WildcardPath {
 	 * 
 	 * @return {@link WildcardPath}
 	 */
-	public WildcardPath replaceToRegex() {
+	protected IWildcardPath replaceToRegex() {
 		return replaceToRegex(true, true);
 	}
 
@@ -281,7 +307,8 @@ public class WildcardPath {
 	 * @param Indica
 	 *            si se usar� el pais
 	 */
-	public WildcardPath replaceToRegex(boolean useLanguage, boolean useCountry) {
+	protected WildcardPath replaceToRegex(boolean useLanguage,
+			boolean useCountry) {
 		resetPath();
 		WildcardPath wp = new WildcardPath(getWildcardpath());
 		wp.replace(ROOT_WILDCARD, TEXT_REGEX);
@@ -306,11 +333,11 @@ public class WildcardPath {
 		return wp;
 	}
 
-	public WildcardPath replace(String wildcard, String value) {
+	public IWildcardPath replace(String wildcard, String value) {
 		return replace(wildcard, value, true);
 	}
 
-	public WildcardPath replace(String wildcard, String value, boolean replace) {
+	public IWildcardPath replace(String wildcard, String value, boolean replace) {
 		if (path.equals("") || path.length() == 0) {
 			resetPath();
 		}
@@ -368,15 +395,23 @@ public class WildcardPath {
 		return filepath;
 	}
 
-	/**
-	 * This method return true if the file path match with the wildcard path
-	 * loaded into the WildcardPath object
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param filepath
-	 *            The file path string to compare
-	 * @return java.lang.Boolean
+	 * @see
+	 * com.triadsoft.properties.model.utils.IWildcardPath#match(java.lang.String
+	 * )
 	 */
 	public Boolean match(String filepath) {
+		return match(filepath, true, true);
+	}
+
+	/**
+	 * @see com.triadsoft.properties.model.utils.IWildcardPath#match(java.lang.String,
+	 *      boolean, boolean)
+	 */
+	public Boolean match(String filepath, boolean withLanguage,
+			boolean withCountry) {
 		WildcardPath path = new WildcardPath(wildcardpath);
 		String escapedFilepath = escapedFilepath(filepath);
 		WildcardPath newpath = path.replaceToRegex(true, true);
@@ -435,5 +470,38 @@ public class WildcardPath {
 		wp.replace("\\\\.", "\\.");
 		wp.replace("\\_", "_");
 		return wp.getPathToRoot() + wp.getPath();
+	}
+
+	public Boolean parse(String filepath, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Boolean match(String filepath, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String toRegex(int offset) {
+		return null;
+	}
+
+	public String toRegex() {
+		return null;
+	}
+
+	public void setLanguage(String language) {
+	}
+
+	public void setCountry(String country) {
+	}
+
+	public void setFileExtension(String fileExtension) {
+	}
+
+	public void setFileName(String fileName) {
+	}
+
+	public void setRoot(String root) {
 	}
 }

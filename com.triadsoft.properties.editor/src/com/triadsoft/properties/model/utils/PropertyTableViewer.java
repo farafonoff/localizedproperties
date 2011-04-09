@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import com.triadsoft.properties.editor.Activator;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesContentProvider;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.editors.PropertiesLabelProvider;
@@ -83,7 +83,7 @@ public class PropertyTableViewer extends TableViewer {
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
 		this.editor = editor;
-		setFontSize(Activator.getDefault().getPreferenceStore().getFloat(
+		setFontSize(LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
 				PREFERENCES_FONT_SIZE));
 		setContentProvider(new PropertiesContentProvider());
 		setLabelProvider(new PropertiesLabelProvider(this));
@@ -101,11 +101,11 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	public void setFontSize(float size) {
-		if (size >= Activator.getDefault().getPreferenceStore().getFloat(
+		if (size >= LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
 				PREFERENCES_FONT_MAX_SIZE)) {
 			return;
 		}
-		if (size <= Activator.getDefault().getPreferenceStore().getFloat(
+		if (size <= LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
 				PREFERENCES_FONT_MIN_SIZE)) {
 			return;
 		}
@@ -115,7 +115,7 @@ public class PropertyTableViewer extends TableViewer {
 		data.height = size;
 		getTable().setFont(
 				new Font(editor.getSite().getShell().getDisplay(), data));
-		Activator.getDefault().getPreferenceStore().setValue(
+		LocalizedPropertiesPlugin.getDefault().getPreferenceStore().setValue(
 				PREFERENCES_FONT_SIZE, size);
 		this.updateEditorsFontSize(size);
 	}
@@ -139,7 +139,7 @@ public class PropertyTableViewer extends TableViewer {
 
 	private void createKeyColumn() {
 		TableColumn keyColumn = new TableColumn(getTable(), SWT.NONE);
-		keyColumn.setText(Activator.getString(EDITOR_TABLE_KEY));
+		keyColumn.setText(LocalizedPropertiesPlugin.getString(EDITOR_TABLE_KEY));
 		keyColumn.setWidth(150);
 		keyColumn.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent event) {
@@ -252,7 +252,7 @@ public class PropertyTableViewer extends TableViewer {
 		keyEditor.setValidator(new ICellEditorValidator() {
 			public String isValid(Object value) {
 				if (((String) value).trim().length() == 0) {
-					return Activator
+					return LocalizedPropertiesPlugin
 							.getString("editor.table.modifyKey.nullvalue");
 				}
 				return null;
@@ -316,7 +316,7 @@ public class PropertyTableViewer extends TableViewer {
 					StringUtils.getLocale(selectedColumn.getText()));
 			if (!selectedColumn.equals(defaultColumn)
 					&& !selectedColumn.getText().equals(
-							Activator.getString(EDITOR_TABLE_KEY))) {
+							LocalizedPropertiesPlugin.getString(EDITOR_TABLE_KEY))) {
 				rla.setEnabled(true);
 				menuMgr.add(rla);
 			}
