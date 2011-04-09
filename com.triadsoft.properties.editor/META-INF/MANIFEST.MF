@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Editor Plug-in
 Bundle-SymbolicName: com.triadsoft.properties.editor;singleton:=true
 Bundle-Version: 0.7.5
-Bundle-Activator: com.triadsoft.properties.editor.Activator
+Bundle-Activator: com.triadsoft.properties.editor.LocalizedPropertiesPlugin
 Bundle-Vendor: TRIADSOFT
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: com.triadsoft.properties.model,
+Export-Package: com.triadsoft.properties.editor,
+ com.triadsoft.properties.model,
  com.triadsoft.properties.model.utils
