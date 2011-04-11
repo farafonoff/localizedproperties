@@ -32,6 +32,7 @@ import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.utils.IFilesDiscoverer;
+import com.triadsoft.properties.model.utils.IWildcardPath;
 import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.NewPathDiscovery;
 import com.triadsoft.properties.model.utils.WildCardPath2;
@@ -53,6 +54,7 @@ import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
  */
 public class ResourceList {
 
+	protected static final String PREFERENCES_ADD_LOCALE_ACTION_ERROR = "preferences.add.locale.action.error";
 	private HashMap<Locale, PropertyFile> files = new HashMap<Locale, PropertyFile>();
 	private Locale defaultLocale;
 
@@ -71,7 +73,7 @@ public class ResourceList {
 			pd = new NewPathDiscovery(file);
 			this.loadFiles();
 		} catch (NullPointerException e) {
-			LocalizedPropertiesLog.error(e.getMessage());
+			LocalizedPropertiesLog.error(e.getMessage(),e);
 		}
 	}
 
@@ -83,9 +85,9 @@ public class ResourceList {
 			this.filename = pd.getWildcardPath().getFileName();
 			parseLocales(pd.getResources());
 		} catch (CoreException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 		} catch (IOException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 		}
 	}
 
@@ -266,11 +268,11 @@ public class ResourceList {
 			try {
 				properties.save();
 			} catch (FileNotFoundException e) {
-				LocalizedPropertiesLog.error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 			} catch (IOException e) {
-				LocalizedPropertiesLog.error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 			} catch (CoreException e) {
-				LocalizedPropertiesLog.error(e.getLocalizedMessage());
+				LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 			}
 		}
 	}
@@ -305,7 +307,7 @@ public class ResourceList {
 		if (newFile.exists()) {
 			MessageDialog.openError(LocalizedPropertiesPlugin.getShell(),
 					"Error", LocalizedPropertiesPlugin.getString(
-							"preferences.add.locale.action.error",
+							PREFERENCES_ADD_LOCALE_ACTION_ERROR,
 							new Object[] { locale }));
 			return;
 		}
@@ -328,9 +330,9 @@ public class ResourceList {
 			new ProgressMonitorDialog(LocalizedPropertiesPlugin.getShell())
 					.run(true, true, op);
 		} catch (InvocationTargetException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 		} catch (InterruptedException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage());
+			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
 		}
 	}
 
@@ -376,7 +378,7 @@ public class ResourceList {
 	}
 
 	private InputStream openContentStream() {
-		String contents = "#Default Category\n";
+		String contents = "#Created By Localized Properties Plugin\n";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
@@ -386,12 +388,17 @@ public class ResourceList {
 		if (rootDelta == null)
 			return false;
 		final Map<Integer, IFile> changed = new HashMap<Integer, IFile>();
-		IResourceDeltaVisitor visitor = new ResourceChangeDeltaVisitor(changed,
-				pd.getWildcardPath());
 		try {
+			IWildcardPath path = (IWildcardPath) pd.getWildcardPath().clone();
+			path.setCountry(null);
+			path.setLanguage(null);
+			IResourceDeltaVisitor visitor = new ResourceChangeDeltaVisitor(
+					changed, path,pd.getWildcardPath().getFileName(),pd.getWildcardPath().getFileExtension());
 			rootDelta.accept(visitor);
 		} catch (CoreException e) {
-
+			LocalizedPropertiesLog.error("Error finding resources", e);
+		} catch (CloneNotSupportedException e) {
+			LocalizedPropertiesLog.error("Error cloning wildcardpath", e);
 		}
 		if (changed.size() > 0) {
 			pd.searchFiles();

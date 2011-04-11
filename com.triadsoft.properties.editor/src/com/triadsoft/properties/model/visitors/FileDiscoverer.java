@@ -47,10 +47,16 @@ public class FileDiscoverer implements IResourceVisitor {
 		} else if (resource.getType() == IResource.FOLDER && root == null) {
 			return true;
 		} else if (resource.getType() == IResource.FILE
-				&& wp.match(filepath, offset)) {
+				&& (wp.match(filepath, offset) || 
+					wp.match(filepath, offset+1) || 
+					wp.match(filepath, offset+2))) {
 			// Si el archivo coincide con el wp, entonces lo parseo
 			// para ver si el wp me devuelve el filename y extension esperado
-			wp.parse(filepath, offset);
+			int index = offset;
+			while(!wp.parse(filepath, index) && index<5){
+				index++;
+			}
+			
 			if (wp.getFileName() != null && wp.getFileName().equals(filename)
 					&& wp.getFileExtension() != null
 					&& wp.getFileExtension().equals(extension)) {

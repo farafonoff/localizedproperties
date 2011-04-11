@@ -13,12 +13,15 @@ import com.triadsoft.properties.model.utils.IWildcardPath;
 public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 	private Map<Integer, IFile> changed;
 	private IWildcardPath wp;
+	private String filename;
+	private String fileextension;
 
 	public ResourceChangeDeltaVisitor(Map<Integer, IFile> changed,
-			IWildcardPath path) {
+			IWildcardPath path, String filename, String fileextension) {
 		this.changed = changed;
 		this.wp = path;
-		this.wp.replace(IWildcardPath.FILENAME_WILDCARD, wp.getFileName());
+		this.filename = filename;
+		this.fileextension = fileextension;
 	}
 
 	public boolean visit(IResourceDelta delta) throws CoreException {
@@ -30,19 +33,23 @@ public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 		if (resource.getType() == IResource.FOLDER) {
 			return true;
 		}
-
-		if (delta.getKind() == IResourceDelta.ADDED
+		String filepath = resource.getFullPath().toString();
+		if ((delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.REMOVED) 
 				&& resource.getType() == IResource.FILE
-				&& wp.match(resource.getFullPath().toString())) {
-			changed.put(IResourceDelta.ADDED, (IFile) resource);
-			return true;
-		}
-
-		if (delta.getKind() == IResourceDelta.REMOVED
-				&& resource.getType() == IResource.FILE
-				&& wp.match(resource.getFullPath().toString())) {
-			changed.put(IResourceDelta.REMOVED, (IFile) resource);
-			return true;
+				&& (wp.match(filepath, 0) || wp.match(filepath, 1)
+						|| wp.match(filepath, 2) || wp.match(filepath, 3) || wp
+						.match(filepath, 4))) {
+			int index = 0;
+			while (!wp.parse(filepath, index) && index < 5) {
+				index++;
+			}
+			if (wp.getFileName() != null && wp.getFileName().equals(filename)
+					&& wp.getFileExtension() != null
+					&& wp.getFileExtension().equals(fileextension)) {
+				changed.put(delta.getKind(), (IFile) resource);
+				return true;
+			}
+			return false;
 		}
 
 		// only interested in content changes

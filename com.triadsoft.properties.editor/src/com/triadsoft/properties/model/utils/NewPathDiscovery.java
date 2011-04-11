@@ -38,6 +38,9 @@ public class NewPathDiscovery implements IFilesDiscoverer {
 		}
 		filename = wp.getFileName();
 		defaultLocale = wp.getLocale();
+		if (defaultLocale == null) {
+			defaultLocale = StringUtils.getKeyLocale();
+		}
 		this.searchFiles();
 	}
 
@@ -154,15 +157,17 @@ public class NewPathDiscovery implements IFilesDiscoverer {
 		for (int i = 0; i < files.length; i++) {
 			wp2.parse(files[i].getFullPath().toFile().getAbsolutePath(), offset);
 			Locale locale = null;
-			if (wp2.getLanguage() == null && wp2.getCountry() != null) {
+			if (wp2.getLanguage() != null && wp2.getCountry() != null) {
 				locale = new Locale(wp2.getLanguage(), wp2.getCountry());
 			} else if (wp2.getLanguage() != null && wp2.getCountry() == null) {
 				locale = new Locale(wp2.getLanguage());
 				// Situacion extraña porque no tiene sentido poner un pais sin
 				// lenguaje
 				// pero por las dudas esta bien soportarla
-			} else if (wp2.getLanguage() == null && wp2.getCountry() == null) {
-				locale = new Locale("xx", wp2.getCountry());
+			} else if (wp2.getLanguage() == null && wp2.getCountry() != null) {
+				locale = new Locale(StringUtils.getKeyLocale().getLanguage(), wp2.getCountry());
+			}else if(wp2.getLanguage() == null && wp2.getCountry() == null){
+				locale = StringUtils.getKeyLocale();
 			}
 			if (locale != null) {
 				resources.put(locale, files[i]);

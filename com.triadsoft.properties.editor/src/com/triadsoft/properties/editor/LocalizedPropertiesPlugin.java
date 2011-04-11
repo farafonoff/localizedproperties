@@ -84,6 +84,14 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
+	public static void setWildcardPaths(String[] wps) {
+		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore();
+		for(int i=0;i<wps.length;i++){
+			store.setValue(PreferenceConstants.WILDCARD_PATHS_PREFERENCES+i, wps[i]);
+		}
+	}
+
 	public static String[] getWildcardPaths() {
 		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
 				.getPreferenceStore();

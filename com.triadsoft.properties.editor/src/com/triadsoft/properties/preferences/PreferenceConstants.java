@@ -7,8 +7,10 @@ package com.triadsoft.properties.preferences;
  */
 public class PreferenceConstants {
 
-	public static final String WILDCARD_PATHS_PREFERENCES = "preferences.wildcards.path";
-	public static final String WILDCARD_PATH_SEPARATOR_PREFERENCES = "preferences.wilcards.separator";
+	public static final String WILDCARD_PATHS_ID = "preferences.wildcards";
+	public static final String WILDCARD_PATHS_PREFERENCES = WILDCARD_PATHS_ID+".path";
+	
+	//public static final String WILDCARD_PATH_SEPARATOR_PREFERENCES = "preferences.wilcards.separator";
 	public static final String WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES = "preferences.wilcards.default.index";
 
 	public static final String LANGUAGE_CONTENT_TYPE_PREFERENCES = "preferences.languageContentType";

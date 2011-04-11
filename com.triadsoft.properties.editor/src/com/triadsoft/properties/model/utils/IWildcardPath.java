@@ -45,15 +45,6 @@ public interface IWildcardPath {
 	public Boolean parse(String filepath);
 
 	/**
-	 * Este metodo se encarga de obtener del path pasado como par�metro los
-	 * datos correspondientes a cada wildcard
-	 * 
-	 * @deprecated
-	 */
-	public Boolean parse(String filepath, boolean withLanguage,
-			boolean withCountry);
-	
-	/**
 	 * This method must to use information about optional parameters.
 	 * (.{country})1
 	 * @param offset
@@ -83,9 +74,9 @@ public interface IWildcardPath {
 	 * @see #match(int offset)
 	 * @deprecated It will be replaced by match(int offset)
 	 */
-	public Boolean match(String filepath, boolean withLanguage,
-			boolean withCountry);
-	
+//	public Boolean match(String filepath, boolean withLanguage,
+//			boolean withCountry);
+//	
 	/**
 	 * This method will looking for matchs 
 	 * @param offset
@@ -99,7 +90,7 @@ public interface IWildcardPath {
 	 * @param locale
 	 * @return
 	 */
-	public IWildcardPath replace(Locale locale);
+	//public IWildcardPath replace(Locale locale);
 
 	/**
 	 * Permite reemplazar el wildcard pasado por el valor
@@ -109,7 +100,7 @@ public interface IWildcardPath {
 	 * @param replace
 	 * @return
 	 */
-	public IWildcardPath replace(String wildcard, String value, boolean replace);
+	//public IWildcardPath replace(String wildcard, String value, boolean replace);
 
 	/**
 	 * Permite reemplazar el wildcard pasado por el valor
@@ -119,7 +110,7 @@ public interface IWildcardPath {
 	 * @param replace
 	 * @return
 	 */
-	public IWildcardPath replace(String wildcard, String value);
+	//public IWildcardPath replace(String wildcard, String value);
 
 	/**
 	 * Devuelve el path hasta previo al descubrimiento del ROOT
@@ -145,4 +136,6 @@ public interface IWildcardPath {
 	public void setFileName(String fileName);
 
 	public void setRoot(String root);
+	
+	public Object clone() throws CloneNotSupportedException;
 }

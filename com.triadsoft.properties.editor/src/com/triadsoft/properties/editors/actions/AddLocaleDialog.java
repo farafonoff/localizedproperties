@@ -109,7 +109,8 @@ public class AddLocaleDialog extends Dialog {
 			return;
 		}
 
-		if (newLanguage.length() < 2 || newCountry.length() < 2) {
+		if (newLanguage.length() < 2
+				|| (newCountry != null && newCountry.length() < 2)) {
 			return;
 		}
 
@@ -126,7 +127,9 @@ public class AddLocaleDialog extends Dialog {
 	}
 
 	/**
-	 * Validaciones para que se coloquen los valores correctos de pais y lenguaje
+	 * Validaciones para que se coloquen los valores correctos de pais y
+	 * lenguaje
+	 * 
 	 * @return False cuando ocurre algun error
 	 */
 	private boolean validate() {
@@ -145,7 +148,8 @@ public class AddLocaleDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(LocalizedPropertiesPlugin.getString(PREFERENCES_ADD_LOCALE_DIALOG_TITLE));
+		newShell.setText(LocalizedPropertiesPlugin
+				.getString(PREFERENCES_ADD_LOCALE_DIALOG_TITLE));
 	}
 
 	public Locale getNewLocale() {

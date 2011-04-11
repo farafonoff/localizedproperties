@@ -1,6 +1,5 @@
 package com.triadsoft.properties.model.utils;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -138,13 +137,14 @@ public class WildcardPath implements IWildcardPath {
 	 * )
 	 */
 	public Boolean parse(String filepath) {
-		if (parse(filepath, true, true)) {
-			return true;
-		}
-		if (parse(filepath, true, false)) {
-			return true;
-		}
-		return parse(filepath, false, false);
+		// if (parse(filepath, true, true)) {
+		// return true;
+		// }
+		// if (parse(filepath, true, false)) {
+		// return true;
+		// }
+		// return parse(filepath, false, false);
+		return true;
 	}
 
 	/**
@@ -154,112 +154,112 @@ public class WildcardPath implements IWildcardPath {
 	 *            Indica si va a evaluar
 	 * @return
 	 */
-	public Boolean parse(String filepath, boolean withLanguage,
-			boolean withCoutry) {
-		String escapedFilepath = escapedFilepath(filepath);
-		String wildcardRegex = null;
-		wildcardRegex = this.replaceToRegex(withLanguage, withCoutry).getPath();
-		Pattern p = Pattern.compile(wildcardRegex);
-		Matcher m = p.matcher(escapedFilepath);
-		if (m.find()) {
-			String discoveredPath = escapedFilepath.substring(m.start(),
-					m.end());
-			this.pathToRoot = escapedFilepath.substring(0, m.start());
-			String wilcardpathCopy = wildcardpath;
-			if (!withLanguage && !withCoutry) {
-				wilcardpathCopy = wilcardpathCopy
-						.replace(LANGUAGE_WILDCARD, "");
-				wilcardpathCopy = wilcardpathCopy.replace(COUNTRY_WILDCARD, "");
-				wilcardpathCopy = wilcardpathCopy.replace("._.", ".");
-				this.resetLocale();
-			} else if (withLanguage && !withCoutry) {
-				wilcardpathCopy = wilcardpathCopy.replace(COUNTRY_WILDCARD, "");
-				wilcardpathCopy = wilcardpathCopy.replace("._.", ".");
-				wilcardpathCopy = wilcardpathCopy.replace("_.", ".");
-				this.resetLocale();
-			}
-			String[] wildcards = wilcardpathCopy.split("\\/");
-			String[] segments = discoveredPath.split("\\/");
-			if (wildcards.length != segments.length) {
-				throw new RuntimeException(
-						"No pude separar los archivos en las mismas cantidades");
-			}
-			for (int i = 0; i < segments.length; i++) {
-				parseWildcard(wildcards[i], segments[i]);
-			}
-			// if (this.language == null || this.country == null) {
-			// throw new RuntimeException("Unparsable lang and country");
-			// }
-			return true;
-		}
-		return false;
-	}
+	// public Boolean parse(String filepath, boolean withLanguage,
+	// boolean withCoutry) {
+	// String escapedFilepath = escapedFilepath(filepath);
+	// String wildcardRegex = null;
+	// wildcardRegex = this.replaceToRegex(withLanguage, withCoutry).getPath();
+	// Pattern p = Pattern.compile(wildcardRegex);
+	// Matcher m = p.matcher(escapedFilepath);
+	// if (m.find()) {
+	// String discoveredPath = escapedFilepath.substring(m.start(),
+	// m.end());
+	// this.pathToRoot = escapedFilepath.substring(0, m.start());
+	// String wilcardpathCopy = wildcardpath;
+	// if (!withLanguage && !withCoutry) {
+	// wilcardpathCopy = wilcardpathCopy
+	// .replace(LANGUAGE_WILDCARD, "");
+	// wilcardpathCopy = wilcardpathCopy.replace(COUNTRY_WILDCARD, "");
+	// wilcardpathCopy = wilcardpathCopy.replace("._.", ".");
+	// this.resetLocale();
+	// } else if (withLanguage && !withCoutry) {
+	// wilcardpathCopy = wilcardpathCopy.replace(COUNTRY_WILDCARD, "");
+	// wilcardpathCopy = wilcardpathCopy.replace("._.", ".");
+	// wilcardpathCopy = wilcardpathCopy.replace("_.", ".");
+	// this.resetLocale();
+	// }
+	// String[] wildcards = wilcardpathCopy.split("\\/");
+	// String[] segments = discoveredPath.split("\\/");
+	// if (wildcards.length != segments.length) {
+	// throw new RuntimeException(
+	// "No pude separar los archivos en las mismas cantidades");
+	// }
+	// for (int i = 0; i < segments.length; i++) {
+	// parseWildcard(wildcards[i], segments[i]);
+	// }
+	// // if (this.language == null || this.country == null) {
+	// // throw new RuntimeException("Unparsable lang and country");
+	// // }
+	// return true;
+	// }
+	// return false;
+	// }
 
-	private Boolean parseWildcard(String wildcard, String segment) {
-		if (wildcard.equals(FILE_EXTENSION_WILDCARD + "$")) {
-			wildcard = FILE_EXTENSION_WILDCARD;
-		}
-		String[] segments = segment.split("\\.");
-		if (segments.length > 1) {
-			String[] wildcards = wildcard.split("\\.");
-			if (segments.length != wildcards.length) {
-				return false;
-			}
-			for (int i = 0; i < wildcards.length; i++) {
-				parseWildcard(wildcards[i], segments[i]);
-			}
-			return true;
-		}
-
-		if (wildcard.equals(FILENAME_WILDCARD)) {
-			fileName = segment;
-			return true;
-		}
-
-		if (wildcard.equals(LANGUAGE_WILDCARD)) {
-			language = segment;
-			return true;
-		}
-
-		segments = segment.split("\\_");
-		if (segments.length > 1) {
-			String[] wildcards = wildcard.split("\\_");
-			if (segments.length != wildcards.length) {
-				return false;
-			}
-			for (int i = 0; i < wildcards.length; i++) {
-				parseWildcard(wildcards[i], segments[i]);
-			}
-			return true;
-		}
-		segments = segment.split("-");
-		if (segments.length > 1) {
-			String[] wildcards = wildcard.split("-");
-			if (segments.length != wildcards.length) {
-				return false;
-			}
-			for (int i = 0; i < wildcards.length; i++) {
-				parseWildcard(wildcards[i], segments[i]);
-			}
-			return true;
-		}
-
-		// Tengo que ver si no viene algo complejo
-		if (wildcard.equals(ROOT_WILDCARD)) {
-			root = segment;
-		} else if (wildcard.equals(FILE_EXTENSION_WILDCARD)) {
-			fileExtension = segment;
-		} else if (wildcard.equals(FILENAME_WILDCARD)) {
-			fileName = segment;
-		} else if (wildcard.equals(COUNTRY_WILDCARD)) {
-			country = segment;
-		} else if (wildcard.equals(LANGUAGE_WILDCARD)) {
-			language = segment;
-		} else {
-			return false;
-		}
-		return true;
-	}
+//	private Boolean parseWildcard(String wildcard, String segment) {
+//		if (wildcard.equals(FILE_EXTENSION_WILDCARD + "$")) {
+//			wildcard = FILE_EXTENSION_WILDCARD;
+//		}
+//		String[] segments = segment.split("\\.");
+//		if (segments.length > 1) {
+//			String[] wildcards = wildcard.split("\\.");
+//			if (segments.length != wildcards.length) {
+//				return false;
+//			}
+//			for (int i = 0; i < wildcards.length; i++) {
+//				parseWildcard(wildcards[i], segments[i]);
+//			}
+//			return true;
+//		}
+//
+//		if (wildcard.equals(FILENAME_WILDCARD)) {
+//			fileName = segment;
+//			return true;
+//		}
+//
+//		if (wildcard.equals(LANGUAGE_WILDCARD)) {
+//			language = segment;
+//			return true;
+//		}
+//
+//		segments = segment.split("\\_");
+//		if (segments.length > 1) {
+//			String[] wildcards = wildcard.split("\\_");
+//			if (segments.length != wildcards.length) {
+//				return false;
+//			}
+//			for (int i = 0; i < wildcards.length; i++) {
+//				parseWildcard(wildcards[i], segments[i]);
+//			}
+//			return true;
+//		}
+//		segments = segment.split("-");
+//		if (segments.length > 1) {
+//			String[] wildcards = wildcard.split("-");
+//			if (segments.length != wildcards.length) {
+//				return false;
+//			}
+//			for (int i = 0; i < wildcards.length; i++) {
+//				parseWildcard(wildcards[i], segments[i]);
+//			}
+//			return true;
+//		}
+//
+//		// Tengo que ver si no viene algo complejo
+//		if (wildcard.equals(ROOT_WILDCARD)) {
+//			root = segment;
+//		} else if (wildcard.equals(FILE_EXTENSION_WILDCARD)) {
+//			fileExtension = segment;
+//		} else if (wildcard.equals(FILENAME_WILDCARD)) {
+//			fileName = segment;
+//		} else if (wildcard.equals(COUNTRY_WILDCARD)) {
+//			country = segment;
+//		} else if (wildcard.equals(LANGUAGE_WILDCARD)) {
+//			language = segment;
+//		} else {
+//			return false;
+//		}
+//		return true;
+//	}
 
 	/**
 	 * This method replace the language and country into the path string
@@ -267,11 +267,11 @@ public class WildcardPath implements IWildcardPath {
 	 * @param locale
 	 * @return Devuelve el WilcardPath a la cual reemplazo el pais y el lenguaje
 	 */
-	public IWildcardPath replace(Locale locale) {
-		this.replace(LANGUAGE_WILDCARD, locale.getLanguage());
-		this.replace(COUNTRY_WILDCARD, locale.getCountry());
-		return this;
-	}
+//	public IWildcardPath replace(Locale locale) {
+//		this.replace(LANGUAGE_WILDCARD, locale.getLanguage());
+//		this.replace(COUNTRY_WILDCARD, locale.getCountry());
+//		return this;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -311,39 +311,39 @@ public class WildcardPath implements IWildcardPath {
 			boolean useCountry) {
 		resetPath();
 		WildcardPath wp = new WildcardPath(getWildcardpath());
-		wp.replace(ROOT_WILDCARD, TEXT_REGEX);
-		wp.replace(FILENAME_WILDCARD, TEXT_REGEX);
-		wp.replace(FILE_EXTENSION_WILDCARD, TEXT_REGEX);
-		if (useCountry) {
-			wp.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
-		} else {
-			wp.replace(COUNTRY_WILDCARD, "");
-		}
-
-		if (useLanguage) {
-			wp.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
-		} else {
-			wp.replace(LANGUAGE_WILDCARD, "");
-		}
-		wp.replace("\\._", "\\.").replace("\\\\.\\\\.", "\\\\.");
-		// Activator.debug(wp.getPath(), null);
-		wp.replace("\\_\\\\.", "\\\\.");
+//		wp.replace(ROOT_WILDCARD, TEXT_REGEX);
+//		wp.replace(FILENAME_WILDCARD, TEXT_REGEX);
+//		wp.replace(FILE_EXTENSION_WILDCARD, TEXT_REGEX);
+//		if (useCountry) {
+//			wp.replace(COUNTRY_WILDCARD, COUNTRY_REGEX);
+//		} else {
+//			wp.replace(COUNTRY_WILDCARD, "");
+//		}
+//
+//		if (useLanguage) {
+//			wp.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
+//		} else {
+//			wp.replace(LANGUAGE_WILDCARD, "");
+//		}
+//		wp.replace("\\._", "\\.").replace("\\\\.\\\\.", "\\\\.");
+//		// Activator.debug(wp.getPath(), null);
+//		wp.replace("\\_\\\\.", "\\\\.");
 		// Activator.debug(wp.getPath(), null);
 		// Acá tengo que reemplazar el fin por el fin de linea
 		return wp;
 	}
 
-	public IWildcardPath replace(String wildcard, String value) {
-		return replace(wildcard, value, true);
-	}
+//	public IWildcardPath replace(String wildcard, String value) {
+//		return replace(wildcard, value, true);
+//	}
 
-	public IWildcardPath replace(String wildcard, String value, boolean replace) {
-		if (path.equals("") || path.length() == 0) {
-			resetPath();
-		}
-		path = path.replaceAll(escapedWildcard(wildcard), value);
-		return this;
-	}
+//	public IWildcardPath replace(String wildcard, String value, boolean replace) {
+//		if (path.equals("") || path.length() == 0) {
+//			resetPath();
+//		}
+//		path = path.replaceAll(escapedWildcard(wildcard), value);
+//		return this;
+//	}
 
 	/**
 	 * Devuelve la expresion regular necesaria para obtener el locale a partir
@@ -388,12 +388,12 @@ public class WildcardPath implements IWildcardPath {
 	 * @param filepath
 	 * @return
 	 */
-	private String escapedFilepath(String filepath) {
-		if (File.separator.equals("\\")) {
-			return filepath.replaceAll("\\\\", "\\/");
-		}
-		return filepath;
-	}
+	// private String escapedFilepath(String filepath) {
+	// if (File.separator.equals("\\")) {
+	// return filepath.replaceAll("\\\\", "\\/");
+	// }
+	// return filepath;
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -403,34 +403,34 @@ public class WildcardPath implements IWildcardPath {
 	 * )
 	 */
 	public Boolean match(String filepath) {
-		return match(filepath, true, true);
+		return match(filepath, 0);
 	}
 
 	/**
 	 * @see com.triadsoft.properties.model.utils.IWildcardPath#match(java.lang.String,
 	 *      boolean, boolean)
 	 */
-	public Boolean match(String filepath, boolean withLanguage,
-			boolean withCountry) {
-		WildcardPath path = new WildcardPath(wildcardpath);
-		String escapedFilepath = escapedFilepath(filepath);
-		WildcardPath newpath = path.replaceToRegex(true, true);
-		Pattern p = Pattern.compile(newpath.getPath());
-		Matcher m = p.matcher(escapedFilepath);
-		if (m.find()) {
-			return true;
-		}
-		newpath = path.replaceToRegex(true, false);
-		p = Pattern.compile(newpath.getPath());
-		m = p.matcher(filepath);
-		if (m.find()) {
-			return true;
-		}
-		newpath = path.replaceToRegex(false, false);
-		p = Pattern.compile(newpath.getPath());
-		m = p.matcher(filepath);
-		return m.find();
-	}
+	// public Boolean match(String filepath, boolean withLanguage,
+	// boolean withCountry) {
+	// WildcardPath path = new WildcardPath(wildcardpath);
+	// String escapedFilepath = escapedFilepath(filepath);
+	// WildcardPath newpath = path.replaceToRegex(true, true);
+	// Pattern p = Pattern.compile(newpath.getPath());
+	// Matcher m = p.matcher(escapedFilepath);
+	// if (m.find()) {
+	// return true;
+	// }
+	// newpath = path.replaceToRegex(true, false);
+	// p = Pattern.compile(newpath.getPath());
+	// m = p.matcher(filepath);
+	// if (m.find()) {
+	// return true;
+	// }
+	// newpath = path.replaceToRegex(false, false);
+	// p = Pattern.compile(newpath.getPath());
+	// m = p.matcher(filepath);
+	// return m.find();
+	// }
 
 	/**
 	 * Extrae del filepath la parte que coincide con el wilcardpath declarado
@@ -463,12 +463,12 @@ public class WildcardPath implements IWildcardPath {
 	}
 
 	public String getFilePath(WildcardPath wp, Locale locale) {
-		wp.replace(locale);
-		wp.replace(ROOT_WILDCARD, wp.getRoot());
-		wp.replace(FILENAME_WILDCARD, wp.getFileName());
-		wp.replace(FILE_EXTENSION_WILDCARD, wp.getFileExtension());
-		wp.replace("\\\\.", "\\.");
-		wp.replace("\\_", "_");
+//		wp.replace(locale);
+//		wp.replace(ROOT_WILDCARD, wp.getRoot());
+//		wp.replace(FILENAME_WILDCARD, wp.getFileName());
+//		wp.replace(FILE_EXTENSION_WILDCARD, wp.getFileExtension());
+//		wp.replace("\\\\.", "\\.");
+//		wp.replace("\\_", "_");
 		return wp.getPathToRoot() + wp.getPath();
 	}
 
@@ -507,6 +507,10 @@ public class WildcardPath implements IWildcardPath {
 
 	public String getPath(int offset) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public Object clone() throws CloneNotSupportedException{
 		return null;
 	}
 }

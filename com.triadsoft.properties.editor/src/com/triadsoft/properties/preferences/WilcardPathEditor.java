@@ -35,20 +35,15 @@ public class WilcardPathEditor extends ListEditor {
 	}
 
 	protected String[] parseString(String stringList) {
-		String regex = "\\" + getSeparator();
-		String[] strings = stringList.split(regex);
-		return strings;
+		// Con el id no tengo que hacer nada porque ya se recuperan
+		// desde el plugin
+		return LocalizedPropertiesPlugin.getWildcardPaths();
 	}
 
 	@Override
 	protected String createList(String[] items) {
-		StringBuffer path = new StringBuffer();
-		String separator = getSeparator();
-		for (int i = 0; i < items.length; i++) {
-			path.append(items[i]);
-			path.append(separator);
-		}
-		return path.toString();
+		// Guardo el preference name, porque la lista se guarda de otra manera
+		return getPreferenceName();
 	}
 
 	@Override
@@ -121,8 +116,9 @@ public class WilcardPathEditor extends ListEditor {
 
 	@Override
 	protected void doStore() {
-		super.doStore();
+		// super.doStore();
 		storeDefault();
+		LocalizedPropertiesPlugin.setWildcardPaths(listControl.getItems());
 	}
 
 	public Composite getButtonBoxControl(Composite parent) {
@@ -152,12 +148,12 @@ public class WilcardPathEditor extends ListEditor {
 		return buttonBox;
 	}
 
-	private String getSeparator() {
-		String separator = LocalizedPropertiesPlugin
-				.getDefault()
-				.getPreferenceStore()
-				.getString(
-						PreferenceConstants.WILDCARD_PATH_SEPARATOR_PREFERENCES);
-		return separator == null ? "|" : separator;
-	}
+	// private String getSeparator() {
+	// String separator = LocalizedPropertiesPlugin
+	// .getDefault()
+	// .getPreferenceStore()
+	// .getString(
+	// PreferenceConstants.WILDCARD_PATH_SEPARATOR_PREFERENCES);
+	// return separator == null ? "|" : separator;
+	// }
 }

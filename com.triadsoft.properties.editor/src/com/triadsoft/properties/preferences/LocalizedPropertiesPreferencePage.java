@@ -31,7 +31,7 @@ public class LocalizedPropertiesPreferencePage extends
 	 */
 	public void createFieldEditors() {
 		addField(new WilcardPathEditor(
-				PreferenceConstants.WILDCARD_PATHS_PREFERENCES, LocalizedPropertiesPlugin
+				PreferenceConstants.WILDCARD_PATHS_ID, LocalizedPropertiesPlugin
 						.getString(PREFERENCES_WILDCARD_TITLE_LABEL),
 				getFieldEditorParent())); //$NON-NLS-1$
 		// addField(new EncodingEditor(
