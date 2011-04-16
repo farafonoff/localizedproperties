@@ -1,41 +1,35 @@
-package com.triadsoft.properties.editor.plugin;
+package com.triadsoft.properties.editor.plugin.resource;
 
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 import com.triadsoft.properties.editor.test.LocalizedPropertiesTest;
 import com.triadsoft.properties.model.ResourceList;
 
-public class JavaFilesTest extends LocalizedPropertiesTest {
+public class WebJavaFilesTest extends LocalizedPropertiesTest {
 
-	private IFolder webFolder;
+	private IFolder webInfFolder;
 
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		IPath path = new Path("WEB-INF\\web");
-		webFolder = project.getFolder(path);
-		if (!webFolder.exists()) {
-			try {
-				webFolder.create(false, true, null);
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		}
+		IFolder folder = defaultProject.getFolder("web");
+		this.createFolder(folder);
+		webInfFolder = folder.getFolder("web");
+		this.createFolder(webInfFolder);
 	}
 
-	public void testJavaCountryLanguageFiles() {
-		assertTrue("No encontré la carpeta java", webFolder != null);
-		assertTrue("La carpeta java no es válida", webFolder.exists());
+	public void testJavaWebCountryLanguageFiles() {
+		assertTrue("No encontré la carpeta WEB-INF", webInfFolder != null);
+		assertTrue("La carpeta java no es válida", webInfFolder.exists());
 
-		IFile file = webFolder.getFile(new Path("components.es_AR.properties"));
-		IFile file1 = webFolder
-				.getFile(new Path("components.en_US.properties"));
+		IFile file = webInfFolder.getFile(new Path(
+				"components.es_AR.properties"));
+		IFile file1 = webInfFolder.getFile(new Path(
+				"components.en_US.properties"));
 		this.createFile(file);
 		this.createContent(file);
 		this.createFile(file1);
@@ -63,16 +57,15 @@ public class JavaFilesTest extends LocalizedPropertiesTest {
 				"El nombre del archivo debería ser 'components'",
 				list.getFileName() != null
 						&& list.getFileName().equals("components"));
-
 	}
 
-	public void testJavaCountryLanguageWithUnderscoreFiles() {
-		assertTrue("No encontré la carpeta java", webFolder != null);
-		assertTrue("La carpeta java no es válida", webFolder.exists());
+	public void testJavaWebCountryLanguageWithUnderscoreFiles() {
+		assertTrue("No encontré la carpeta java", webInfFolder != null);
+		assertTrue("La carpeta java no es válida", webInfFolder.exists());
 
-		IFile file = webFolder.getFile(new Path(
+		IFile file = webInfFolder.getFile(new Path(
 				"core_components.es_AR.properties"));
-		IFile file1 = webFolder.getFile(new Path(
+		IFile file1 = webInfFolder.getFile(new Path(
 				"core_components.en_US.properties"));
 		this.createFile(file);
 		this.createContent(file);

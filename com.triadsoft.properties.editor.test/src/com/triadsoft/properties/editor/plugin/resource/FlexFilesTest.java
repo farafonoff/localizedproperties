@@ -1,4 +1,4 @@
-package com.triadsoft.properties.editor.plugin;
+package com.triadsoft.properties.editor.plugin.resource;
 
 import java.util.Locale;
 
@@ -13,10 +13,10 @@ public class FlexFilesTest extends LocalizedPropertiesTest {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		flexFolder = project.getFolder("locale");
+		flexFolder = defaultProject.getFolder("locale");
 		this.createFolder(flexFolder);
-		IFolder esArFolder = project.getFolder("locale\\es_AR");
-		IFolder enUSFolder = project.getFolder("locale\\en_US");
+		IFolder esArFolder = defaultProject.getFolder("locale\\es_AR");
+		IFolder enUSFolder = defaultProject.getFolder("locale\\en_US");
 		this.createFolder(esArFolder);
 		this.createFolder(enUSFolder);
 	}
@@ -49,10 +49,10 @@ public class FlexFilesTest extends LocalizedPropertiesTest {
 				.equals("AR"));
 		assertTrue("El languaje del locale debe ser es", locales[1]
 				.getLanguage().equals("es"));
-		assertTrue(
-				"El nombre del archivo debería ser 'component'",
-				list.getFileName() != null
-						&& list.getFileName().equals("component"));
+		assertTrue("El nombre del archivo no deberia ser null",
+				list.getFileName() != null);
+		assertTrue("El nombre del archivo debería ser 'component'", list
+				.getFileName().equals("component"));
 	}
 
 	public void testFlexFileWithUnderScore() {
@@ -79,9 +79,9 @@ public class FlexFilesTest extends LocalizedPropertiesTest {
 				.equals("AR"));
 		assertTrue("El languaje del locale debe ser es", locales[1]
 				.getLanguage().equals("es"));
-		assertTrue(
-				"El nombre del archivo debería ser 'core_component'",
-				list.getFileName() != null
-						&& list.getFileName().equals("core_component"));
+		assertTrue("El nombre del archivo no debe ser null",
+				list.getFileName() != null);
+		assertTrue("El nombre del archivo debería ser 'core_component'", list
+				.getFileName().equals("core_component"));
 	}
 }
