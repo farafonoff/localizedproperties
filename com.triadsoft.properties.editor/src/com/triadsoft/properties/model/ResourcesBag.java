@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.PropertyCategory;
@@ -65,20 +64,13 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 
 	public boolean addResource(Locale locale, IFile file) throws IOException,
 			CoreException {
-		Character separator = null;
 		if (!file.exists()) {
 			// TODO: Translate
 			throw new IOException("No encontré el archivo "
 					+ file.getFullPath());
 		}
-		PropertyFile pf;
-		if (separator == null) {
-			pf = new PropertyFile(file,
-					LocalizedPropertiesPlugin.getKeyValueSeparators());
-			separator = pf.getSeparator();
-		} else {
-			pf = new PropertyFile(file, separator);
-		}
+		PropertyFile pf = new PropertyFile(file,
+				LocalizedPropertiesPlugin.getKeyValueSeparators());
 		put(locale, pf);
 		return true;
 	}
@@ -118,12 +110,12 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		if (allKeys.contains(key)) {
 			throw new RuntimeException("Clave repetida");
 		}
-
+		allKeys.add(key);
 		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
 				.hasNext();) {
-			PropertyFile myFile = iterator.next();
+			PropertyFile pf = iterator.next();
 			PropertyEntry entry = new PropertyEntry(null, key, "");
-			myFile.getDefaultCategory().addEntry(entry);
+			pf.getDefaultCategory().addEntry(entry);
 		}
 		return true;
 	}
@@ -162,7 +154,6 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 			if (file != null) {
 				file.delete(true, null);
 			}
-			((IResource) file).refreshLocal(IResource.ROOT, null);
 		}
 		return true;
 	}
@@ -192,7 +183,6 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 			PropertyEntry entry = pf.getPropertyEntry(key);
 			((PropertyCategory) entry.getParent()).removeEntry(entry);
 			isRemoved = true;
-
 		}
 		allKeys.remove(key);
 		return isRemoved;
@@ -219,6 +209,11 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 			PropertyFile pf = get(locale);
 			PropertyEntry pe = pf.getPropertyEntry(key);
 			pe.setValue(newValue);
+			// try {
+			// pf.getFile().getParent().refreshLocal(IFile.DEPTH_ONE, null);
+			// } catch (CoreException e) {
+			// LocalizedPropertiesLog.error(e.getMessage(), e);
+			// }
 			hasChanged = true;
 		}
 		return hasChanged;
@@ -228,9 +223,9 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		for (Iterator<Locale> iterator = keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();
-			PropertyFile properties = (PropertyFile) get(locale);
+			PropertyFile pf = (PropertyFile) get(locale);
 			try {
-				properties.save();
+				pf.save();
 			} catch (FileNotFoundException e) {
 				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 			} catch (IOException e) {

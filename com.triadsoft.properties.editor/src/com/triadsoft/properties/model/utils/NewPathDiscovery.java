@@ -59,11 +59,20 @@ public class NewPathDiscovery implements IFilesDiscoverer {
 		if (file == null) {
 			return null;
 		}
+		//Primero pruebo si coincide con el wildcardpath por default
+//		String dwp = LocalizedPropertiesPlugin.getDefaultWildcardPath();
+//		if(dwp != null){
+//			WildCardPath2 wp = new WildCardPath2(dwp);
+//			if(wp.match(file.getFullPath().toString())){
+//				return wp;
+//			}
+//		}
+		
 		offset = 0;
 		// Ahora tengo que buscar los wp que cumplan con el archivo
 		// Primero busco con el match completo
 		IWildcardPath[] wps = this.getWPS(offset);
-		while (wps.length == 0 && offset < 5) {
+		while (wps.length == 0 && offset < IWildcardPath.MAXIMUM_OPTIONALS) {
 			offset++;
 			wps = this.getWPS(offset);
 		}
@@ -155,23 +164,26 @@ public class NewPathDiscovery implements IFilesDiscoverer {
 		}
 		WildCardPath2 wp2 = new WildCardPath2(wp.getWildcardpath());
 		for (int i = 0; i < files.length; i++) {
-			wp2.parse(files[i].getFullPath().toFile().getAbsolutePath(), offset);
-			Locale locale = null;
-			if (wp2.getLanguage() != null && wp2.getCountry() != null) {
-				locale = new Locale(wp2.getLanguage(), wp2.getCountry());
-			} else if (wp2.getLanguage() != null && wp2.getCountry() == null) {
-				locale = new Locale(wp2.getLanguage());
-				// Situacion extraña porque no tiene sentido poner un pais sin
-				// lenguaje
-				// pero por las dudas esta bien soportarla
-			} else if (wp2.getLanguage() == null && wp2.getCountry() != null) {
-				locale = new Locale(StringUtils.getKeyLocale().getLanguage(), wp2.getCountry());
-			}else if(wp2.getLanguage() == null && wp2.getCountry() == null){
-				locale = StringUtils.getKeyLocale();
-			}
-			if (locale != null) {
-				resources.put(locale, files[i]);
-			}
+			wp2.parse(files[i].getFullPath().toFile().getAbsolutePath());
+			// Locale locale = null;
+			// if (wp2.getLanguage() != null && wp2.getCountry() != null) {
+			// locale = new Locale(wp2.getLanguage(), wp2.getCountry());
+			// } else if (wp2.getLanguage() != null && wp2.getCountry() == null)
+			// {
+			// locale = new Locale(wp2.getLanguage());
+			// // Situacion extraña porque no tiene sentido poner un pais sin
+			// // lenguaje
+			// // pero por las dudas esta bien soportarla
+			// } else if (wp2.getLanguage() == null && wp2.getCountry() != null)
+			// {
+			// locale = new Locale(StringUtils.getKeyLocale().getLanguage(),
+			// wp2.getCountry());
+			// }else if(wp2.getLanguage() == null && wp2.getCountry() == null){
+			// locale = StringUtils.getKeyLocale();
+			// }
+			// if (locale != null) {
+			resources.put(wp2.getLocale(), files[i]);
+			// }
 		}
 	}
 

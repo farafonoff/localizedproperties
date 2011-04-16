@@ -137,6 +137,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		final PropertyFilter filter = new PropertyFilter();
 
 		Label searchLabel = new Label(container, SWT.NONE);
+		//TODO: Traducir
 		searchLabel.setText("Search: ");
 		final Text searchText = new Text(container, SWT.BORDER | SWT.SEARCH);
 		searchText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL

@@ -9,6 +9,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.wizards.preferences.PreferencesContentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -87,9 +88,21 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	public static void setWildcardPaths(String[] wps) {
 		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
 				.getPreferenceStore();
-		for(int i=0;i<wps.length;i++){
-			store.setValue(PreferenceConstants.WILDCARD_PATHS_PREFERENCES+i, wps[i]);
+		for (int i = 0; i < wps.length; i++) {
+			store.setValue(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + i,
+					wps[i]);
 		}
+	}
+
+	public static String getDefaultWildcardPath() {
+		String[] wps = getWildcardPaths();
+		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore();
+		int defaultIndex = store.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES); 
+		if(defaultIndex<wps.length){
+			return wps[defaultIndex];
+		}
+		return wps[0];
 	}
 
 	public static String[] getWildcardPaths() {

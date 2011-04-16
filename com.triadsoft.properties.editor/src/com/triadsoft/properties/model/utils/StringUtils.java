@@ -9,9 +9,6 @@ public class StringUtils {
 	private static final String COUNTRY_REGEX = "[A-Z]{2}";
 
 	public static Locale getLocale(String languageCountry) {
-		if (languageCountry.indexOf("_") == -1) {
-			return null;
-		}
 		String language = extractValue(languageCountry, LANGUAGE_REGEX);
 		String country = extractValue(languageCountry, COUNTRY_REGEX);
 

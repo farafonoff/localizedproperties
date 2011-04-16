@@ -23,6 +23,13 @@ public interface IWildcardPath {
 	public static final String FILE_EXTENSION_WILDCARD = "{fileextension}";
 	public static final String COUNTRY_WILDCARD = "{country}";
 	public static final String LANGUAGE_WILDCARD = "{lang}";
+	
+	/**
+	 * Es el numero de parametros opcionales que ser&aacute;n soportados.
+	 * Éste numero sirve para poner un limite en la busqueda de las opciones,
+	 * y para validar el límite de opciones cuando se ingresa un nuevo wildcard path. 
+	 */
+	public static final int MAXIMUM_OPTIONALS=5;
 
 	public String getWildcardpath();
 

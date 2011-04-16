@@ -1,5 +1,6 @@
 package com.triadsoft.properties.model;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -11,13 +12,18 @@ import org.eclipse.core.runtime.CoreException;
 import com.triadsoft.properties.model.utils.IWildcardPath;
 
 public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
-	private Map<Integer, IFile> changed;
+	private Map<Locale, IFile> changed;
 	private IWildcardPath wp;
 	private String filename;
 	private String fileextension;
+	private Map<Locale, IFile> added;
+	private Map<Locale, IFile> removed;
 
-	public ResourceChangeDeltaVisitor(Map<Integer, IFile> changed,
+	public ResourceChangeDeltaVisitor(Map<Locale, IFile> added,
+			Map<Locale, IFile> removed, Map<Locale, IFile> changed,
 			IWildcardPath path, String filename, String fileextension) {
+		this.added = added;
+		this.removed = removed;
 		this.changed = changed;
 		this.wp = path;
 		this.filename = filename;
@@ -34,19 +40,23 @@ public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 			return true;
 		}
 		String filepath = resource.getFullPath().toString();
-		if ((delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.REMOVED) 
-				&& resource.getType() == IResource.FILE
-				&& (wp.match(filepath, 0) || wp.match(filepath, 1)
-						|| wp.match(filepath, 2) || wp.match(filepath, 3) || wp
-						.match(filepath, 4))) {
+		if ((delta.getKind() == IResourceDelta.ADDED
+				|| delta.getKind() == IResourceDelta.REMOVED || delta.getKind() == IResourceDelta.CHANGED)
+				&& resource.getType() == IResource.FILE && wp.match(filepath)) {
 			int index = 0;
-			while (!wp.parse(filepath, index) && index < 5) {
+			while (!wp.parse(filepath, index) && index < IWildcardPath.MAXIMUM_OPTIONALS) {
 				index++;
 			}
 			if (wp.getFileName() != null && wp.getFileName().equals(filename)
 					&& wp.getFileExtension() != null
 					&& wp.getFileExtension().equals(fileextension)) {
-				changed.put(delta.getKind(), (IFile) resource);
+				if (delta.getKind() == IResourceDelta.ADDED) {
+					added.put(wp.getLocale(), (IFile) resource);
+				} else if (delta.getKind() == IResourceDelta.REMOVED) {
+					removed.put(wp.getLocale(), (IFile) resource);
+				} else if (!resource.isDerived()) {
+					changed.put(wp.getLocale(), (IFile) resource);
+				}
 				return true;
 			}
 			return false;

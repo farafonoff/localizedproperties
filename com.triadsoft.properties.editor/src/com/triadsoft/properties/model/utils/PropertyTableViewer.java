@@ -226,11 +226,11 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	public void dispose() {
-		this.getControl().getDisplay().syncExec(new Runnable() {
-			public void run() {
-				PropertyTableViewer.this.cleanColumns();
-			}
-		});
+//		this.getControl().getDisplay().syncExec(new Runnable() {
+//			public void run() {
+//				PropertyTableViewer.this.cleanColumns();
+//			}
+//		});
 		locales = null;
 		mgr = null;
 		defaultColumn = null;

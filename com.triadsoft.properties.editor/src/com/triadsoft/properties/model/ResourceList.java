@@ -1,21 +1,18 @@
 package com.triadsoft.properties.model;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -27,8 +24,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
-import com.triadsoft.common.properties.PropertyCategory;
-import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.utils.IFilesDiscoverer;
@@ -55,8 +50,6 @@ import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
 public class ResourceList {
 
 	protected static final String PREFERENCES_ADD_LOCALE_ACTION_ERROR = "preferences.add.locale.action.error";
-	private HashMap<Locale, PropertyFile> files = new HashMap<Locale, PropertyFile>();
-	private Locale defaultLocale;
 
 	private String filename = null;
 
@@ -64,30 +57,22 @@ public class ResourceList {
 
 	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
-	private HashSet<String> allKeys = new HashSet<String>();
+	private ResourcesBag propertyFiles;
 
 	public ResourceList(IFile file) {
 		try {
-			// IWorkspace workspace = file.getWorkspace();
-			// workspace.addResourceChangeListener(this);
 			pd = new NewPathDiscovery(file);
-			this.loadFiles();
-		} catch (NullPointerException e) {
-			LocalizedPropertiesLog.error(e.getMessage(),e);
-		}
-	}
-
-	private void loadFiles() {
-		try {
-			allKeys.clear();
-			files.clear();
-			defaultLocale = pd.getDefaultLocale();
 			this.filename = pd.getWildcardPath().getFileName();
-			parseLocales(pd.getResources());
-		} catch (CoreException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
+
+			propertyFiles = new ResourcesBag();
+			propertyFiles.setDefaultLocale(pd.getDefaultLocale());
+			propertyFiles.setResources(pd.getResources());
+		} catch (NullPointerException e) {
+			LocalizedPropertiesLog.error(e.getMessage(), e);
 		} catch (IOException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
+			LocalizedPropertiesLog.error(e.getMessage(), e);
+		} catch (CoreException e) {
+			LocalizedPropertiesLog.error(e.getMessage(), e);
 		}
 	}
 
@@ -96,7 +81,7 @@ public class ResourceList {
 	}
 
 	public Locale getDefaultLocale() {
-		return defaultLocale;
+		return pd.getDefaultLocale();
 	}
 
 	/**
@@ -106,60 +91,24 @@ public class ResourceList {
 	 * @return Array de Locale
 	 */
 	public Locale[] getLocales() {
-		return files.keySet().toArray(new Locale[files.keySet().size()]);
+		return propertyFiles.keySet().toArray(
+				new Locale[propertyFiles.keySet().size()]);
 	}
 
 	public PropertyFile getPropertyFile(Locale locale) {
-		return files.get(locale);
+		return propertyFiles.get(locale);
 	}
 
 	public void setPropertyFile(PropertyFile pf, Locale locale) {
-		files.put(locale, pf);
-		addKeys(pf);
+		propertyFiles.put(locale, pf);
+	}
+
+	public boolean existKey(String key) {
+		return propertyFiles.containsKey(key);
 	}
 
 	public void addListener(IPropertyFileListener listener) {
 		listeners.add(listener);
-	}
-
-	private void parseLocales(Map<Locale, IFile> files) throws IOException,
-			CoreException {
-		Character separator = null;
-		for (Iterator<Locale> iterator = files.keySet().iterator(); iterator
-				.hasNext();) {
-			Locale locale = iterator.next();
-			IFile ifile = (IFile) files.get(locale);
-			if (!ifile.exists()) {
-				throw new IOException("No encontré el archivo "
-						+ ifile.getFullPath());
-			}
-			PropertyFile pf;
-			if (separator == null) {
-				pf = new PropertyFile(ifile,
-						LocalizedPropertiesPlugin.getKeyValueSeparators());
-				separator = pf.getSeparator();
-			} else {
-				pf = new PropertyFile(ifile, separator);
-			}
-			addKeys(pf);
-			setPropertyFile(pf, locale);
-		}
-	}
-
-	/**
-	 * Metodo encargado de cargar todas las claves del property file un set que
-	 * no repite las claves. Puede ocurrir que los distintos archivos tengan
-	 * distintas claves, entonces de ésta manera cuando voy a armar la tabla,
-	 * parto del listado de claves de la mezcla de todos los archivos
-	 * 
-	 * @param file
-	 *            PropertyFile
-	 */
-	private void addKeys(PropertyFile file) {
-		String[] keys = file.getKeys();
-		for (int i = 0; i < keys.length; i++) {
-			allKeys.add(keys[i]);
-		}
 	}
 
 	/**
@@ -172,13 +121,7 @@ public class ResourceList {
 	 * @return Boolean que indica si se pudo cambiar el valor
 	 */
 	public boolean changeValue(String key, String value, Locale locale) {
-		PropertyFile properties = ((PropertyFile) files.get(locale));
-		if (properties == null) {
-			return false;
-		}
-		PropertyEntry entry = properties.getPropertyEntry(key);
-		entry.setValue(value);
-		return true;
+		return propertyFiles.changeValue(locale, key, null, value);
 	}
 
 	/**
@@ -190,116 +133,50 @@ public class ResourceList {
 	 * @return
 	 */
 	public boolean addKey(String key) {
-		allKeys.add(key);
-		for (Iterator<PropertyFile> iterator = files.values().iterator(); iterator
-				.hasNext();) {
-			PropertyFile myFile = iterator.next();
-			PropertyEntry entry = new PropertyEntry(null, key, "");
-			myFile.getDefaultCategory().addEntry(entry);
-		}
-		return true;
+		return propertyFiles.addKey(key);
 	}
 
 	public boolean removeKey(String key) {
-		boolean isRemoved = false;
-
-		for (Iterator<PropertyFile> iterator = files.values().iterator(); iterator
-				.hasNext();) {
-			PropertyFile file = (PropertyFile) iterator.next();
-			PropertyEntry entry = file.getPropertyEntry(key);
-			if (entry != null) {
-				((PropertyCategory) entry.getParent()).removeEntry(entry);
-				isRemoved = true;
-			}
-		}
-		allKeys.remove(key);
-		return isRemoved;
+		return propertyFiles.removeKey(key);
 	}
 
 	public boolean addProperty(Property property) {
-		String key = property.getKey();
-		int index = 0;
-		while (existKey(key) || existKey(property.getKey() + index)) {
-			key = property.getKey() + index;
-			index++;
-		}
-		Locale[] locales = property.getLocales();
-		for (int i = 0; i < locales.length; i++) {
-			PropertyFile pf = files.get(locales[i]);
-			if (pf == null) {
-				continue;
-			}
-			String value = property.getValue(locales[i]);
-			PropertyEntry entry = new PropertyEntry(null, key, value);
-			pf.getDefaultCategory().addEntry(entry);
-			try {
-				pf.save();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		}
-		loadFiles();
-		return true;
-	}
-
-	/**
-	 * Devuelve true en caso que la clave exista
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public boolean existKey(String key) {
-		return allKeys.contains(key);
+		return propertyFiles.addProperty(property);
 	}
 
 	public void keyChanged(String oldKey, String key) {
-		PropertyFile pf = files.get(defaultLocale);
-		PropertyEntry e = pf.getPropertyEntry(oldKey);
-		e.setKey(key);
-		allKeys.remove(oldKey);
-		allKeys.add(key);
+		propertyFiles.keyChanged(oldKey, key);
 	}
 
 	public void save() {
-		for (int i = 0; i < getLocales().length; i++) {
-			PropertyFile properties = (PropertyFile) files.get(getLocales()[i]);
-			try {
-				properties.save();
-			} catch (FileNotFoundException e) {
-				LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
-			} catch (IOException e) {
-				LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
-			} catch (CoreException e) {
-				LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
+		propertyFiles.save();
+		IContainer container = propertyFiles.get(pd.getDefaultLocale())
+				.getFile().getParent();
+		if (pd.getWildcardPath().getRoot() == null) {
+			container = propertyFiles.get(pd.getDefaultLocale()).getFile()
+					.getProject();
+		} else {
+			while (!container.getName().equals(pd.getWildcardPath().getRoot())) {
+				container = container.getParent();
 			}
+		}
+		try {
+			container.refreshLocal(IFile.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			LocalizedPropertiesLog.error(e.getMessage(), e);
 		}
 	}
 
 	public void dispose() {
-		files.clear();
-		files = null;
-		defaultLocale = null;
-		allKeys.clear();
-		allKeys = null;
-
+		propertyFiles.dispose();
 	}
 
 	public void removeLocale(Locale locale) throws CoreException {
-		PropertyFile pf = (PropertyFile) files.get(locale);
-		files.remove(locale);
-		if (pf != null) {
-			IFile file = pf.getFile();
-			if (file != null) {
-				file.delete(true, null);
-			}
-			((IResource) file).refreshLocal(IResource.ROOT, null);
-		}
+		propertyFiles.removeLocale(locale);
 	}
 
 	public void addLocale(Locale locale) {
-		IFile file = files.get(defaultLocale).getFile();
+		IFile file = propertyFiles.get(this.getDefaultLocale()).getFile();
 		String newFilePath = pd.getWildcardPath().getFilePath(file, locale);
 
 		final IFile newFile = file.getWorkspace().getRoot()
@@ -330,9 +207,9 @@ public class ResourceList {
 			new ProgressMonitorDialog(LocalizedPropertiesPlugin.getShell())
 					.run(true, true, op);
 		} catch (InvocationTargetException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
+			LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 		} catch (InterruptedException e) {
-			LocalizedPropertiesLog.error(e.getLocalizedMessage(),e);
+			LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -342,39 +219,7 @@ public class ResourceList {
 	 * @return
 	 */
 	public Object[] getProperties() {
-		ArrayList<Property> list = new ArrayList<Property>();
-		PropertyFile defaultProperties = ((PropertyFile) files
-				.get(defaultLocale));
-		for (Iterator<String> iter = allKeys.iterator(); iter.hasNext();) {
-			String key = (String) iter.next();
-			Property property = new Property(key);
-			// Si no encuentra la entrada en el archivo por default
-			// agrega la clave al archivo
-			PropertyEntry defaultEntry = defaultProperties
-					.getPropertyEntry(key);
-			if (defaultEntry == null) {
-				defaultEntry = new PropertyEntry(null, key, null);
-				defaultProperties.getDefaultCategory().addEntry(defaultEntry);
-			}
-			property.setValue(defaultLocale, defaultEntry.getValue());
-
-			for (Iterator<Locale> itera = files.keySet().iterator(); itera
-					.hasNext();) {
-				Locale loc = itera.next();
-				if (defaultLocale.equals(loc)) {
-					continue;
-				}
-				PropertyFile properties = ((PropertyFile) files.get(loc));
-				PropertyEntry entry = properties.getPropertyEntry(key);
-				if (entry == null) {
-					entry = new PropertyEntry(null, key, null);
-					properties.getDefaultCategory().addEntry(entry);
-				}
-				property.setValue(loc, entry.getValue());
-			}
-			list.add(property);
-		}
-		return list.toArray();
+		return propertyFiles.getProperties();
 	}
 
 	private InputStream openContentStream() {
@@ -385,26 +230,66 @@ public class ResourceList {
 	public boolean resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta rootDelta = event.getDelta();
 		// get the delta, if any, for the documentation directory
-		if (rootDelta == null)
+		if (rootDelta == null) {
 			return false;
-		final Map<Integer, IFile> changed = new HashMap<Integer, IFile>();
+		}
+		final Map<Locale, IFile> added = new HashMap<Locale, IFile>();
+		final Map<Locale, IFile> deleted = new HashMap<Locale, IFile>();
+		final Map<Locale, IFile> changed = new HashMap<Locale, IFile>();
+		// changed.putAll(resources);
+		IWildcardPath path = null;
 		try {
-			IWildcardPath path = (IWildcardPath) pd.getWildcardPath().clone();
+			path = (IWildcardPath) pd.getWildcardPath().clone();
 			path.setCountry(null);
 			path.setLanguage(null);
 			IResourceDeltaVisitor visitor = new ResourceChangeDeltaVisitor(
-					changed, path,pd.getWildcardPath().getFileName(),pd.getWildcardPath().getFileExtension());
+					added, deleted, changed, path, pd.getWildcardPath()
+							.getFileName(), pd.getWildcardPath()
+							.getFileExtension());
 			rootDelta.accept(visitor);
 		} catch (CoreException e) {
 			LocalizedPropertiesLog.error("Error finding resources", e);
 		} catch (CloneNotSupportedException e) {
 			LocalizedPropertiesLog.error("Error cloning wildcardpath", e);
 		}
-		if (changed.size() > 0) {
-			pd.searchFiles();
-			this.loadFiles();
-			return true;
+		boolean returnValue = false;
+
+		if (added.size() > 0) {
+			for (Iterator<Locale> iterator = added.keySet().iterator(); iterator
+					.hasNext();) {
+				Locale locale = (Locale) iterator.next();
+				try {
+					propertyFiles.addResource(locale, added.get(locale));
+				} catch (IOException e) {
+					LocalizedPropertiesLog.error(e.getMessage(), e);
+				} catch (CoreException e) {
+					LocalizedPropertiesLog.error(e.getMessage(), e);
+				}
+			}
+			returnValue = true;
 		}
-		return false;
+		if (deleted.size() > 0) {
+			for (Iterator<Locale> iterator = deleted.keySet().iterator(); iterator
+					.hasNext();) {
+				Locale locale = (Locale) iterator.next();
+				propertyFiles.remove(locale);
+			}
+			returnValue = true;
+		}
+		if (changed.size() > 0) {
+			for (Iterator<Locale> iterator = changed.keySet().iterator(); iterator
+					.hasNext();) {
+				Locale locale = (Locale) iterator.next();
+				try {
+					propertyFiles.update(locale, changed.get(locale));
+				} catch (CoreException e) {
+					LocalizedPropertiesLog.error(e.getMessage(), e);
+				} catch (IOException e) {
+					LocalizedPropertiesLog.error(e.getMessage(), e);
+				}
+			}
+			returnValue = true;
+		}
+		return returnValue;
 	}
 }

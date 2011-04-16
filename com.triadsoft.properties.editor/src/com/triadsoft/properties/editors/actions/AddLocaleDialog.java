@@ -5,6 +5,8 @@ import java.util.Locale;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -18,6 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.IWildcardPath;
 
 /**
  * Dialogo para agregar una un nuevo locale
@@ -36,9 +39,10 @@ public class AddLocaleDialog extends Dialog {
 	private static final String PREFERENCES_ADD_DIALOG_DESCRIPTION = "preferences.add.locale.dialog.description";
 	private Text locale;
 	private Text country;
-	private String newLanguage;
-	private String newCountry;
 	private String errors;
+
+	private String languageString;
+	private String countryString;
 
 	public AddLocaleDialog(Shell shell) {
 		super(shell);
@@ -80,8 +84,19 @@ public class AddLocaleDialog extends Dialog {
 		locale.setTextLimit(2);
 		locale.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				newLanguage = locale.getText();
+			}
+		});
+		locale.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent arg0) {
+				if (locale.getText() != null
+						&& !locale.getText().equals(
+								locale.getText().toLowerCase())) {
+					locale.setText(locale.getText().toLowerCase());
+				}
 				changeData();
+			}
+
+			public void focusGained(FocusEvent arg0) {
 			}
 		});
 		country = new Text(area, SWT.BORDER);
@@ -91,8 +106,17 @@ public class AddLocaleDialog extends Dialog {
 		country.setTextLimit(2);
 		country.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				newCountry = country.getText();
+			}
+		});
+		country.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent arg0) {
+				if (country.getText() != null) {
+					country.setText(country.getText().toUpperCase());
+				}
 				changeData();
+			}
+
+			public void focusGained(FocusEvent arg0) {
 			}
 		});
 		area.setLayout(gridLayout);
@@ -100,20 +124,8 @@ public class AddLocaleDialog extends Dialog {
 	}
 
 	private void changeData() {
-		if (newLanguage != null && newLanguage.length() == 0) {
-			newLanguage = null;
-			return;
-		}
-		if (newCountry != null && newCountry.length() == 0) {
-			newCountry = null;
-			return;
-		}
-
-		if (newLanguage.length() < 2
-				|| (newCountry != null && newCountry.length() < 2)) {
-			return;
-		}
-
+		languageString = locale.getText();
+		countryString = country.getText();
 		if (!validate()) {
 			MessageBox messageBox = new MessageBox(getShell(), SWT.OK
 					| SWT.ICON_ERROR);
@@ -134,10 +146,11 @@ public class AddLocaleDialog extends Dialog {
 	 */
 	private boolean validate() {
 		errors = "";
-		if (newLanguage.matches("[A-Z]*")) {
+		if (languageString != null && !languageString.matches(IWildcardPath.LANGUAGE_REGEX)) {
 			errors += locale.getMessage();
 		}
-		if (newCountry != null && newCountry.matches("[a-z]*")) {
+		if (countryString != null && countryString.length() > 0
+				&& !countryString.matches(IWildcardPath.COUNTRY_REGEX)) {
 			errors += "\n" + country.getMessage();
 		}
 		getButton(IDialogConstants.OK_ID).setEnabled(
@@ -153,11 +166,11 @@ public class AddLocaleDialog extends Dialog {
 	}
 
 	public Locale getNewLocale() {
-		if (newLanguage != null && newCountry != null) {
-			return new Locale(newLanguage, newCountry);
+		if (languageString != null && countryString != null) {
+			return new Locale(languageString, countryString);
 		}
-		if (newCountry == null) {
-			return new Locale(newLanguage);
+		if (languageString == null) {
+			return new Locale(languageString);
 		}
 		return null;
 	}

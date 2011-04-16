@@ -17,16 +17,16 @@ public interface IFilesDiscoverer {
 	 * 
 	 * @return IPath con el path parseado
 	 */
-	public abstract IPath getPath();
+	public IPath getPath();
 
 	/**
 	 * Devuelve el nombre del archivo sin extension.
 	 * 
 	 * @return String Nombre del srchivo
 	 */
-	public abstract String getFilename();
+	public String getFilename();
 
-	public abstract void searchFiles();
+	//public void searchFiles();
 
 	/**
 	 * Devuelve un mapa con los recursos encontrados dentro del path,
@@ -34,7 +34,7 @@ public interface IFilesDiscoverer {
 	 * 
 	 * @return Map<Locale,IFile>
 	 */
-	public abstract Map<Locale, IFile> getResources();
+	public Map<Locale, IFile> getResources();
 
 	/**
 	 * Devuelve el objeto WildcardPath que se uso para descubir los datos de la
@@ -42,13 +42,12 @@ public interface IFilesDiscoverer {
 	 * 
 	 * @return Devuelve el wilcard path encontrado a partir del archivo
 	 */
-	public abstract IWildcardPath getWildcardPath();
+	public IWildcardPath getWildcardPath();
 
 	/**
 	 * Devuelve el locale contenido en el archivo pasado en el constructor
 	 * 
 	 * @return Locale del archivo abierto
 	 */
-	public abstract Locale getDefaultLocale();
-
+	public Locale getDefaultLocale();
 }

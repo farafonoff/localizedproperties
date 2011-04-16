@@ -18,13 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 
 /**
  * Esta clase es la encargada de parsear un archivo de properties, y dividirlo
@@ -32,8 +26,7 @@ import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
-public class PropertyFile extends PropertyElement implements
-		IPropertyFileListener {
+public class PropertyFile extends PropertyElement {
 
 	public static final String DEFAULT_EXTENSION = "properties";
 	private List<PropertyCategory> categories;
@@ -324,50 +317,51 @@ public class PropertyFile extends PropertyElement implements
 		this.file = file;
 	}
 
-	public void resourceChanged(IResourceChangeEvent event) {
-		IResourceDelta delta = event.getDelta();
-		final ArrayList<IFile> propertyFiles = new ArrayList<IFile>();
-		IResourceDeltaVisitor propertyFile = new IResourceDeltaVisitor() {
-			public boolean visit(IResourceDelta delta) throws CoreException {
-				// only interested in changed resources (not added or removed)
-				if (delta.getKind() != IResourceDelta.CHANGED)
-					return true;
-				// only interested in content changes
-				if ((delta.getFlags() & IResourceDelta.CONTENT) == 0) {
-					return true;
-				}
-				IResource resource = delta.getResource();
-				// only interested in files with the "proeprty" extension
-				if (resource.getType() == IResource.FILE
-						&& DEFAULT_EXTENSION.equalsIgnoreCase(resource
-								.getFileExtension())) {
-					propertyFiles.add((IFile) resource);
-				}
-				return true;
-			}
-		};
-		try {
-			delta.accept(propertyFile);
-			for (Iterator<IFile> iter = propertyFiles.iterator(); iter
-					.hasNext();) {
-				IFile file = (IFile) iter.next();
-				if (this.file != null
-						&& file.getName().equals(this.file.getName())) {
-					LocalizedPropertiesLog.debug("Cambio " + file.getName()
-							+ "!!!!", null);
-					Iterator<IPropertyFileListener> listenersIterator = this.listeners
-							.iterator();
-					while (listenersIterator.hasNext()) {
-						IPropertyFileListener listener = (IPropertyFileListener) listenersIterator
-								.next();
-						listener.fileChanged(this);
-					}
-				}
-			}
-		} catch (CoreException e) {
-			// open error dialog with syncExec or print to plugin log file
-		}
-	}
+	// public void resourceChanged(IResourceChangeEvent event) {
+	// IResourceDelta delta = event.getDelta();
+	// final ArrayList<IFile> propertyFiles = new ArrayList<IFile>();
+	// IResourceDeltaVisitor propertyFile = new IResourceDeltaVisitor() {
+	// public boolean visit(IResourceDelta delta) throws CoreException {
+	// // only interested in changed resources (not added or removed)
+	// if (delta.getKind() != IResourceDelta.CHANGED)
+	// return true;
+	// // only interested in content changes
+	// if ((delta.getFlags() & IResourceDelta.CONTENT) == 0) {
+	// return true;
+	// }
+	// IResource resource = delta.getResource();
+	// // only interested in files with the "proeprty" extension
+	// if (resource.getType() == IResource.FILE
+	// && DEFAULT_EXTENSION.equalsIgnoreCase(resource
+	// .getFileExtension())) {
+	// propertyFiles.add((IFile) resource);
+	// }
+	// return true;
+	// }
+	// };
+	// try {
+	// delta.accept(propertyFile);
+	// for (Iterator<IFile> iter = propertyFiles.iterator(); iter
+	// .hasNext();) {
+	// IFile file = (IFile) iter.next();
+	// if (this.file != null
+	// && file.getName().equals(this.file.getName())) {
+	// LocalizedPropertiesLog.debug("Cambio " + file.getName()
+	// + "!!!!", null);
+	// Iterator<IPropertyFileListener> listenersIterator = this.listeners
+	// .iterator();
+	// while (listenersIterator.hasNext()) {
+	// IPropertyFileListener listener = (IPropertyFileListener)
+	// listenersIterator
+	// .next();
+	// listener.fileChanged(this);
+	// }
+	// }
+	// }
+	// } catch (CoreException e) {
+	// // open error dialog with syncExec or print to plugin log file
+	// }
+	// }
 
 	/**
 	 * Devuelve una categoria a partir de su nombre
@@ -468,7 +462,7 @@ public class PropertyFile extends PropertyElement implements
 		Writer out = new OutputStreamWriter(stream, encoding);
 		out.write(asText());
 		out.close();
-		file.getParent().refreshLocal(IFile.DEPTH_ONE, null);
+		//file.getParent().refreshLocal(IFile.DEPTH_ONE, null);
 	}
 
 	public static void main(String[] args) {

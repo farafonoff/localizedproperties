@@ -135,6 +135,7 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 		} catch (IOException e) {
 		}
 		monitor.worked(1);
+		//Traducir
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
@@ -143,6 +144,7 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 				try {
 					IDE.openEditor(page, file, LocalizedPropertiesPlugin.PROPERTIES_EDITOR_ID);
 				} catch (PartInitException e) {
+					//TODO: Traducir
 					LocalizedPropertiesLog.error(
 							"No pude cargar el editor de propiedades", e);
 				}

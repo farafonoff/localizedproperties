@@ -3,11 +3,13 @@ package com.triadsoft.properties.model.visitors;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.properties.model.utils.IWildcardPath;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.WildCardPath2;
 
 /**
@@ -38,28 +40,30 @@ public class FileDiscoverer implements IResourceVisitor {
 
 	public boolean visit(IResource resource) throws CoreException {
 		String filepath = resource.getFullPath().toFile().getAbsolutePath();
-		if (resource.getType() == IResource.FOLDER && root != null
-				&& resource.getName().equals(root)) {
+		if (resource.getType() == IResource.FOLDER) {
 			return true;
-		} else if (resource.getType() == IResource.FOLDER && root != null
-				&& !resource.getName().equals(root)) {
-			return false;
-		} else if (resource.getType() == IResource.FOLDER && root == null) {
-			return true;
-		} else if (resource.getType() == IResource.FILE
-				&& (wp.match(filepath, offset) || 
-					wp.match(filepath, offset+1) || 
-					wp.match(filepath, offset+2))) {
-			// Si el archivo coincide con el wp, entonces lo parseo
-			// para ver si el wp me devuelve el filename y extension esperado
-			int index = offset;
-			while(!wp.parse(filepath, index) && index<5){
+		} else if (resource.getType() == IResource.FILE && wp.match(filepath) && !resource.isDerived()) {
+			//Si tengo informacion del root pero el last path no coincide
+			//entonces lo descarto
+//			if(root != null && !resource.getParent().getLocation().lastSegment().equals(root) ){
+//				return false;
+//			}
+			// Si existe match entonces tengo que descubrir a que nivel lo hizo
+			int index = 0;
+			while (!wp.match(filepath, index)
+					&& index < IWildcardPath.MAXIMUM_OPTIONALS) {
 				index++;
 			}
-			
+			// Si no encontre match retorno falso
+			if (index == IWildcardPath.MAXIMUM_OPTIONALS) {
+				return false;
+			}
+			// Parseo para obtener el nombre
+			wp.parse(filepath, index);
 			if (wp.getFileName() != null && wp.getFileName().equals(filename)
 					&& wp.getFileExtension() != null
-					&& wp.getFileExtension().equals(extension)) {
+					&& wp.getFileExtension().equals(extension)
+					&& wp.getRoot().equals(root)) {
 				files.add((IFile) resource);
 				return true;
 			}
