@@ -27,6 +27,12 @@ import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
  */
 public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 
+	private static final String ERROR_LOCALE_DOESNT_EXIST = "error.locale.doesnt.exist";
+	private static final String ERROR_FILE_DOESN_EXIST = "error.file.doesn.exist";
+	private static final String ERROR_KEY_MUST_NOT_BE_NULL = "error.key.null";
+	private static final String ERROR_LOST_LOCALE = "error.locale.lost";
+	private static final String ERROR_REPEATED_KEY = "error.key.repeated";
+
 	/**
 	 * 
 	 */
@@ -65,9 +71,9 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	public boolean addResource(Locale locale, IFile file) throws IOException,
 			CoreException {
 		if (!file.exists()) {
-			// TODO: Translate
-			throw new IOException("No encontré el archivo "
-					+ file.getFullPath());
+			throw new IOException(LocalizedPropertiesPlugin.getString(
+					ERROR_FILE_DOESN_EXIST, new String[] { file.getFullPath()
+							.toString() }));
 		}
 		PropertyFile pf = new PropertyFile(file,
 				LocalizedPropertiesPlugin.getKeyValueSeparators());
@@ -105,10 +111,13 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 
 	public boolean addKey(String key) {
 		if (key == null) {
-			throw new RuntimeException("La clave no puede ser nula");
+			throw new RuntimeException(
+					LocalizedPropertiesPlugin
+							.getString(ERROR_KEY_MUST_NOT_BE_NULL));
 		}
 		if (allKeys.contains(key)) {
-			throw new RuntimeException("Clave repetida");
+			throw new RuntimeException(
+					LocalizedPropertiesPlugin.getString(ERROR_REPEATED_KEY));
 		}
 		allKeys.add(key);
 		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
@@ -145,7 +154,9 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 
 	public boolean removeLocale(Locale locale) throws CoreException {
 		if (!keySet().contains(locale)) {
-			throw new RuntimeException("El locale no existe");
+			throw new RuntimeException(LocalizedPropertiesPlugin.getString(
+					ERROR_LOCALE_DOESNT_EXIST,
+					new String[] { locale.toString() }));
 		}
 		PropertyFile pf = get(locale);
 		remove(locale);
@@ -161,8 +172,8 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	public boolean update(Locale locale, IFile file) throws IOException,
 			CoreException {
 		if (get(locale) == null) {
-			// TODO: Para traducir
-			throw new RuntimeException("No encontré el locale");
+			throw new RuntimeException(
+					LocalizedPropertiesPlugin.getString(ERROR_LOST_LOCALE));
 		}
 		remove(locale);
 		addResource(locale, file);
@@ -237,7 +248,6 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	}
 
 	public void dispose() {
-		this.save();
 		clear();
 		allKeys.clear();
 	}

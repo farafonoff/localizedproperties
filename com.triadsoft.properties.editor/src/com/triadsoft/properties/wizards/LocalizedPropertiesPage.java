@@ -375,25 +375,6 @@ public class LocalizedPropertiesPage extends WizardPage {
 			filepathText.setText("");
 			return;
 		}
-		// WildcardPath wp = new WildcardPath(selected[0]);
-		// // TODO:Validar que no vengan vacios
-		// wp.replace(IWildcardPath.COUNTRY_WILDCARD, countryText.getText());
-		// wp.replace(IWildcardPath.LANGUAGE_WILDCARD, languageText.getText());
-		//
-		// if (resource != null) {
-		// if (wp.haveRoot()) {
-		// wp.replace(IWildcardPath.ROOT_WILDCARD, resource.getFullPath()
-		// .lastSegment());
-		// }
-		// }
-		// wp.replace(IWildcardPath.FILENAME_WILDCARD, fileText.getText());
-		// wp.replace(IWildcardPath.FILE_EXTENSION_WILDCARD, "properties");
-		// // FIXME: Ver que el wilcard path deja los puntos escapeados
-		// wp.replace("\\.", ".");
-		// wp.replace("\\\\.", ".");
-		// wp.replace("\\\\._", ".");
-		// wp.replace("\\_\\\\.", "\\.");
-		// wp.replace("\\_/", "/");
 		WildCardPath2 wp = new WildCardPath2(selected[0]);
 		filepathText.setText(wp.getPath());
 	}

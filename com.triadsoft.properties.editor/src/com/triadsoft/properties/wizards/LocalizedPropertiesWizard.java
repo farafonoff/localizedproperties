@@ -41,6 +41,7 @@ import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
  */
 
 public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
+	private static final String ERROR_CANT_LOAD_EDITOR = "No pude cargar el editor de propiedades";
 	private LocalizedPropertiesPage page;
 	private ISelection selection;
 
@@ -87,8 +88,8 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 			return false;
 		} catch (InvocationTargetException e) {
 			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException
-					.getMessage());
+			MessageDialog.openError(getShell(), "Error",
+					realException.getMessage());
 			return false;
 		}
 		return true;
@@ -114,8 +115,7 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 		IPath filefullpath = new Path(containerName.toString() + filepath);
 		if (containerText.equals(fileContainer)) {
 			filefullpath = new Path(containerName.removeLastSegments(1)
-					.toString()
-					+ filepath);
+					.toString() + filepath);
 		}
 		IPath withoutFileName = filefullpath.removeLastSegments(1);
 		LocalizedPropertiesWizard.createFullFilePath(withoutFileName);
@@ -135,18 +135,18 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 		} catch (IOException e) {
 		}
 		monitor.worked(1);
-		//Traducir
+		// Traducir
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				IWorkbenchPage page = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage();
 				try {
-					IDE.openEditor(page, file, LocalizedPropertiesPlugin.PROPERTIES_EDITOR_ID);
+					IDE.openEditor(page, file,
+							LocalizedPropertiesPlugin.PROPERTIES_EDITOR_ID);
 				} catch (PartInitException e) {
-					//TODO: Traducir
-					LocalizedPropertiesLog.error(
-							"No pude cargar el editor de propiedades", e);
+					LocalizedPropertiesLog.error(LocalizedPropertiesPlugin
+							.getString(ERROR_CANT_LOAD_EDITOR), e);
 				}
 			}
 		});

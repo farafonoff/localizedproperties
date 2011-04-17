@@ -71,6 +71,8 @@ import com.triadsoft.properties.model.utils.WildCardPath2;
 public class PropertiesEditor extends MultiPageEditorPart implements
 		IResourceChangeListener, ILocalizedPropertyFileListener {
 
+	private static final String EDITOR_TABLE_SEARCH = "editor.table.search.label";
+
 	private static final String EDITOR_TAB_PROPERTIES = "editor.tab.properties";
 
 	private static final String EDITOR_TAB_PREVIEW = "editor.tab.preview";
@@ -137,8 +139,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		final PropertyFilter filter = new PropertyFilter();
 
 		Label searchLabel = new Label(container, SWT.NONE);
-		//TODO: Traducir
-		searchLabel.setText("Search: ");
+		searchLabel.setText(EDITOR_TABLE_SEARCH);
 		final Text searchText = new Text(container, SWT.BORDER | SWT.SEARCH);
 		searchText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
