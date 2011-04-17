@@ -117,8 +117,8 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 
 	@Test
 	public void testFlexImplementation() {
-		IFile file = flexEnUSFolder.getFile(new Path("component.properties"));
-		IFile file1 = flexEsArFolder.getFile(new Path("component.properties"));
+		IFile file = flexEnUSFolder.getFile("component.properties");
+		IFile file1 = flexEsArFolder.getFile("component.properties");
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file);

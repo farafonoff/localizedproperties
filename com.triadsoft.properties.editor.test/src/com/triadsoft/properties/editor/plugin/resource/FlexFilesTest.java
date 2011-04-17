@@ -10,13 +10,15 @@ import com.triadsoft.properties.model.ResourceList;
 
 public class FlexFilesTest extends LocalizedPropertiesTest {
 	private IFolder flexFolder;
+	private IFolder esArFolder;
+	private IFolder enUSFolder;
 
 	public void setUp() throws Exception {
 		super.setUp();
 		flexFolder = defaultProject.getFolder("locale");
 		this.createFolder(flexFolder);
-		IFolder esArFolder = defaultProject.getFolder("locale\\es_AR");
-		IFolder enUSFolder = defaultProject.getFolder("locale\\en_US");
+		esArFolder = defaultProject.getFolder("locale\\es_AR");
+		enUSFolder = defaultProject.getFolder("locale\\en_US");
 		this.createFolder(esArFolder);
 		this.createFolder(enUSFolder);
 	}
@@ -26,8 +28,8 @@ public class FlexFilesTest extends LocalizedPropertiesTest {
 	}
 
 	public void testFlexCountryLanguage() {
-		IFile enUSFile = flexFolder.getFile("en_US\\component.properties");
-		IFile esARFile = flexFolder.getFile("es_AR\\component.properties");
+		IFile enUSFile = enUSFolder.getFile("component.properties");
+		IFile esARFile = esArFolder.getFile("component.properties");
 		this.createFile(enUSFile);
 		this.createFile(esARFile);
 		ResourceList list = new ResourceList(enUSFile);
@@ -56,8 +58,8 @@ public class FlexFilesTest extends LocalizedPropertiesTest {
 	}
 
 	public void testFlexFileWithUnderScore() {
-		IFile enUSFile = flexFolder.getFile("en_US\\core_component.properties");
-		IFile esARFile = flexFolder.getFile("es_AR\\core_component.properties");
+		IFile enUSFile = enUSFolder.getFile("core_component.properties");
+		IFile esARFile = esArFolder.getFile("core_component.properties");
 		this.createFile(enUSFile);
 		this.createFile(esARFile);
 		ResourceList list = new ResourceList(enUSFile);

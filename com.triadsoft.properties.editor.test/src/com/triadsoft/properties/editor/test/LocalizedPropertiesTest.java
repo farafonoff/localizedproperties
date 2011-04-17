@@ -19,10 +19,10 @@ public class LocalizedPropertiesTest extends TestCase {
 	protected IProject defaultProject;
 
 	public void setUp() throws Exception {
+		super.setUp();
 		workspace = ResourcesPlugin.getWorkspace();
 		defaultProject = workspace.getRoot().getProject("My Project");
-
-		super.setUp();
+		this.createProject(defaultProject);
 	}
 
 	protected void createProject(final IProject project) {
