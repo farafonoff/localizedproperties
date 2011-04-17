@@ -2,12 +2,12 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties"
-      version="0.7.5"
+      version="0.8.0"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor"
       os="linux,win32"
       ws="win32"
-      nl="es_AR">
+      nl="en_US,es_AR">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/updates/">
       New in this release
@@ -902,10 +902,10 @@ Public License instead of this License.  But first, please read
          id="com.triadsoft.properties.editor"
          os="linux,win32"
          ws="win32"
-         nl="es_AR"
+         nl="en_US,es_AR"
          download-size="0"
          install-size="0"
-         version="0.7.5"
+         version="0.8.0"
          unpack="false"/>
 
 </feature>
