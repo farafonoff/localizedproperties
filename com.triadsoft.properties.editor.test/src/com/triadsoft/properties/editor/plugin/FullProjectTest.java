@@ -158,9 +158,9 @@ public class FullProjectTest extends LocalizedPropertiesTest {
 		assertTrue("Se deberian haber obtenido 3 locales",
 				list.getLocales().length == 3);
 		assertTrue("Se deberia haber obtenido un locale 'en'",
-				list.getPropertyFile(new Locale("en", "US")) != null);
+				list.getPropertyFile(new Locale("en")) != null);
 		assertTrue("Se deberia haber obtenido un locale 'es'",
-				list.getPropertyFile(new Locale("es", "AR")) != null);
+				list.getPropertyFile(new Locale("pt")) != null);
 		assertTrue("Se deberia haber obtenido un locale default",
 				list.getPropertyFile(StringUtils.getKeyLocale()) != null);
 
