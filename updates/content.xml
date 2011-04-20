@@ -3,7 +3,7 @@
 <repository name='Update Site' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1303267125703'/>
+    <property name='p2.timestamp' value='1303267555062'/>
   </properties>
   <references size='4'>
     <repository uri='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' type='0' options='0'/>
