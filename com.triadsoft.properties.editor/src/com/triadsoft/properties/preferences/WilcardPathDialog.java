@@ -220,6 +220,7 @@ public class WilcardPathDialog extends Dialog {
 		_path.setCountry(Locale.getDefault().getCountry());
 		_path.setFileExtension("properties");
 		_path.setFileName("application");
+		_path.setRoot("web");
 		preview.setText(_path.getPath());
 	}
 

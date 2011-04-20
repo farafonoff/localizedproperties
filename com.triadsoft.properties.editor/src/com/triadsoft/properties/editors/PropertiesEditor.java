@@ -116,7 +116,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		resource = new ResourceList(file);
 		createPage0();
-		// createPage1();
+		//createPage1();
 		setPartName(resource.getFileName());
 	}
 
@@ -226,7 +226,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	@Override
 	public boolean isDirty() {
-		return isTableModified || isTextModified || super.isDirty();
+		return isTableModified || isTextModified;
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	}
 
 	/**
-	 * Sobre escribo el save as... porque no puedo sobrescribir varios archivos
+	 * Sobreescribo el save as... porque no puedo sobrescribir varios archivos
 	 * juntos. Nada para hacer porque nunca será llamado
 	 */
 	public void doSaveAs() {
