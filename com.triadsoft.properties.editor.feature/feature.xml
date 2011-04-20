@@ -10,12 +10,17 @@
       nl="en_US,es_AR">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/updates/">
-      New in this release
+      Version 0.8
+- In this version has been improved WildcardPath to support more complex paths
+- The ResourceList? has been improved with a best algorithm to discover files
+- Best error report in Eclipse error log framework
+- Now you can add optional parts into wildcard path descriptor (see WildcardPath documentation for more details) 
+
+New in this release
 - NEW! Files with ini extension now are supported 
 - Correction on Default Locale selection
 - Paste context menu fixed
 - Paste shortcut CRTL+V fixed
-
 Previous release
 - Text searcher
 - Size font control
