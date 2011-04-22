@@ -10,12 +10,15 @@
       nl="en_US,es_AR">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/updates/">
-      Version 0.8
-- In this version has been improved WildcardPath to support more complex paths
-- The ResourceList? has been improved with a best algorithm to discover files
+      Version 0.8.0
+- In this version has been improved the WildcardPath to support
+more
+complex paths
+- The ResourceList? has been improved with a best algorithm to
+discover files
 - Best error report in Eclipse error log framework
-- Now you can add optional parts into wildcard path descriptor (see WildcardPath documentation for more details) 
-
+- Now you can add optional parts into wildcard path descriptor
+(see WildcardPath documentation for more details) 
 New in this release
 - NEW! Files with ini extension now are supported 
 - Correction on Default Locale selection
@@ -901,6 +904,7 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.core"/>
    </requires>
 
    <plugin
