@@ -7,7 +7,6 @@ Bundle-Activator: com.triadsoft.properties.editor.LocalizedPropertiesPlugin
 Bundle-Vendor: TRIADSOFT
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
@@ -15,6 +14,3 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: com.triadsoft.properties.editor,
- com.triadsoft.properties.model,
- com.triadsoft.properties.model.utils

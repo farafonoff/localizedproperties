@@ -322,16 +322,15 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		PropertyFile pf = resource.getPropertyFile(resource.getDefaultLocale());
 		if (pageIndex == 1) {
 			if (isTableModified) {
-				textEditor.getDocumentProvider()
-						.getDocument(textEditor.getEditorInput())
-						.set(pf.asText());
+//				textEditor.getDocumentProvider()
+//						.getDocument(textEditor.getEditorInput())
+//						.set(pf.asText());
 			}
 		} else if (pageIndex == 0) {
 			if (isTextModified) {
 				try {
-					PropertyFile npf = new PropertyFile(textEditor
-							.getDocumentProvider()
-							.getDocument(textEditor.getEditorInput()).get(),
+					IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+					PropertyFile npf = new PropertyFile(file,
 							pf.getEncoding(), pf.getSeparator());
 					npf.setFile(pf.getFile());
 					resource.setPropertyFile(npf, resource.getDefaultLocale());

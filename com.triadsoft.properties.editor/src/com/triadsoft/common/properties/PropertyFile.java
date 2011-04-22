@@ -69,8 +69,13 @@ public class PropertyFile extends PropertyElement {
 
 	public PropertyFile(IFile ifile, Character separator) throws IOException,
 			CoreException {
+		this(ifile, ifile.getCharset(), separator);
+	}
+
+	public PropertyFile(IFile ifile, String encoding, Character separator)
+			throws IOException {
 		this.file = ifile;
-		this.encoding = ifile.getCharset();
+		this.encoding = encoding;
 		setSeparator(separator);
 		this.load(ifile.getLocation().toFile());
 	}
@@ -462,7 +467,7 @@ public class PropertyFile extends PropertyElement {
 		Writer out = new OutputStreamWriter(stream, encoding);
 		out.write(asText());
 		out.close();
-		//file.getParent().refreshLocal(IFile.DEPTH_ONE, null);
+		// file.getParent().refreshLocal(IFile.DEPTH_ONE, null);
 	}
 
 	public static void main(String[] args) {
