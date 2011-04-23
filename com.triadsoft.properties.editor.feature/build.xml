@@ -3,7 +3,8 @@
 
 	<target name="init">
 		<property name="feature.temp.folder" value="${basedir}/feature.temp.folder"/>
-		<property name="feature.destination" value="${basedir}"/>
+		<property name="feature.destination" value="${basedir}/dist"/>
+		<mkdir dir="${feature.destination}"/>
 	</target>
 
 	<target name="all.plugins" depends="init">
