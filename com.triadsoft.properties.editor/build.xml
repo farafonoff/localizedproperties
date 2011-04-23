@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="com.triadsoft.properties.editor" default="build.jars" basedir=".">
-
 	<property name="basews" value="${ws}"/>
 	<property name="baseos" value="${os}"/>
 	<property name="basearch" value="${arch}"/>
@@ -49,7 +48,8 @@
 		</condition>
 		<property name="build.result.folder" value="${basedir}"/>
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
-		<property name="plugin.destination" value="${basedir}"/>
+		<property name="plugin.destination" value="${basedir}/dist"/>
+		<mkdir dir="${plugin.destination}"/>
 	</target>
 
 	<target name="properties" if="eclipse.running">
