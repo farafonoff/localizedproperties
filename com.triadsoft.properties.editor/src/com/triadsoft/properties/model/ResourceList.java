@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.PlatformUI;
 
 import com.triadsoft.common.properties.IPropertyFileListener;
 import com.triadsoft.common.properties.PropertyFile;
@@ -179,12 +180,12 @@ public class ResourceList {
 		IFile file = propertyFiles.get(this.getDefaultLocale()).getFile();
 		String newFilePath = pd.getWildcardPath().getFilePath(file, locale);
 
-		final IFile newFile = file.getWorkspace().getRoot()
-				.getFile(new Path(newFilePath));
+		final IFile newFile = file.getWorkspace().getRoot().getFile(
+				new Path(newFilePath));
 		if (newFile.exists()) {
-			MessageDialog.openError(LocalizedPropertiesPlugin.getShell(),
-					"Error", LocalizedPropertiesPlugin.getString(
-							PREFERENCES_ADD_LOCALE_ACTION_ERROR,
+			MessageDialog.openError(PlatformUI.getWorkbench().getDisplay()
+					.getActiveShell(), "Error", LocalizedPropertiesPlugin
+					.getString(PREFERENCES_ADD_LOCALE_ACTION_ERROR,
 							new Object[] { locale }));
 			return;
 		}
@@ -204,8 +205,8 @@ public class ResourceList {
 		};
 
 		try {
-			new ProgressMonitorDialog(LocalizedPropertiesPlugin.getShell())
-					.run(true, true, op);
+			new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
+					.getActiveShell()).run(true, true, op);
 		} catch (InvocationTargetException e) {
 			LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 		} catch (InterruptedException e) {

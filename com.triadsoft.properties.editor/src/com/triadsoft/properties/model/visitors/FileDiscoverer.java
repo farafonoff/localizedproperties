@@ -3,13 +3,11 @@ package com.triadsoft.properties.model.visitors;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.properties.model.utils.IWildcardPath;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.WildCardPath2;
 
 /**
@@ -37,17 +35,23 @@ public class FileDiscoverer implements IResourceVisitor {
 		this.extension = extension;
 		this.offset = offset;
 	}
+	
+	public int getOffset(){
+		return offset;
+	}
 
 	public boolean visit(IResource resource) throws CoreException {
 		String filepath = resource.getFullPath().toFile().getAbsolutePath();
 		if (resource.getType() == IResource.FOLDER) {
 			return true;
-		} else if (resource.getType() == IResource.FILE && wp.match(filepath) && !resource.isDerived()) {
-			//Si tengo informacion del root pero el last path no coincide
-			//entonces lo descarto
-//			if(root != null && !resource.getParent().getLocation().lastSegment().equals(root) ){
-//				return false;
-//			}
+		} else if (resource.getType() == IResource.FILE && wp.match(filepath)
+				&& !resource.isDerived()) {
+			// Si tengo informacion del root pero el last path no coincide
+			// entonces lo descarto
+			// if(root != null &&
+			// !resource.getParent().getLocation().lastSegment().equals(root) ){
+			// return false;
+			// }
 			// Si existe match entonces tengo que descubrir a que nivel lo hizo
 			int index = 0;
 			while (!wp.match(filepath, index)

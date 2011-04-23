@@ -7,16 +7,13 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.wizards.preferences.PreferencesContentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
- * El Activator class controla el ciclo de vida del plugin
+ * El Activator ha sido cambiado por esta que controla el ciclo de vida del plugin
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
@@ -69,10 +66,6 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public static Shell getShell() {
-		return PlatformUI.getWorkbench().getDisplay().getActiveShell();
-	}
-
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
@@ -98,8 +91,9 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 		String[] wps = getWildcardPaths();
 		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
 				.getPreferenceStore();
-		int defaultIndex = store.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES); 
-		if(defaultIndex<wps.length){
+		int defaultIndex = store
+				.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+		if (defaultIndex < wps.length) {
 			return wps[defaultIndex];
 		}
 		return wps[0];
@@ -121,10 +115,8 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	}
 
 	public static Character getDefaultSeparator() {
-		return getDefault()
-				.getPreferenceStore()
-				.getString(
-						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
+		return getDefault().getPreferenceStore().getString(
+				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
 				.charAt(0);
 	}
 
@@ -154,8 +146,8 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 			return key;
 		}
 		for (int i = 0; i < params.length; i++) {
-			parametrized = resource.replaceAll("\\{" + i + "\\}",
-					params[i].toString());
+			parametrized = resource.replaceAll("\\{" + i + "\\}", params[i]
+					.toString());
 		}
 		return parametrized;
 	}
