@@ -3,15 +3,15 @@
 <repository name='file:/C:/localizedproperties_trunk/updates/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1303559566437'/>
+    <property name='p2.timestamp' value='1304081125718'/>
   </properties>
   <references size='4'>
-    <repository url='http://localizedproperties.googlecode.com/svn/trunk/updates/' type='0' options='0'/>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' type='0' options='0'/>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/updates/' type='1' options='0'/>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/com.triadsoft.properties.editor.update/' type='1' options='0'/>
+    <repository url='http://localizedproperties.googlecode.com/svn/trunk/updates/' type='0' options='0'/>
   </references>
-  <units size='30'>
+  <units size='31'>
     <unit id='com.triadsoft.properties.editor' version='0.7.0'>
       <update id='com.triadsoft.properties.editor' range='[0.0.0,0.7.0)' severity='0'/>
       <properties size='2'>
@@ -1108,6 +1108,27 @@
           </instruction>
         </instructions>
       </touchpointData>
+    </unit>
+    <unit id='Localized Properties Update Site' version='0.0.0'>
+      <properties size='3'>
+        <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
+        <property name='org.eclipse.equinox.p2.description' value='Editor de propiedades por Locale'/>
+        <property name='org.eclipse.equinox.p2.type.category' value='true'/>
+      </properties>
+      <provides size='1'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='Localized Properties Update Site' version='0.0.0'/>
+      </provides>
+      <requires size='8'>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.7.0,0.7.0]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.8.0,0.8.0]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.5.0,0.5.0]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.6.0,0.6.0]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.6.7,0.6.7]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.6.5,0.6.5]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.5.5,0.5.5]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='com.triadsoft.properties.editor.feature.feature.group' range='[0.7.5,0.7.5]'/>
+      </requires>
+      <touchpoint id='null' version='0.0.0'/>
     </unit>
   </units>
 </repository>
