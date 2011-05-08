@@ -29,7 +29,7 @@
    </feature>
    <category-def name="Localized Properties" label="Localized Properties Update Site">
       <description>
-         Editor de propiedades por Locale
+         This plugin provide an editor where we can review and modify all resource files at once and get a glimpse of the texts for all languages.
       </description>
    </category-def>
 </site>
