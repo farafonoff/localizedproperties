@@ -3,7 +3,7 @@
 <repository name='file:/C:/localizedproperties_trunk/unstable/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1305381965296'/>
+    <property name='p2.timestamp' value='1305382763484'/>
   </properties>
   <units size='8'>
     <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.8.0' singleton='false'>
