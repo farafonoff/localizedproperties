@@ -3,7 +3,7 @@
 <repository name='file:/C:/localizedproperties_trunk/unstable/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1305396715125'/>
+    <property name='p2.timestamp' value='1305397045515'/>
   </properties>
   <mappings size='3'>
     <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
@@ -20,15 +20,15 @@
     </artifact>
     <artifact classifier='osgi.bundle' id='com.triadsoft.properties.editor' version='0.8.0'>
       <properties size='3'>
-        <property name='artifact.size' value='32645'/>
-        <property name='download.size' value='32645'/>
+        <property name='artifact.size' value='168551'/>
+        <property name='download.size' value='168551'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
     <artifact classifier='osgi.bundle' id='com.triadsoft.properties.editor' version='0.8.0'>
       <properties size='3'>
-        <property name='artifact.size' value='168551'/>
-        <property name='download.size' value='168551'/>
+        <property name='artifact.size' value='32645'/>
+        <property name='download.size' value='32645'/>
         <property name='download.contentType' value='application/zip'/>
       </properties>
     </artifact>
