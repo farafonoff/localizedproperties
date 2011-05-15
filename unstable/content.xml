@@ -17,8 +17,33 @@
     <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.8.0' singleton='false'>
       <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.8.0)' severity='0'/>
       <properties size='5'>
-        <property name='org.eclipse.equinox.p2.name' value='Lalalala'/>
-        <property name='org.eclipse.equinox.p2.description' value='Mi descripcion lalalala'/>
+        <property name='org.eclipse.equinox.p2.name' value='Localized Properties Plugin'/>
+        <property name='org.eclipse.equinox.p2.description' value='Version 0.8.0
+- In this version has been improved the WildcardPath to support
+more
+complex paths
+- The ResourceList? has been improved with a best algorithm to
+discover files
+- Best error report in Eclipse error log framework
+- Now you can add optional parts into wildcard path descriptor
+(see WildcardPath documentation for more details) 
+New in this release
+- NEW! Files with ini extension now are supported 
+- Correction on Default Locale selection
+- Paste context menu fixed
+- Paste shortcut CRTL+V fixed
+Previous release
+- Text searcher
+- Size font control
+- Property Key refactor
+- Default locale from user profile
+- Enabled global actions using common shortcuts (cut,paste,delete)
+- Refactoring of localized properties wizard. Now is more intuitive
+- File change detection (added or deleted), and refilling of
+the locales table
+- Add and delete locales with context menu
+- Tested on Linux OS
+- Global actions, copy &amp; paste properties, now are supported'/>
         <property name='org.eclipse.equinox.p2.description.url' value='http://www.example.com/description'/>
         <property name='org.eclipse.equinox.p2.provider' value='TRIADSOFT'/>
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
