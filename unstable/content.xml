@@ -3,9 +3,13 @@
 <repository name='file:/C:/localizedproperties_trunk/unstable/ - metadata' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1.0.0'>
   <properties size='2'>
     <property name='p2.compressed' value='false'/>
-    <property name='p2.timestamp' value='1305397045515'/>
+    <property name='p2.timestamp' value='1305460814656'/>
   </properties>
-  <references size='2'>
+  <references size='6'>
+    <repository url='http://localizedproperties.googlecode.com/svn/trunk/unstable/' type='1' options='0'/>
+    <repository url='http://localizedproperties.googlecode.com/svn/trunk/unstable/' type='0' options='0'/>
+    <repository url='http://localizedproperties.googlecode.com/svn/trunk/unstable' type='1' options='0'/>
+    <repository url='http://localizedproperties.googlecode.com/svn/trunk/unstable' type='0' options='0'/>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/updates/' type='1' options='0'/>
     <repository url='http://localizedproperties.googlecode.com/svn/trunk/updates/' type='0' options='0'/>
   </references>
