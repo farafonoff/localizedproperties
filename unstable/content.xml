@@ -17,8 +17,8 @@
     <unit id='com.triadsoft.properties.editor.feature.feature.group' version='0.8.0' singleton='false'>
       <update id='com.triadsoft.properties.editor.feature.feature.group' range='[0.0.0,0.8.0)' severity='0'/>
       <properties size='5'>
-        <property name='org.eclipse.equinox.p2.name' value='Feature Feature'/>
-        <property name='org.eclipse.equinox.p2.description' value='[Enter Feature Description here.]'/>
+        <property name='org.eclipse.equinox.p2.name' value='Lalalala'/>
+        <property name='org.eclipse.equinox.p2.description' value='Mi descripcion lalalala'/>
         <property name='org.eclipse.equinox.p2.description.url' value='http://www.example.com/description'/>
         <property name='org.eclipse.equinox.p2.provider' value='TRIADSOFT'/>
         <property name='org.eclipse.equinox.p2.type.group' value='true'/>
