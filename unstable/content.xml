@@ -2060,7 +2060,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <unit id='Localized Properties Update Site' version='0.0.0'>
       <properties size='3'>
         <property name='org.eclipse.equinox.p2.name' value='Localized Properties'/>
-        <property name='org.eclipse.equinox.p2.description' value='Editor de propiedades por Locale'/>
+        <property name='org.eclipse.equinox.p2.description' value='The goal of the plugin is provide an editor where we can review and modify all resource files at once and get a glimpse of the texts for all languages.'/>
         <property name='org.eclipse.equinox.p2.type.category' value='true'/>
       </properties>
       <provides size='1'>
