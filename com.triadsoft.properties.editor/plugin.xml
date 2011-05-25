@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-  <extension
+	<extension
          point="org.eclipse.ui.editors">
       <editor
             class="com.triadsoft.properties.editors.PropertiesEditor"
@@ -41,5 +41,4 @@
             name="%localizedProperties.wizard.name">
       </wizard>
    </extension>
-
 </plugin>

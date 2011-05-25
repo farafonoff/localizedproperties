@@ -462,8 +462,8 @@ public class PropertyFile extends PropertyElement {
 	}
 
 	public void save() throws IOException, CoreException {
-		FileOutputStream stream = new FileOutputStream(new File(
-				file.getLocationURI()));
+		FileOutputStream stream = new FileOutputStream(new File(file
+				.getLocationURI()));
 		Writer out = new OutputStreamWriter(stream, encoding);
 		out.write(asText());
 		out.close();
