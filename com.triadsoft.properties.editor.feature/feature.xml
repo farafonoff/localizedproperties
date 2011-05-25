@@ -5,11 +5,9 @@
       version="0.8.0"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor"
-      os="linux,win32"
-      ws="win32"
-      nl="en_US,es_AR">
+      nl="en,es">
 
-   <description url="http://localizedproperties.googlecode.com/svn/trunk/updates/">
+   <description url="http://localizedproperties.googlecode.com/svn/trunk/helios/">
       Version 0.8.0
 - In this version has been improved the WildcardPath to support
 more
@@ -893,24 +891,12 @@ Public License instead of this License.  But first, please read
    </license>
 
    <url>
-      <update label="Localized Properties Update Site (New)" url="http://localizedproperties.googlecode.com/svn/trunk/updates/"/>
-      <discovery label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/updates/"/>
+      <update label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/helios"/>
+      <discovery label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/helios"/>
    </url>
-
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.jdt.core"/>
-   </requires>
 
    <plugin
          id="com.triadsoft.properties.editor"
-         os="linux,win32"
-         ws="win32"
-         nl="en_US,es_AR"
          download-size="0"
          install-size="0"
          version="0.8.0"
