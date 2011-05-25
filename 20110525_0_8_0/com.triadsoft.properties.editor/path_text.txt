@@ -1,0 +1,9 @@
+root/es_AR/component.properties 
+root/component.es_AR.properties
+c:/tempos/TemposProject/src/locale/en_US/alert.properties
+src/web/es_AR/component.properties
+src/locale/component.es_AR.properties
+src/web/WEB-INF/component.es.AR.properties
+src/web/es.AR/component.properties
+src/web/es/AR/component.properties
+/tempos/TemposProject/src/locale/en_US/alert.properties
