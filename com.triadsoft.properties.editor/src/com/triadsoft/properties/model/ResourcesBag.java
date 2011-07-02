@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
+import com.triadsoft.common.properties.IPropertyFile;
 import com.triadsoft.common.properties.PropertyCategory;
 import com.triadsoft.common.properties.PropertyEntry;
 import com.triadsoft.common.properties.PropertyFile;
@@ -138,7 +139,7 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	 * @param file
 	 *            PropertyFile
 	 */
-	protected void addKeys(PropertyFile file) {
+	protected void addKeys(IPropertyFile file) {
 		String[] keys = file.getKeys();
 		for (int i = 0; i < keys.length; i++) {
 			if (!allKeys.contains(keys[i])) {
@@ -190,7 +191,7 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		}
 		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
 				.hasNext();) {
-			PropertyFile pf = (PropertyFile) iterator.next();
+			IPropertyFile pf = (IPropertyFile) iterator.next();
 			PropertyEntry entry = pf.getPropertyEntry(key);
 			((PropertyCategory) entry.getParent()).removeEntry(entry);
 			isRemoved = true;
@@ -202,7 +203,7 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	public void keyChanged(String oldKey, String key) {
 		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
 				.hasNext();) {
-			PropertyFile pf = (PropertyFile) iterator.next();
+			IPropertyFile pf = (IPropertyFile) iterator.next();
 			PropertyEntry e = pf.getPropertyEntry(oldKey);
 			e.setKey(key);
 		}
@@ -217,7 +218,7 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 			throw new RuntimeException("El locale no es valido");
 		}
 		if (newValue != null && !newValue.equals(oldValue)) {
-			PropertyFile pf = get(locale);
+			IPropertyFile pf = get(locale);
 			PropertyEntry pe = pf.getPropertyEntry(key);
 			pe.setValue(newValue);
 			// try {
@@ -234,7 +235,7 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		for (Iterator<Locale> iterator = keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();
-			PropertyFile pf = (PropertyFile) get(locale);
+			IPropertyFile pf = (IPropertyFile) get(locale);
 			try {
 				pf.save();
 			} catch (FileNotFoundException e) {
