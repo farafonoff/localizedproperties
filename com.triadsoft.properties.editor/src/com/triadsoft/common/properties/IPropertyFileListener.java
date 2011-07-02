@@ -27,7 +27,7 @@ public interface IPropertyFileListener {
 
 	void categoryRemoved(PropertyCategory category);
 
-	void fileChanged(PropertyFile propertyFile);
+	void fileChanged(IPropertyFile propertyFile);
 
 	void keyRemoved(String key);
 }

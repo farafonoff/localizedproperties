@@ -3,6 +3,8 @@
  */
 package com.triadsoft.common.properties;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.PrintWriter;
 
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
@@ -16,6 +18,38 @@ public class PropertyEntry extends PropertyElement {
 	private int lineNumber;
 	private int start = 0;
 	private int end = 1;
+
+	public PropertyEntry(PropertyCategory parent, LineNumberReader reader,
+			Character separator) throws IOException {
+		super(parent);
+		boolean previousLine = false;
+		while (true) {
+			reader.mark(1);
+			int ch = reader.read();
+			if (ch == -1) {
+				break;
+			}
+			if(ch == '#'){
+				reader.reset();
+				break;
+			}
+			reader.reset();
+			String line = reader.readLine();
+			int index = line.indexOf(getSeparator());
+			if (index != -1) {
+				this.key = line.substring(0, index).trim();
+				this.value = line.substring(index + 1).trim();
+				this.lineNumber = reader.getLineNumber();
+				if(previousLine){
+					break;
+				}
+				previousLine=true;
+			}else if(previousLine){
+				this.value += line;
+				previousLine = false;
+			}
+		}
+	}
 
 	/**
 	 * Crea la propiedad sin el control de la linea

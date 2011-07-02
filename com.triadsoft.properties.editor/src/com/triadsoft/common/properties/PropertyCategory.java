@@ -76,13 +76,15 @@ public class PropertyCategory extends PropertyElement {
 			if(getSeparator()==null){
 				break;
 			}
-			int index = line.indexOf(getSeparator());
-			if (index != -1) {
-				String key = line.substring(0, index).trim();
-				String value = line.substring(index + 1).trim();
-				entries.add(new PropertyEntry(this, key, value, 0, index,
-						reader.getLineNumber()));
-			}
+			reader.reset();
+			entries.add(new PropertyEntry(this, reader,getSeparator()));
+//			int index = line.indexOf(getSeparator());
+//			if (index != -1) {
+//				String key = line.substring(0, index).trim();
+//				String value = line.substring(index + 1).trim();
+//				entries.add(new PropertyEntry(this, key, value, 0, index,
+//						reader.getLineNumber()));
+//			}
 		}
 	}
 

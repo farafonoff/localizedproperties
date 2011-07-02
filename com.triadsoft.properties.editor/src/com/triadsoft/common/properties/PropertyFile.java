@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -26,13 +28,13 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
-public class PropertyFile extends PropertyElement {
+public class PropertyFile extends PropertyElement implements IPropertyFile{
 
 	public static final String DEFAULT_EXTENSION = "properties";
-	private List<PropertyCategory> categories;
+	List<PropertyCategory> categories;
 	private List<IPropertyFileListener> listeners = new ArrayList<IPropertyFileListener>();
-	private IFile file = null;
-	private String encoding;
+	IFile file = null;
+	String encoding;
 
 	/**
 	 * 
@@ -50,6 +52,49 @@ public class PropertyFile extends PropertyElement {
 			throw new RuntimeException("No pude encontrar el encoding");
 		}
 		this.load(file);
+	}
+
+	public PropertyFile(InputStream stream) {
+		this(stream, "UTF-8", new String[] { "=" });
+	}
+
+	public PropertyFile(InputStream stream, String encoding, String[] separators) {
+		InputStreamReader sr = new InputStreamReader(stream);
+		// BufferedReader br = new BufferedReader(reader);
+		StringBuffer sb = new StringBuffer();
+
+		char[] buffer = new char[1024];
+		try {
+			Reader reader = new BufferedReader(sr);
+			int n;
+			while ((n = reader.read(buffer)) != -1) {
+				sb.append(buffer);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// String line = null;
+
+		// try {
+		// while ((line = reader.read()) != null) {
+		// buffer.append(line);
+		// if(line.contains("\\n")){
+		// buffer.append("\n");
+		// }
+		// }
+		// stream.close();
+		//			
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+
 	}
 
 	/**
@@ -480,7 +525,7 @@ public class PropertyFile extends PropertyElement {
 		// }
 	}
 
-	public void fileChanged(PropertyFile propertyFile) {
+	public void fileChanged(IPropertyFile propertyFile) {
 
 	}
 
