@@ -7,20 +7,19 @@ import java.util.Map;
 
 /**
  * <p>
- * Esta clase contiene el valor de una propiedad para todos los locales
- * agregados.
+ * This class contains the value of property, and the translation for all
+ * contained locales.
  * </p>
  * <p>
- * Se utiliza para dibujar todas las propiedades en la tabla de properties,
- * donde por cada columna se tendrá un locale diferente.
+ * Is used to draw all properties in properties tables and to interchange data
+ * with extensions.
  * </p>
  * <p>
- * Entonces para cada clave tendremos tantas columnas como locales se decubran
- * en el path
+ * Then we have one keyname and translations as locales have.
  * </p>
  * 
  * @author Triad (flores.leonardo@gmail.com)
- * 
+ * @see #getLocales(),#getValue(Locale)
  */
 public class Property {
 	public static String VALUES_SEPARATOR = "|";
@@ -28,12 +27,17 @@ public class Property {
 	private Map<Locale, String> values = new HashMap<Locale, String>();
 	private Map<Locale, Error> errors = new HashMap<Locale, Error>();
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param key
+	 */
 	public Property(String key) {
 		this.key = key;
 	}
 
 	/**
-	 * Devuleve la clave para la proipiedad
+	 * Return key code value
 	 * 
 	 * @return String con la clave
 	 */
@@ -42,16 +46,7 @@ public class Property {
 	}
 
 	/**
-	 * Permite establecer el valor de la clave
-	 * 
-	 * @param key
-	 */
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	/**
-	 * Devuelve el valor de la propiedad para el locale solicitado
+	 * Return the translation for the locale passed as parameter
 	 * 
 	 * @param locale
 	 * @return
@@ -60,12 +55,17 @@ public class Property {
 		return values.get(locale);
 	}
 
+	/**
+	 * Return the contained locales.
+	 * 
+	 * @return
+	 */
 	public Locale[] getLocales() {
 		return values.keySet().toArray(new Locale[values.keySet().size()]);
 	}
 
 	/**
-	 * Permite establecer el valor para un locale determinado
+	 * Set a translation to the locale passed as parameter
 	 * 
 	 * @param locale
 	 * @param value
@@ -73,6 +73,7 @@ public class Property {
 	public void setValue(Locale locale, String value) {
 		if (value == null || value.trim().length() == 0) {
 			value = "";
+			// FIXME: TO EXTERNALIZE
 			addError(locale, new PropertyError(PropertyError.VOID_VALUE,
 					"No se encontro valor para"));
 		}
@@ -80,7 +81,7 @@ public class Property {
 	}
 
 	/**
-	 * Permite agregar un error para un locale determinado
+	 * Allow to add an error into the locale passed as parameter
 	 * 
 	 * @param locale
 	 * @param error
@@ -89,6 +90,11 @@ public class Property {
 		errors.put(locale, error);
 	}
 
+	/**
+	 * Return the map of errors, by locale
+	 * 
+	 * @return
+	 */
 	public Map<Locale, Error> getErrors() {
 		return errors;
 	}
@@ -97,6 +103,10 @@ public class Property {
 		return errors.get(locale);
 	}
 
+	/**
+	 * It is a simple implementation
+	 */
+	@Override
 	public String toString() {
 		String ret = key;
 		Iterator<Locale> iter = values.keySet().iterator();

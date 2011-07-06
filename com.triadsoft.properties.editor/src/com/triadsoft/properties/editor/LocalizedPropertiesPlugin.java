@@ -13,7 +13,8 @@ import org.osgi.framework.BundleContext;
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
- * El Activator ha sido cambiado por esta que controla el ciclo de vida del plugin
+ * El Activator ha sido cambiado por esta que controla el ciclo de vida del
+ * plugin
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */

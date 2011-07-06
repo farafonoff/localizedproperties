@@ -1,5 +1,13 @@
 package com.triadsoft.properties.editors;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -9,9 +17,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
+import com.triadsoft.properties.editor.extensions.IPropertiesExport;
+import com.triadsoft.properties.editor.extensions.IPropertiesImport;
 import com.triadsoft.properties.editors.actions.CopyPropertyAction;
 import com.triadsoft.properties.editors.actions.CutPropertyAction;
 import com.triadsoft.properties.editors.actions.DecreaseFontAction;
+import com.triadsoft.properties.editors.actions.ExtensionIEAction;
 import com.triadsoft.properties.editors.actions.IncreaseFontAction;
 import com.triadsoft.properties.editors.actions.PastePropertyAction;
 import com.triadsoft.properties.editors.actions.RemoveSearchTextAction;
@@ -27,6 +38,9 @@ import com.triadsoft.properties.editors.actions.SearchTextAction;
 public class MultiPageEditorContributor extends
 		MultiPageEditorActionBarContributor {
 
+	public static final String IPROPERTIES_EXPORT_ID = "com.triadsoft.properties.editor.export";
+	public static final String IPROPERTIES_IMPORT_ID = "com.triadsoft.properties.editor.import";
+
 	private CopyPropertyAction copyAction = null;
 
 	private PastePropertyAction pasteAction = null;
@@ -40,6 +54,9 @@ public class MultiPageEditorContributor extends
 	private SearchTextAction searchTextAction = null;
 
 	private RemoveSearchTextAction removeSearchTextAction = null;
+
+	private static final List<ExtensionIEAction> importers = new LinkedList<ExtensionIEAction>();
+	private static final List<ExtensionIEAction> exporters = new LinkedList<ExtensionIEAction>();
 
 	// private IAction globalCopy = null;
 
@@ -133,6 +150,8 @@ public class MultiPageEditorContributor extends
 		if (removeSearchTextAction == null) {
 			removeSearchTextAction = new RemoveSearchTextAction(null);
 		}
+		this.createImportExtensions();
+		this.createExportExtensions();
 	}
 
 	public void contributeToMenu(IMenuManager manager) {
@@ -145,5 +164,73 @@ public class MultiPageEditorContributor extends
 	public void contributeToToolBar(IToolBarManager manager) {
 		// manager.add(new Separator());
 		// manager.add(retargetRemoveAction);
+	}
+
+	private void createExportExtensions() {
+		IConfigurationElement[] config = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(IPROPERTIES_EXPORT_ID);
+		try {
+			for (IConfigurationElement e : config) {
+				System.out.println("Evaluating extension");
+				final Object o = e.createExecutableExtension("class");
+				if (o instanceof IPropertiesExport) {
+					ISafeRunnable runnable = new ISafeRunnable() {
+						public void run() throws Exception {
+							System.out.println("The name is "
+									+ ((IPropertiesExport) o).getName());
+							System.out.println("And the description is "
+									+ ((IPropertiesExport) o).getDescription());
+							ExtensionIEAction action = new ExtensionIEAction(
+									null, (IPropertiesExport) o);
+							exporters.add(action);
+						}
+
+						public void handleException(Throwable exception) {
+							// FIXME Make better exception
+							System.out.println("Exception in client");
+						}
+					};
+					SafeRunner.run(runnable);
+				}
+			}
+		} catch (CoreException ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	private void createImportExtensions() {
+		IConfigurationElement[] config = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(IPROPERTIES_IMPORT_ID);
+		try {
+			for (IConfigurationElement e : config) {
+				System.out.println("Evaluating import extension");
+				final Object o = e.createExecutableExtension("class");
+				if (o instanceof IPropertiesImport) {
+					ISafeRunnable runnable = new ISafeRunnable() {
+						public void run() throws Exception {
+							System.out.println("The name is "
+									+ ((IPropertiesImport) o).getName());
+							System.out.println("And the description is "
+									+ ((IPropertiesExport) o).getDescription());
+							ExtensionIEAction action = new ExtensionIEAction(
+									null, (IPropertiesExport) o);
+							importers.add(action);
+						}
+
+						public void handleException(Throwable exception) {
+							// FIXME Make better exception
+							System.out.println("Exception in client");
+						}
+					};
+					SafeRunner.run(runnable);
+				}
+			}
+		} catch (CoreException ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+	
+	private void setEditor(){
+		
 	}
 }
