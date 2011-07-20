@@ -2,21 +2,21 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties"
-      version="0.8.0"
+      version="0.8.1"
       provider-name="TRIADSOFT"
       plugin="com.triadsoft.properties.editor"
       nl="en,es">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/helios/">
-      Version 0.8.0
-- In this version has been improved the WildcardPath to support
-more
-complex paths
-- The ResourceList? has been improved with a best algorithm to
-discover files
+      Version 0.8.1
+-The variant option in java was added
+-
+
+Version 0.8.0
+- In this version has been improved the WildcardPath to support more complex paths
+- The ResourceList? has been improved with a best algorithm to discover files
 - Best error report in Eclipse error log framework
-- Now you can add optional parts into wildcard path descriptor
-(see WildcardPath documentation for more details) 
+- Now you can add optional parts into wildcard path descriptor (see WildcardPath documentation for more details) 
 New in this release
 - NEW! Files with ini extension now are supported 
 - Correction on Default Locale selection
@@ -899,7 +899,7 @@ Public License instead of this License.  But first, please read
          id="com.triadsoft.properties.editor"
          download-size="0"
          install-size="0"
-         version="0.8.0"
+         version="0.8.1"
          unpack="false"/>
 
 </feature>
