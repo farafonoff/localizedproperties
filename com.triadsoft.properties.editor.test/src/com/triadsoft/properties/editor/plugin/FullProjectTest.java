@@ -96,54 +96,54 @@ public class FullProjectTest extends LocalizedPropertiesTest {
 	public void testAlexandraJavaEnglishFile() {
 		ResourceList list = new ResourceList(alexandra_file);
 		Locale locale = list.getDefaultLocale();
-		assertTrue("El languaje default deberia ser 'en'",
-				"en".equals(locale.getLanguage()));
+		assertTrue("El languaje default deberia ser 'en'", "en".equals(locale
+				.getLanguage()));
 		LocalizedPropertiesLog.debug("'" + locale.getCountry() + "'");
-		assertTrue("El country default deberia ser 'vacio'", locale
-				.getCountry().equals(""));
-		assertTrue("El filename debería ser totranslate",
-				"totranslate".equals(list.getFileName()));
+		assertTrue("El country default deberia ser 'vacio' y fue '"
+				+ locale.getCountry() + "'", locale.getCountry().equals(""));
+		assertTrue("El filename debería ser totranslate", "totranslate"
+				.equals(list.getFileName()));
 		assertTrue("Se deberian haber obtenido dos locales",
 				list.getLocales().length == 2);
-		assertTrue("Se deberia haber obtenido un locale 'fr'",
-				list.getPropertyFile(new Locale("fr")) != null);
-		assertTrue("Se deberia haber obtenido un locale 'en'",
-				list.getPropertyFile(new Locale("en")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'fr'", list
+				.getPropertyFile(new Locale("fr")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'en'", list
+				.getPropertyFile(new Locale("en")) != null);
 	}
 
 	public void testAlexandraJavaFrenchFile() {
 		ResourceList list = new ResourceList(alexandra_file1);
 		Locale locale = list.getDefaultLocale();
-		assertTrue("El languaje default deberia ser 'fr'",
-				"fr".equals(locale.getLanguage()));
+		assertTrue("El languaje default deberia ser 'fr'", "fr".equals(locale
+				.getLanguage()));
 		LocalizedPropertiesLog.debug("'" + locale.getCountry() + "'");
-		assertTrue("El country default deberia ser 'vacio'", locale
-				.getCountry().equals(""));
-		assertTrue("El filename debería ser totranslate",
-				"totranslate".equals(list.getFileName()));
+		assertTrue("El country default deberia ser 'vacio' y fue '"
+				+ locale.getCountry() + "'", locale.getCountry().equals(""));
+		assertTrue("El filename debería ser totranslate", "totranslate"
+				.equals(list.getFileName()));
 		assertTrue("Se deberian haber obtenido dos locales",
 				list.getLocales().length == 2);
-		assertTrue("Se deberia haber obtenido un locale 'fr'",
-				list.getPropertyFile(new Locale("fr")) != null);
-		assertTrue("Se deberia haber obtenido un locale 'en'",
-				list.getPropertyFile(new Locale("en")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'fr'", list
+				.getPropertyFile(new Locale("fr")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'en'", list
+				.getPropertyFile(new Locale("en")) != null);
 	}
 
 	public void testGrailsJavaDefaultFiles() {
 		ResourceList list = new ResourceList(grails_file);
 		Locale locale = list.getDefaultLocale();
-		assertTrue("El languaje default deberia ser 'en'",
-				"en".equals(locale.getLanguage()));
+		assertTrue("El languaje default deberia ser 'en'", "en".equals(locale
+				.getLanguage()));
 		assertTrue("El country default deberia ser 'US'", locale.getCountry()
 				.equals("US"));
-		assertTrue("El filename debería ser GrailsFile",
-				"GrailsFile".equals(list.getFileName()));
+		assertTrue("El filename debería ser GrailsFile", "GrailsFile"
+				.equals(list.getFileName()));
 		assertTrue("Se deberian haber obtenido dos locales",
 				list.getLocales().length == 2);
-		assertTrue("Se deberia haber obtenido un locale 'en'",
-				list.getPropertyFile(new Locale("en", "US")) != null);
-		assertTrue("Se deberia haber obtenido un locale 'es'",
-				list.getPropertyFile(new Locale("es", "AR")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'en'", list
+				.getPropertyFile(new Locale("en", "US")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'es'", list
+				.getPropertyFile(new Locale("es", "AR")) != null);
 	}
 
 	public void testLeandroJavaDefaultFiles() {
@@ -153,39 +153,38 @@ public class FullProjectTest extends LocalizedPropertiesTest {
 				.getKeyLocale().getLanguage().equals(locale.getLanguage()));
 		assertTrue("El country default deberia ser 'XX'", locale.getCountry()
 				.equals(StringUtils.getKeyLocale().getCountry()));
-		assertTrue("El filename debería ser GrailsFile",
-				"teste".equals(list.getFileName()));
-		assertTrue("Se deberian haber obtenido 3 locales",
-				list.getLocales().length == 3);
-		assertTrue("Se deberia haber obtenido un locale 'en'",
-				list.getPropertyFile(new Locale("en")) != null);
-		assertTrue("Se deberia haber obtenido un locale 'es'",
-				list.getPropertyFile(new Locale("pt")) != null);
-		assertTrue("Se deberia haber obtenido un locale default",
-				list.getPropertyFile(StringUtils.getKeyLocale()) != null);
+		assertTrue("El filename debería ser GrailsFile", "teste".equals(list
+				.getFileName()));
+		assertTrue("Se deberian haber obtenido 3 locales y se obtuvieron "
+				+ list.getLocales().length, list.getLocales().length == 3);
+		assertTrue("Se deberia haber obtenido un locale 'en'", list
+				.getPropertyFile(new Locale("en")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'es'", list
+				.getPropertyFile(new Locale("pt")) != null);
+		assertTrue("Se deberia haber obtenido un locale default", list
+				.getPropertyFile(StringUtils.getKeyLocale()) != null);
 
 	}
 
 	public void testLeandroJavaEnglishFiles() {
 		ResourceList list = new ResourceList(leandro_file1);
 		Locale locale = list.getDefaultLocale();
-		assertTrue("El languaje default deberia ser 'en'",
-				"en".equals(locale.getLanguage()));
-		assertTrue("El country default deberia ser ''", locale.getCountry()
-				.equals(""));
-		assertTrue("El filename debería ser teste",
-				"teste".equals(list.getFileName()));
-		assertTrue(
-				"Se deberian haber obtenido 3 locales pero hubo "
-						+ list.getLocales().length,
-				list.getLocales().length == 3);
-		assertFalse("No deberia existir un locale con pais",list.getLocales()[0].getCountry() == null);
-		assertTrue("Se deberia haber obtenido un locale 'en'",
-				list.getPropertyFile(new Locale("en")) != null);
-		assertTrue("Se deberia haber obtenido un locale 'es'",
-				list.getPropertyFile(new Locale("pt")) != null);
-		assertTrue("Se deberia haber obtenido un locale default",
-				list.getPropertyFile(StringUtils.getKeyLocale()) != null);
+		assertTrue("El languaje default deberia ser 'en'", "en".equals(locale
+				.getLanguage()));
+		assertTrue("El country default deberia ser vacio y fue '"
+				+ locale.getCountry() + "'", locale.getCountry().equals(""));
+		assertTrue("El filename debería ser teste", "teste".equals(list
+				.getFileName()));
+		assertTrue("Se deberian haber obtenido 3 locales pero hubo "
+				+ list.getLocales().length, list.getLocales().length == 3);
+		assertFalse("No deberia existir un locale con pais",
+				list.getLocales()[0].getCountry() == null);
+		assertTrue("Se deberia haber obtenido un locale 'en'", list
+				.getPropertyFile(new Locale("en")) != null);
+		assertTrue("Se deberia haber obtenido un locale 'es'", list
+				.getPropertyFile(new Locale("pt")) != null);
+		assertTrue("Se deberia haber obtenido un locale default", list
+				.getPropertyFile(StringUtils.getKeyLocale()) != null);
 
 	}
 }

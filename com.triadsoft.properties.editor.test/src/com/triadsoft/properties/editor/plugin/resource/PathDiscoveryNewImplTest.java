@@ -5,16 +5,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.Path;
 import org.junit.Test;
 
+import com.triadsoft.properties.editor.plugin.DefaultsPreferencesTest;
 import com.triadsoft.properties.editor.test.LocalizedPropertiesTest;
 import com.triadsoft.properties.model.utils.IFilesDiscoverer;
 import com.triadsoft.properties.model.utils.NewPathDiscovery;
 
 public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
-	
-	private static final String JAVA_WITHOUT_LANGUAGE = "/{root}/{filename}.{country}.{fileextension}";
-	private static final String JOOMLA_WILDCARD_PATH = "/{root}/{lang}-{country}/{lang}-{country}.{filename}.{fileextension}";
-	private static final String FLEX_WILDCARD_PATH = "/{root}/{lang}_{country}/{filename}.{fileextension}";
-	private static final String JAVA_WILDCARD_PATH = "/{root}/{filename}(.{lang})2(_{country})1.{fileextension}";
 
 	protected IFilesDiscoverer discoverer;
 	private IFolder flexFolder;
@@ -78,12 +74,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path java no coincide",
-				JAVA_WILDCARD_PATH
-						.equals(lll));
+				DefaultsPreferencesTest.JAVA_DOT_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -93,12 +88,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path java no coincide",
-				JAVA_WITHOUT_LANGUAGE
-						.equals(lll));
+				DefaultsPreferencesTest.JAVA_DOT_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -108,11 +102,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path java no coincide",
-				JAVA_WILDCARD_PATH.equals(lll));
+				DefaultsPreferencesTest.JAVA_DOT_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -122,12 +116,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path Flex no coincide",
-				FLEX_WILDCARD_PATH
-						.equals(lll));
+				DefaultsPreferencesTest.FLEX_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -137,12 +130,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path joomla no coincide",
-				JOOMLA_WILDCARD_PATH
-						.equals(lll));
+				DefaultsPreferencesTest.JOOMLA_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -152,12 +144,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file1);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path web no coincide",
-				JAVA_WILDCARD_PATH
-						.equals(lll));
+				DefaultsPreferencesTest.JAVA_DOT_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -167,12 +158,11 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file1);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path web no coincide",
-				JAVA_WITHOUT_LANGUAGE
-						.equals(lll));
+				DefaultsPreferencesTest.JAVA_DOT_WILDCARD.equals(lll));
 	}
 
 	@Test
@@ -182,11 +172,10 @@ public class PathDiscoveryNewImplTest extends LocalizedPropertiesTest {
 		this.createFile(file);
 		this.createFile(file1);
 		discoverer = new NewPathDiscovery(file1);
-		assertTrue("El wildcardpath no debería ser nulo",
-				discoverer.getWildcardPath() != null);
+		assertTrue("El wildcardpath no debería ser nulo", discoverer
+				.getWildcardPath() != null);
 		String lll = discoverer.getWildcardPath().toString();
 		assertTrue("El path web no coincide",
-				JAVA_WILDCARD_PATH
-						.equals(lll));
+				DefaultsPreferencesTest.JAVA_DOT_WILDCARD.equals(lll));
 	}
 }

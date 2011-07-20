@@ -19,7 +19,7 @@ public class ToRegexTests extends WildcardPathTest {
 	}
 
 	public void testJavaFileFileExtensionRegex() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/components.en_US.properties";
 		assertTrue("La expresion debería tener coincidencia", wp.match(path, 0));
 		wp.setFileExtension("properties");
@@ -33,12 +33,12 @@ public class ToRegexTests extends WildcardPathTest {
 						.equals(regex));
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(path);
-		assertTrue("La expresion regular debería matchear con el path",
-				m.find());
+		assertTrue("La expresion regular debería matchear con el path", m
+				.find());
 	}
 
 	public void testJavaFileFileExtensionRootRegex() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/components.en_US.properties";
 		wp.setFileExtension("properties");
 		wp.setFileName("components");
@@ -49,12 +49,12 @@ public class ToRegexTests extends WildcardPathTest {
 						.equals(regex));
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(path);
-		assertTrue("La expresion regular debería matchear con el path",
-				m.find());
+		assertTrue("La expresion regular debería matchear con el path", m
+				.find());
 	}
 
 	public void testJavaFileFileExtensionRootLangRegex() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/components.en_US.properties";
 		wp.setFileExtension("properties");
 		wp.setFileName("components");
@@ -65,12 +65,12 @@ public class ToRegexTests extends WildcardPathTest {
 				"/prueba/components\\.en\\_[A-Z]{2}\\.properties".equals(regex));
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(path);
-		assertTrue("La expresion regular debería matchear con el path",
-				m.find());
+		assertTrue("La expresion regular debería matchear con el path", m
+				.find());
 	}
 
 	public void testJavaFileFileExtensionRootCountryRegex() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/components.en_US.properties";
 		wp.setFileExtension("properties");
 		wp.setFileName("components");
@@ -81,12 +81,12 @@ public class ToRegexTests extends WildcardPathTest {
 				"/prueba/components\\.[a-z]{2}\\_US\\.properties".equals(regex));
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(path);
-		assertTrue("La expresion regular debería matchear con el path",
-				m.find());
+		assertTrue("La expresion regular debería matchear con el path", m
+				.find());
 	}
 
 	public void testJavaFileFileExtensionRootLocaleRegex() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/components.en_US.properties";
 		wp.setFileExtension("properties");
 		wp.setFileName("components");
@@ -98,12 +98,12 @@ public class ToRegexTests extends WildcardPathTest {
 				"/prueba/components\\.en\\_US\\.properties".equals(regex));
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(path);
-		assertTrue("La expresion regular debería matchear con el path",
-				m.find());
+		assertTrue("La expresion regular debería matchear con el path", m
+				.find());
 	}
 
 	public void testJavaFileUnderscoreNameRegexMatch() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/core_components.en_US.properties";
 		wp.setFileExtension("properties");
 		wp.setFileName("core_components");
@@ -115,12 +115,12 @@ public class ToRegexTests extends WildcardPathTest {
 				"/prueba/core_components\\.en\\_US\\.properties".equals(regex));
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(path);
-		assertTrue("La expresion regular debería matchear con el path",
-				m.find());
+		assertTrue("La expresion regular debería matchear con el path", m
+				.find());
 	}
 
 	public void testJavaFileUnderscoreNameLookingUp() {
-		wp = new WildCardPath2(JAVA_PROPERTIES);
+		wp = new WildCardPath2(DefaultsPreferencesTest.JAVA_DOT_WILDCARD);
 		String path = "c:/tempos/TemposProject/src/locale/prueba/core_components.en_US.properties";
 		// wp.setFileExtension("properties");
 		// wp.setFileName("core_components");
@@ -128,10 +128,12 @@ public class ToRegexTests extends WildcardPathTest {
 		// wp.setLanguage("en");
 		// wp.setCountry("US");
 		assertTrue("La expresion debería coincidir", wp.match(path, 0));
-		assertTrue("El nombre debería ser core_components","core_components".equals(wp.getFileName()));
-		assertTrue("El root debería ser prueba","prueba".equals(wp.getRoot()));
-		assertTrue("La extension debería ser properties","properties".equals(wp.getFileExtension()));
-		assertTrue("El lenguaje debería ser en","en".equals(wp.getLanguage()));
-		assertTrue("El pais debería ser US","US".equals(wp.getCountry()));
+		assertTrue("El nombre debería ser core_components", "core_components"
+				.equals(wp.getFileName()));
+		assertTrue("El root debería ser prueba", "prueba".equals(wp.getRoot()));
+		assertTrue("La extension debería ser properties", "properties"
+				.equals(wp.getFileExtension()));
+		assertTrue("El lenguaje debería ser en", "en".equals(wp.getLanguage()));
+		assertTrue("El pais debería ser US", "US".equals(wp.getCountry()));
 	}
 }
