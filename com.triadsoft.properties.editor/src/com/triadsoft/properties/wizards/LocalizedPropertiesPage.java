@@ -35,7 +35,7 @@ import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
  * Permite crear un archivo de propiedades localizado por el idioma
- * 
+ *
  * @author Triad (flores.leonardo@gmail.com)
  */
 
@@ -111,7 +111,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 
 	/**
 	 * Constructor for SampleNewWizardPage.
-	 * 
+	 *
 	 * @param pageName
 	 */
 	public LocalizedPropertiesPage(ISelection selection) {
@@ -376,6 +376,15 @@ public class LocalizedPropertiesPage extends WizardPage {
 			return;
 		}
 		WildCardPath2 wp = new WildCardPath2(selected[0]);
+
+		//TODO check if it works on Windows/MacOSX(??)
+		wp.setRoot(root.getFullPath().toOSString());
+		wp.setCountry(countryText.getText());
+		wp.setLanguage(languageText.getText());
+		wp.setFileName(fileText.getText());
+
+		//FIXME should be parameterized ASAP
+		wp.setFileExtension("properties");
 		filepathText.setText(wp.getPath());
 	}
 

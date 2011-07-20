@@ -14,5 +14,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		/** Ahora todo se carga por el archivo preferences.ini */
+		System.out.println("Recuperando los defaults");
 	}
 }

@@ -12,10 +12,13 @@ public interface IWildcardPath {
 	public static final String OPTIONAL_PARAMETERS = "\\([a-zA-Z0-9\\.\\_\\{\\}]*\\)\\d";
 
 	/**
-	 * Soporta todas las letras, guiones, underscore, excepto / (es la usada
-	 * como separador de carpetas)
+	 * It supports all letters, undescores
 	 */
 	public static final String TEXT_REGEX = "[a-zA-Z\\-\\_][^/]+";
+	/**
+	 * It's use to add a variant of language
+	 */
+	public static final String VARIANT_REGEX = "[A-Z]+";
 
 	/** Constantes para los wildcards */
 	public static final String ROOT_WILDCARD = "{root}";
@@ -23,13 +26,14 @@ public interface IWildcardPath {
 	public static final String FILE_EXTENSION_WILDCARD = "{fileextension}";
 	public static final String COUNTRY_WILDCARD = "{country}";
 	public static final String LANGUAGE_WILDCARD = "{lang}";
-	
+	public static final String VARIANT_WILDCARD = "{variant}";
+
 	/**
-	 * Es el numero de parametros opcionales que ser&aacute;n soportados.
-	 * Éste numero sirve para poner un limite en la busqueda de las opciones,
-	 * y para validar el límite de opciones cuando se ingresa un nuevo wildcard path. 
+	 * Es el numero de parametros opcionales que ser&aacute;n soportados. Éste
+	 * numero sirve para poner un limite en la busqueda de las opciones, y para
+	 * validar el límite de opciones cuando se ingresa un nuevo wildcard path.
 	 */
-	public static final int MAXIMUM_OPTIONALS=5;
+	public static final int MAXIMUM_OPTIONALS = 5;
 
 	public String getWildcardpath();
 
@@ -42,7 +46,7 @@ public interface IWildcardPath {
 	public String getLanguage();
 
 	public Locale getLocale();
-	
+
 	public String getRoot();
 
 	/**
@@ -54,10 +58,11 @@ public interface IWildcardPath {
 	/**
 	 * This method must to use information about optional parameters.
 	 * (.{country})1
+	 * 
 	 * @param offset
 	 * @return
 	 */
-	public Boolean parse(String filepath,int offset);
+	public Boolean parse(String filepath, int offset);
 
 	public void resetPath();
 
@@ -81,15 +86,16 @@ public interface IWildcardPath {
 	 * @see #match(int offset)
 	 * @deprecated It will be replaced by match(int offset)
 	 */
-//	public Boolean match(String filepath, boolean withLanguage,
-//			boolean withCountry);
-//	
+	// public Boolean match(String filepath, boolean withLanguage,
+	// boolean withCountry);
+	//	
 	/**
-	 * This method will looking for matchs 
+	 * This method will looking for matchs
+	 * 
 	 * @param offset
 	 * @return
 	 */
-	public Boolean match(String filepath,int offset);
+	public Boolean match(String filepath, int offset);
 
 	/**
 	 * Permite reemplazar el locale en el wildcard path
@@ -97,8 +103,7 @@ public interface IWildcardPath {
 	 * @param locale
 	 * @return
 	 */
-	//public IWildcardPath replace(Locale locale);
-
+	// public IWildcardPath replace(Locale locale);
 	/**
 	 * Permite reemplazar el wildcard pasado por el valor
 	 * 
@@ -107,8 +112,8 @@ public interface IWildcardPath {
 	 * @param replace
 	 * @return
 	 */
-	//public IWildcardPath replace(String wildcard, String value, boolean replace);
-
+	// public IWildcardPath replace(String wildcard, String value, boolean
+	// replace);
 	/**
 	 * Permite reemplazar el wildcard pasado por el valor
 	 * 
@@ -117,8 +122,7 @@ public interface IWildcardPath {
 	 * @param replace
 	 * @return
 	 */
-	//public IWildcardPath replace(String wildcard, String value);
-
+	// public IWildcardPath replace(String wildcard, String value);
 	/**
 	 * Devuelve el path hasta previo al descubrimiento del ROOT
 	 * 
@@ -143,6 +147,6 @@ public interface IWildcardPath {
 	public void setFileName(String fileName);
 
 	public void setRoot(String root);
-	
+
 	public Object clone() throws CloneNotSupportedException;
 }

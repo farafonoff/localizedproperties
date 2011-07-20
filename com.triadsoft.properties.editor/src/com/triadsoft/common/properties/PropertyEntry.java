@@ -22,14 +22,13 @@ public class PropertyEntry extends PropertyElement {
 	public PropertyEntry(PropertyCategory parent, LineNumberReader reader,
 			Character separator) throws IOException {
 		super(parent);
-		boolean previousLine = false;
 		while (true) {
 			reader.mark(1);
 			int ch = reader.read();
 			if (ch == -1) {
 				break;
 			}
-			if(ch == '#'){
+			if (ch == '#') {
 				reader.reset();
 				break;
 			}
@@ -40,13 +39,7 @@ public class PropertyEntry extends PropertyElement {
 				this.key = line.substring(0, index).trim();
 				this.value = line.substring(index + 1).trim();
 				this.lineNumber = reader.getLineNumber();
-				if(previousLine){
-					break;
-				}
-				previousLine=true;
-			}else if(previousLine){
-				this.value += line;
-				previousLine = false;
+				break;
 			}
 		}
 	}

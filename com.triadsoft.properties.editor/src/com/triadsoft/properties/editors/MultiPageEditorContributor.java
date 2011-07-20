@@ -211,9 +211,9 @@ public class MultiPageEditorContributor extends
 							System.out.println("The name is "
 									+ ((IPropertiesImport) o).getName());
 							System.out.println("And the description is "
-									+ ((IPropertiesExport) o).getDescription());
+									+ ((IPropertiesImport) o).getDescription());
 							ExtensionIEAction action = new ExtensionIEAction(
-									null, (IPropertiesExport) o);
+									null, (IPropertiesImport) o);
 							importers.add(action);
 						}
 

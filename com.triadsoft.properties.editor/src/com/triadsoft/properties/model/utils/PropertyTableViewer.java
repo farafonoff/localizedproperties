@@ -47,10 +47,11 @@ import com.triadsoft.properties.editors.actions.SearchTextAction;
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
  * archivos de recursos
- * 
+ * TODO:Translate
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyTableViewer extends TableViewer {
+	protected static final String EDITOR_TABLE_MODIFY_KEY_NULLVALUE = "editor.table.modifyKey.nullvalue";
 	protected static final String PREFERENCES_FONT_SIZE = "preferences.font.size";
 	protected static final String PREFERENCES_FONT_MIN_SIZE = "preferences.font.minSize";
 	protected static final String PREFERENCES_FONT_MAX_SIZE = "preferences.font.maxSize";
@@ -253,7 +254,7 @@ public class PropertyTableViewer extends TableViewer {
 			public String isValid(Object value) {
 				if (((String) value).trim().length() == 0) {
 					return LocalizedPropertiesPlugin
-							.getString("editor.table.modifyKey.nullvalue");
+							.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE);
 				}
 				return null;
 			}

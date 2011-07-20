@@ -24,6 +24,7 @@ public class WildCardPath2 implements IWildcardPath {
 	private String fileExtension;
 	private String country;
 	private String language;
+	private String variant;
 	private String pathToRoot;
 
 	private String wildcardpath;
@@ -73,21 +74,50 @@ public class WildCardPath2 implements IWildcardPath {
 	}
 
 	public Locale getLocale() {
+		// String virtualLanguage = language == null ?
+		// StringUtils.getKeyLocale()
+		// .getLanguage() : this.language;
+		// String virtualCountry = country == null ? StringUtils.getKeyLocale()
+		// .getCountry() : this.country;
+		//
 		Locale locale = null;
-		if (this.language != null && this.country == null) {
-			locale = new Locale(this.language);
+		// if (variant == null) {
+		// locale = new Locale(virtualLanguage, virtualCountry);
+		// } else {
+		// locale = new Locale(virtualLanguage, virtualCountry, variant);
+		// }
+		if (this.language != null && this.country != null
+				&& this.variant != null) {
+			locale = new Locale(this.language, this.country, this.variant);
 		} else if (this.language != null && this.country != null) {
-			locale = new Locale(this.language, this.country);
+			locale = new Locale(this.language, this.country);	
+		} else if (this.language != null && this.country == null) {
+			locale = new Locale(this.language);
 		} else if (this.language == null && this.country == null) {
 			locale = StringUtils.getKeyLocale();
 		} else if (this.language == null && this.country != null) {
-			locale = new Locale(StringUtils.getKeyLocale().getLanguage(), this.country);
+			locale = new Locale(StringUtils.getKeyLocale().getLanguage(),
+					this.country);
 		}
 		return locale;
 	}
 
 	public String getWildcardpath() {
 		return this.wildcardpath;
+	}
+
+	/**
+	 * Set a text to distinguishe
+	 * 
+	 * @param variant
+	 * @see http://download.oracle.com/javase/6/docs/api/java/util/Locale.html
+	 */
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public String getVariant() {
+		return variant;
 	}
 
 	public Boolean parse(String filepath) {
@@ -152,8 +182,8 @@ public class WildCardPath2 implements IWildcardPath {
 		m = p.matcher(asRegex);
 		while (m.find()) {
 			String wrappedString = m.group();
-			String cleanString = wrappedString.substring(1,
-					wrappedString.length() - 2);
+			String cleanString = wrappedString.substring(1, wrappedString
+					.length() - 2);
 			asRegex = asRegex.replace(wrappedString, cleanString);
 		}
 		asRegex = asRegex.replaceAll("\\.", ".");
@@ -166,6 +196,7 @@ public class WildCardPath2 implements IWildcardPath {
 		asRegex = asRegex
 				.replace(LANGUAGE_WILDCARD, "(" + LANGUAGE_REGEX + ")");
 		asRegex = asRegex.replace(COUNTRY_WILDCARD, "(" + COUNTRY_REGEX + ")");
+		asRegex = asRegex.replace(VARIANT_WILDCARD, "(" + VARIANT_REGEX + ")");
 		asRegex = asRegex.replace(".", "\\.");
 		asRegex = asRegex.replace(ROOT_WILDCARD, "(" + TEXT_REGEX + ")");
 		asRegex = asRegex.replace(ROOT_WILDCARD, "(" + TEXT_REGEX + ")");
@@ -198,7 +229,8 @@ public class WildCardPath2 implements IWildcardPath {
 		regex = regex.replace(".", "\\.");
 		regex = regex.replace("-", "\\-");
 		regex = regex.replace("_", "\\_");
-		// Si root es null, devuelve a root reemplazado por la expresion regular
+		// If root is null,it returns the replacement of root by regular
+		// expression
 		regex = root != null ? regex.replace(ROOT_WILDCARD, root) : regex
 				.replace(ROOT_WILDCARD, TEXT_REGEX);
 		// Si el nombre del archivo es null, entonces devuelve la expresion
@@ -216,6 +248,9 @@ public class WildCardPath2 implements IWildcardPath {
 		// Si el lenguage es null devuelve la expresion regular que lo repesenta
 		regex = language != null ? regex.replace(LANGUAGE_WILDCARD, language)
 				: regex.replace(LANGUAGE_WILDCARD, LANGUAGE_REGEX);
+		// if variant is null, it returns the regular expresion
+		regex = variant != null ? regex.replace(VARIANT_WILDCARD, variant)
+				: regex.replace(VARIANT_WILDCARD, VARIANT_REGEX);
 		return regex;
 	}
 
@@ -247,6 +282,11 @@ public class WildCardPath2 implements IWildcardPath {
 			wp2.setCountry(locale.getCountry() != null
 					&& locale.getCountry().length() > 0 ? locale.getCountry()
 					: null);
+
+			wp2.setVariant(locale.getVariant() != null
+					&& locale.getVariant().length() > 0 ? locale.getVariant()
+					: null);
+
 			// Ahora tengo que buscar el path, que no me devuelva ninguna
 			// expresion regular
 			index = 0;
@@ -274,6 +314,7 @@ public class WildCardPath2 implements IWildcardPath {
 		language = null;
 		country = null;
 		root = null;
+		variant = null;
 		return match(filepath, offset);
 	}
 
@@ -292,6 +333,8 @@ public class WildCardPath2 implements IWildcardPath {
 					language = m.group(i + 1);
 				} else if (wc.equals(COUNTRY_WILDCARD)) {
 					country = m.group(i + 1);
+				} else if (wc.equals(VARIANT_WILDCARD)) {
+					variant = m.group(i + 1);
 				} else if (wc.equals(FILENAME_WILDCARD)) {
 					fileName = m.group(i + 1);
 				} else if (wc.equals(FILE_EXTENSION_WILDCARD)) {
@@ -311,6 +354,7 @@ public class WildCardPath2 implements IWildcardPath {
 		wp2.setFileName(this.getFileName());
 		wp2.setFileExtension(this.getFileExtension());
 		wp2.setRoot(this.getRoot());
+		wp2.setVariant(this.getVariant());
 		return wp2;
 	}
 
@@ -329,6 +373,8 @@ public class WildCardPath2 implements IWildcardPath {
 				language == null ? LANGUAGE_REGEX : language);
 		path = path.replace(COUNTRY_WILDCARD, country == null ? COUNTRY_REGEX
 				: country);
+		path = path.replace(VARIANT_WILDCARD, variant == null ? VARIANT_REGEX
+				: variant);
 		return path;
 	}
 }

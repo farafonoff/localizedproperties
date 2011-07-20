@@ -5,27 +5,64 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
-	private static final String LANGUAGE_REGEX = "[a-z]{2}";
-	private static final String COUNTRY_REGEX = "[A-Z]{2}";
+
+	protected static final String FULL_LOCALE = "([a-z]{2})_([A-Z]{2})_([\\w]+)";
+	protected static final String LANGUAGE_COUNTRY_LOCALE = "([a-z]{2})_([A-Z]{2})";
+	protected static final String LANGUAGE_LOCALE = "([a-z]{2})";
 
 	public static Locale getLocale(String languageCountry) {
-		String language = extractValue(languageCountry, LANGUAGE_REGEX);
-		String country = extractValue(languageCountry, COUNTRY_REGEX);
+		// String language = extractValue(languageCountry,
+		// IWildcardPath.LANGUAGE_REGEX);
+		// String country = extractValue(languageCountry,
+		// IWildcardPath.COUNTRY_REGEX);
+		// String variant = extractValue(languageCountry,
+		// IWildcardPath.VARIANT_REGEX);
+		String language;
+		String country;
+		String variant;
 
-		if (language != null && country != null) {
-			return new Locale(language, country);
-		} else if (language != null && country == null) {
-			return new Locale(language);
+		if (languageCountry.matches(FULL_LOCALE)) {
+			Pattern p = Pattern.compile(FULL_LOCALE);
+			Matcher m = p.matcher(languageCountry);
+			if (m.find()) {
+				language = m.group(1);
+				country = m.group(2);
+				variant = m.group(3);
+				return new Locale(language, country, variant);
+			}
+		} else if (languageCountry.matches(LANGUAGE_COUNTRY_LOCALE)) {
+			Pattern p = Pattern.compile(LANGUAGE_COUNTRY_LOCALE);
+			Matcher m = p.matcher(languageCountry);
+			if (m.find()) {
+				language = m.group(1);
+				country = m.group(2);
+				return new Locale(language, country);
+			}
+		} else if (languageCountry.matches(LANGUAGE_LOCALE)) {
+			Pattern p = Pattern.compile(LANGUAGE_LOCALE);
+			Matcher m = p.matcher(languageCountry);
+			if (m.find()) {
+				language = m.group(1);
+				return new Locale(language);
+			}
 		}
+
+		// if (language != null && country != null && variant != null) {
+		// return new Locale(language, country, variant);
+		// } else if (language != null && country != null) {
+		// return new Locale(language, country);
+		// } else if (language != null && country == null) {
+		// return new Locale(language);
+		// }
 		return null;
 	}
 
 	public static Locale getKeyLocale() {
-		return new Locale("xx", "XX");
+		return new Locale("xx", "XX", "WIN");
 	}
 
 	/**
-	 * Extrae de un texto el segmento que coincide con la expresion regula
+	 * It extract a text from segment that matches with regular expresion
 	 * 
 	 * @param searchText
 	 * @param regex
@@ -55,12 +92,5 @@ public class StringUtils {
 			buffer.delete(buffer.length() - 1, buffer.length());
 		}
 		return buffer.toString();
-	}
-
-	public static void main(String[] args) {
-		// Locale locale = StringUtils.getLocale("es_AR");
-		// Locale locale1 = StringUtils.getLocale("en|US");
-		// Locale locale2 = StringUtils.getLocale("pt.BR");
-		// Locale locale3 = StringUtils.getLocale("es.AR");
 	}
 }

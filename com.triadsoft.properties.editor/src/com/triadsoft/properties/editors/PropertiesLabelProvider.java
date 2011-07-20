@@ -19,12 +19,13 @@ import org.eclipse.swt.custom.StyleRange;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.SearchUtils;
+import com.triadsoft.properties.model.utils.StringUtils;
 
 /**
  * Provider para las columnas de PropertyTableViewer Tiene como funcion mostrar
  * las etiquetas e imagenes segun el contenido de cada columna. En el caso en
  * que la columna no tenga valor muestra al costado de misma un icono de warning
- * 
+ * TODO: Translate
  * @author Triad (flores.leonardo@gmail.com)
  * @see PropertyTableViewer
  * 
@@ -71,7 +72,10 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 		if (index == 0) {
 			return null;
 		}
-		Locale locale = getLocale((String) viewer.getColumnProperties()[index]);
+		// Locale locale = getLocale((String)
+		// viewer.getColumnProperties()[index]);
+		Locale locale = StringUtils.getLocale((String) viewer
+				.getColumnProperties()[index]);
 		if (property.getError(locale) != null) {
 			return imageDescriptor.createImage();
 		}
@@ -95,7 +99,7 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 		if (index == 0) {
 			return property.getKey();
 		} else {
-			return property.getValue(getLocale((String) viewer
+			return property.getValue(StringUtils.getLocale((String) viewer
 					.getColumnProperties()[index]));
 		}
 	}
@@ -134,15 +138,16 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 	 * @param localeString
 	 *            String de la columna con el locale parseado
 	 * @return
+	 * @deprecated It must use StringUtils.getLocale(String localeString) call
+	 *             instead
 	 */
-	private Locale getLocale(String localeString) {
-		String[] loc = localeString.split("_");
-		if (loc.length == 1) {
-			return new Locale(loc[0]);
-		}
-		return new Locale(loc[0], loc[1]);
-	}
-
+	// private Locale getLocale(String localeString) {
+	// String[] loc = localeString.split("_");
+	// if (loc.length == 1) {
+	// return new Locale(loc[0]);
+	// }
+	// return new Locale(loc[0], loc[1]);
+	// }
 	public void addListener(ILabelProviderListener arg0) {
 
 	}

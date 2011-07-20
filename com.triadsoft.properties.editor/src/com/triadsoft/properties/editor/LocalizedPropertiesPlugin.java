@@ -15,7 +15,7 @@ import com.triadsoft.properties.preferences.PreferenceConstants;
 /**
  * El Activator ha sido cambiado por esta que controla el ciclo de vida del
  * plugin
- * 
+ *
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
@@ -39,7 +39,7 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
 	 * )
@@ -60,7 +60,7 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 * 
+	 *
 	 * @return the shared instance
 	 */
 	public static LocalizedPropertiesPlugin getDefault() {
@@ -70,7 +70,7 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path
-	 * 
+	 *
 	 * @param path
 	 *            the path
 	 * @return the image descriptor
@@ -82,6 +82,13 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	public static void setWildcardPaths(String[] wps) {
 		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
 				.getPreferenceStore();
+		//erase every single one wild card path
+		int index = 0;
+		while(store.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index)) {
+			store.setToDefault(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index);
+			index++;
+		}
+		//persist new ones
 		for (int i = 0; i < wps.length; i++) {
 			store.setValue(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + i,
 					wps[i]);
@@ -105,11 +112,11 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 				.getPreferenceStore();
 		int index = 0;
 		List<String> wcs = new LinkedList<String>();
-		while (store.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
-				+ index)) {
-			wcs.add(store
-					.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
-							+ index));
+		while (store.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index)) {
+			String value = store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index);
+			if (value != null && !value.equals("")) {
+				wcs.add(store.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index));
+			}
 			index++;
 		}
 		return wcs.toArray(new String[wcs.size()]);
