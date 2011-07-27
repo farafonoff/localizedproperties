@@ -49,6 +49,5 @@ public class LocalizedPropertiesPreferencePage extends
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
-		System.out.println("init");
 	}
 }

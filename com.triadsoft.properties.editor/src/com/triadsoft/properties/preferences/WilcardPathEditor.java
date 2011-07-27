@@ -104,7 +104,10 @@ public class WilcardPathEditor extends ListEditor {
 			int index = 0;
 			while (store
 					.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
-							+ index)) {
+							+ index)
+					&& store.getString(
+							PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+									+ index).length() > 0) {
 				String value = getPreferenceStore().getString(
 						PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index);
 				if (value != null && !value.equals("")) {
@@ -128,6 +131,7 @@ public class WilcardPathEditor extends ListEditor {
 			java.util.List<String> defaults = new LinkedList<String>();
 			int index = 0;
 			IPreferenceStore store = getPreferenceStore();
+			// If the default exist and isn't null
 			while (store
 					.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
 							+ index)) {
@@ -171,14 +175,7 @@ public class WilcardPathEditor extends ListEditor {
 	protected void doStore() {
 		// super.doStore();
 		storeDefault();
-		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
-				.getPreferenceStore();
-		String[] items = listControl.getItems();
-		// persist new ones
-		for (int i = 0; i < items.length; i++) {
-			store.setValue(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + i,
-					items[i]);
-		}
+		LocalizedPropertiesPlugin.setWildcardPaths(listControl.getItems());
 	}
 
 	public Composite getButtonBoxControl(Composite parent) {
