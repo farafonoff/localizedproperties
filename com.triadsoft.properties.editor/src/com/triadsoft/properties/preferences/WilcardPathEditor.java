@@ -1,7 +1,10 @@
 package com.triadsoft.properties.preferences;
 
+import java.util.LinkedList;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -60,7 +63,8 @@ public class WilcardPathEditor extends ListEditor {
 		int defaultIndex = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPreferenceStore()
-				.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+				.getInt(
+						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
 		listControl.setSelection(defaultIndex);
 		listControl.showSelection();
 		defaultButton.setEnabled(false);
@@ -93,13 +97,61 @@ public class WilcardPathEditor extends ListEditor {
 		return listControl;
 	}
 
+	protected void doLoad() {
+		if (listControl != null) {
+			IPreferenceStore store = getPreferenceStore();
+			java.util.List<String> wps = new LinkedList<String>();
+			int index = 0;
+			while (store
+					.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+							+ index)) {
+				String value = getPreferenceStore().getString(
+						PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index);
+				if (value != null && !value.equals("")) {
+					wps
+							.add(store
+									.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+											+ index));
+				}
+				index++;
+			}
+			String[] array = wps.toArray(new String[wps.size()]);
+			for (int i = 0; i < array.length; i++) {
+				listControl.add(array[i]);
+			}
+		}
+	}
+
+	protected void doLoadDefault() {
+		if (listControl != null) {
+			listControl.removeAll();
+			java.util.List<String> defaults = new LinkedList<String>();
+			int index = 0;
+			IPreferenceStore store = getPreferenceStore();
+			while (store
+					.contains(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+							+ index)) {
+				String value = getPreferenceStore().getDefaultString(
+						PreferenceConstants.WILDCARD_PATHS_PREFERENCES + index);
+				if (value != null && !value.equals("")) {
+					defaults
+							.add(store
+									.getDefaultString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+											+ index));
+				}
+				index++;
+			}
+			String[] array = defaults.toArray(new String[defaults.size()]);
+			for (int i = 0; i < array.length; i++) {
+				listControl.add(array[i]);
+			}
+		}
+	}
+
 	private void storeDefault() {
-		LocalizedPropertiesPlugin
-				.getDefault()
-				.getPreferenceStore()
-				.setValue(
-						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES,
-						listControl.getSelectionIndex());
+		LocalizedPropertiesPlugin.getDefault().getPreferenceStore().setValue(
+				PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES,
+				listControl.getSelectionIndex());
 	}
 
 	private void selectionChanged1() {
@@ -109,7 +161,8 @@ public class WilcardPathEditor extends ListEditor {
 		int defaultIndex = LocalizedPropertiesPlugin
 				.getDefault()
 				.getPreferenceStore()
-				.getInt(PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
+				.getInt(
+						PreferenceConstants.WILDCARD_PATH_DEFAULT_INDEX_PREFERENCES);
 		defaultButton
 				.setEnabled(listControl.getSelectionIndex() != defaultIndex);
 	}
@@ -118,7 +171,14 @@ public class WilcardPathEditor extends ListEditor {
 	protected void doStore() {
 		// super.doStore();
 		storeDefault();
-		LocalizedPropertiesPlugin.setWildcardPaths(listControl.getItems());
+		IPreferenceStore store = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore();
+		String[] items = listControl.getItems();
+		// persist new ones
+		for (int i = 0; i < items.length; i++) {
+			store.setValue(PreferenceConstants.WILDCARD_PATHS_PREFERENCES + i,
+					items[i]);
+		}
 	}
 
 	public Composite getButtonBoxControl(Composite parent) {
@@ -142,8 +202,8 @@ public class WilcardPathEditor extends ListEditor {
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		int widthHint = convertHorizontalDLUsToPixels(defaultButton,
 				IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint,
-				defaultButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		data.widthHint = Math.max(widthHint, defaultButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
 		defaultButton.setLayoutData(data);
 		return buttonBox;
 	}
