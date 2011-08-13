@@ -46,8 +46,8 @@ import com.triadsoft.properties.editors.actions.SearchTextAction;
 
 /**
  * Tabla que muestra las columnas con las claves y los idiomas de los distintos
- * archivos de recursos
- * TODO:Translate
+ * archivos de recursos TODO:Translate
+ * 
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyTableViewer extends TableViewer {
@@ -84,8 +84,8 @@ public class PropertyTableViewer extends TableViewer {
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
 		this.editor = editor;
-		setFontSize(LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
-				PREFERENCES_FONT_SIZE));
+		setFontSize(LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
+				.getFloat(PREFERENCES_FONT_SIZE));
 		setContentProvider(new PropertiesContentProvider());
 		setLabelProvider(new PropertiesLabelProvider(this));
 		setCellModifier(new PropertyModifier(editor));
@@ -102,12 +102,12 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	public void setFontSize(float size) {
-		if (size >= LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
-				PREFERENCES_FONT_MAX_SIZE)) {
+		if (size >= LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
+				.getFloat(PREFERENCES_FONT_MAX_SIZE)) {
 			return;
 		}
-		if (size <= LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
-				PREFERENCES_FONT_MIN_SIZE)) {
+		if (size <= LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
+				.getFloat(PREFERENCES_FONT_MIN_SIZE)) {
 			return;
 		}
 		Font font = getTable().getFont();
@@ -140,7 +140,8 @@ public class PropertyTableViewer extends TableViewer {
 
 	private void createKeyColumn() {
 		TableColumn keyColumn = new TableColumn(getTable(), SWT.NONE);
-		keyColumn.setText(LocalizedPropertiesPlugin.getString(EDITOR_TABLE_KEY));
+		keyColumn
+				.setText(LocalizedPropertiesPlugin.getString(EDITOR_TABLE_KEY));
 		keyColumn.setWidth(150);
 		keyColumn.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent event) {
@@ -179,7 +180,7 @@ public class PropertyTableViewer extends TableViewer {
 			public void widgetSelected(SelectionEvent event) {
 				TableColumn col = (TableColumn) event.getSource();
 				sorter.setColumn(1);
-				sorter.setLocale(locales[0]);
+				sorter.setLocale(defaultLocale);
 				getTable().setSortColumn(col);
 				refresh();
 			}
@@ -227,11 +228,11 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	public void dispose() {
-//		this.getControl().getDisplay().syncExec(new Runnable() {
-//			public void run() {
-//				PropertyTableViewer.this.cleanColumns();
-//			}
-//		});
+		// this.getControl().getDisplay().syncExec(new Runnable() {
+		// public void run() {
+		// PropertyTableViewer.this.cleanColumns();
+		// }
+		// });
 		locales = null;
 		mgr = null;
 		defaultColumn = null;
@@ -317,7 +318,8 @@ public class PropertyTableViewer extends TableViewer {
 					StringUtils.getLocale(selectedColumn.getText()));
 			if (!selectedColumn.equals(defaultColumn)
 					&& !selectedColumn.getText().equals(
-							LocalizedPropertiesPlugin.getString(EDITOR_TABLE_KEY))) {
+							LocalizedPropertiesPlugin
+									.getString(EDITOR_TABLE_KEY))) {
 				rla.setEnabled(true);
 				menuMgr.add(rla);
 			}

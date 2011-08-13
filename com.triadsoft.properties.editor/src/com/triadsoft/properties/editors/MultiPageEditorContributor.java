@@ -150,8 +150,9 @@ public class MultiPageEditorContributor extends
 		if (removeSearchTextAction == null) {
 			removeSearchTextAction = new RemoveSearchTextAction(null);
 		}
-		this.createImportExtensions();
-		this.createExportExtensions();
+		// Nowadays are not in use
+		// this.createImportExtensions();
+		// this.createExportExtensions();
 	}
 
 	public void contributeToMenu(IMenuManager manager) {
@@ -229,8 +230,8 @@ public class MultiPageEditorContributor extends
 			System.out.println(ex.getMessage());
 		}
 	}
-	
-	private void setEditor(){
-		
+
+	private void setEditor() {
+
 	}
 }

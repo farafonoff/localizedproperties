@@ -8,15 +8,23 @@
       nl="en,es">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/helios/">
-      Version 0.8.1
--The variant option in java was added
--
-
+      Version 0.8.1 - Bug Fixing
+- Friendly description when the plugin doesn&apos;t find an appropiate
+wildcard
+- Sort problem on default language column
+- Adding new repeated key doesn&apos;t dispatch an error message
+- Problem with removing recently added wildcard
+- A bug in Properties wizard
+- Wizard return invalid filename, without country infomation
+- Defaults Wildcards cannot be reloaded
 Version 0.8.0
-- In this version has been improved the WildcardPath to support more complex paths
-- The ResourceList? has been improved with a best algorithm to discover files
+- In this version has been improved the WildcardPath to support
+more complex paths
+- The ResourceList? has been improved with a best algorithm to
+discover files
 - Best error report in Eclipse error log framework
-- Now you can add optional parts into wildcard path descriptor (see WildcardPath documentation for more details) 
+- Now you can add optional parts into wildcard path descriptor
+(see WildcardPath documentation for more details) 
 New in this release
 - NEW! Files with ini extension now are supported 
 - Correction on Default Locale selection

@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 
 import com.triadsoft.common.properties.IPropertyFile;
 import com.triadsoft.common.properties.PropertyCategory;
@@ -76,8 +78,8 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 					ERROR_FILE_DOESN_EXIST, new String[] { file.getFullPath()
 							.toString() }));
 		}
-		PropertyFile pf = new PropertyFile(file,
-				LocalizedPropertiesPlugin.getKeyValueSeparators());
+		PropertyFile pf = new PropertyFile(file, LocalizedPropertiesPlugin
+				.getKeyValueSeparators());
 		put(locale, pf);
 		return true;
 	}
@@ -110,15 +112,30 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		return true;
 	}
 
-	public boolean addKey(String key) {
+	public boolean addKey(String newKey) {
+		String key = newKey;
+		int index = 0;
+		while (allKeys.contains(key) || allKeys.contains(newKey + index)) {
+			key = newKey + index;
+			index++;
+		}
 		if (key == null) {
-			throw new RuntimeException(
-					LocalizedPropertiesPlugin
-							.getString(ERROR_KEY_MUST_NOT_BE_NULL));
+			throw new RuntimeException(LocalizedPropertiesPlugin
+					.getString(ERROR_KEY_MUST_NOT_BE_NULL));
 		}
 		if (allKeys.contains(key)) {
-			throw new RuntimeException(
-					LocalizedPropertiesPlugin.getString(ERROR_REPEATED_KEY));
+			MessageBox messageBox = new MessageBox(LocalizedPropertiesPlugin
+					.getDefault().getWorkbench().getActiveWorkbenchWindow()
+					.getShell(), SWT.OK | SWT.ICON_ERROR);
+			messageBox.setText(LocalizedPropertiesPlugin
+					.getString(ERROR_REPEATED_KEY));
+			messageBox.setMessage(LocalizedPropertiesPlugin
+					.getString(ERROR_REPEATED_KEY));
+			if (messageBox.open() == SWT.OK) {
+				return false;
+			}
+			// throw new RuntimeException(LocalizedPropertiesPlugin
+			// .getString(ERROR_REPEATED_KEY));
 		}
 		allKeys.add(key);
 		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
@@ -173,8 +190,8 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	public boolean update(Locale locale, IFile file) throws IOException,
 			CoreException {
 		if (get(locale) == null) {
-			throw new RuntimeException(
-					LocalizedPropertiesPlugin.getString(ERROR_LOST_LOCALE));
+			throw new RuntimeException(LocalizedPropertiesPlugin
+					.getString(ERROR_LOST_LOCALE));
 		}
 		remove(locale);
 		addResource(locale, file);

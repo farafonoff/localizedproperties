@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IFile;
  * descubrir los datos referidos al path La clase no maneja archivos sino que
  * solamente manipula strings y obtiene los datos que ser�n utilizados por el
  * controlador de archivos
+ * TODO:Translate
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
@@ -142,7 +143,7 @@ public class WildCardPath2 implements IWildcardPath {
 	/**
 	 * Obtiene los wildacards usados en la expresion regular usando el offset
 	 * para eliminar los opcionales
-	 * 
+	 *
 	 * @param offset
 	 * @return
 	 */
@@ -361,6 +362,64 @@ public class WildCardPath2 implements IWildcardPath {
 	public String getPath() {
 		return getPath(0);
 	}
+
+	/**
+	 * Gets path for the {@link LocalizedPropertiesPage}. If some
+	 * wildcards do not exist in the path, they will be removed ALONG with
+	 * the character, that PRECEEDS it.
+	 * @return Modified path for a file created by the wizard.
+     */
+    public String getWizardPath() {
+            String path = this.getExcludedOptional(0);
+
+            //FIXME there is a problem commented in the issue 84, but it's Windows related.
+
+            if (root != null && !("".equals(root))) {
+                    path = path.replace(ROOT_WILDCARD, root);
+            }
+            else {
+                    path = removeWildcard(ROOT_WILDCARD, path);
+            }
+            if (fileName != null && !("".equals(fileName))) {
+                    path = path.replace(FILENAME_WILDCARD, fileName);
+            }
+            else {
+                    path = removeWildcard(FILENAME_WILDCARD, path);
+            }
+            if (fileExtension != null && !("".equals(fileExtension))) {
+                    path = path.replace(FILE_EXTENSION_WILDCARD, fileExtension);
+            }
+            else {
+                    path = removeWildcard(FILE_EXTENSION_WILDCARD, path);
+            }
+            if (language != null && !("".equals(language))) {
+                    path = path.replace(LANGUAGE_WILDCARD, language);
+            }
+            else {
+                    path = removeWildcard(LANGUAGE_WILDCARD, path);
+            }
+            if (country != null && !("".equals(country))) {
+                    path = path.replace(COUNTRY_WILDCARD, country);
+            }
+            else {
+                    path = removeWildcard(COUNTRY_WILDCARD, path);
+            }
+
+            return path;
+    }
+
+    /**
+     * Removes wildcard occurances from path
+     * @param wildcard A wildcard, which will be removed from path.
+     * @param path A path in which wildcard occurances will be searched.
+     * @return Modified path without wildcard.
+     */
+    private String removeWildcard(String wildcard, String path) {
+            Pattern pattern = Pattern.compile(String.format(IWildcardPath.REMOVAL_REGEX, wildcard));
+            Matcher matcher = pattern.matcher(path);
+            return matcher.replaceAll("");
+    }
+
 
 	public String getPath(int offset) {
 		String path = this.getExcludedOptional(offset);

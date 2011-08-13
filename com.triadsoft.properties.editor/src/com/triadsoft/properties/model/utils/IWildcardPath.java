@@ -9,7 +9,7 @@ public interface IWildcardPath {
 	public static final String COUNTRY_REGEX = "[A-Z]{2}";
 	public static final String LANGUAGE_REGEX = "[a-z]{2}";
 
-	public static final String OPTIONAL_PARAMETERS = "\\([a-zA-Z0-9\\.\\_\\{\\}]*\\)\\d";
+	public static final String OPTIONAL_PARAMETERS = "\\([a-zA-Z0-9\\.\\_\\{\\}\\-]*\\)\\d";
 
 	/**
 	 * It supports all letters, undescores
@@ -27,6 +27,10 @@ public interface IWildcardPath {
 	public static final String COUNTRY_WILDCARD = "{country}";
 	public static final String LANGUAGE_WILDCARD = "{lang}";
 	public static final String VARIANT_WILDCARD = "{variant}";
+	
+	/** Regex for wildcards removal - issue 86*/
+	public static final String REMOVAL_REGEX = "[^\\}]?\\{[%1$s]*\\}";
+
 
 	/**
 	 * Es el numero de parametros opcionales que ser&aacute;n soportados. Éste
@@ -69,7 +73,7 @@ public interface IWildcardPath {
 	/**
 	 * This method return true if the file path match with the wildcard path
 	 * loaded into the WildcardPath object
-	 * 
+	 *
 	 * @param filepath
 	 *            The file path string to compare
 	 * @return java.lang.Boolean
@@ -79,7 +83,7 @@ public interface IWildcardPath {
 	/**
 	 * This method return true if the file path match with the wildcard path
 	 * loaded into the WildcardPath object
-	 * 
+	 *
 	 * @param filepath
 	 *            The file path string to compare
 	 * @return java.lang.Boolean
@@ -99,7 +103,7 @@ public interface IWildcardPath {
 
 	/**
 	 * Permite reemplazar el locale en el wildcard path
-	 * 
+	 *
 	 * @param locale
 	 * @return
 	 */

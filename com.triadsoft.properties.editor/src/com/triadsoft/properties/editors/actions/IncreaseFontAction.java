@@ -2,7 +2,6 @@ package com.triadsoft.properties.editors.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
 
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
@@ -10,7 +9,7 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
  * Accion que permite agrandar y achicar la fuente
- * 
+ * TODO:Translate
  * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class IncreaseFontAction extends Action {
@@ -27,7 +26,7 @@ public class IncreaseFontAction extends Action {
 		super(LocalizedPropertiesPlugin.getString(NEW_KEY));
 		this.viewer = viewer;
 		super.setImageDescriptor(imageDescriptor);
-		super.setAccelerator(SWT.CTRL | 'O');
+		// super.setAccelerator(SWT.CTRL | 'O');
 	}
 
 	public void setEditor(PropertiesEditor editor) {
@@ -42,8 +41,8 @@ public class IncreaseFontAction extends Action {
 			return;
 		}
 		float size = viewer.getFontSize();
-		size += LocalizedPropertiesPlugin.getDefault().getPreferenceStore().getFloat(
-				PREFERENCES_FONT_SIZE_STEP);
+		size += LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
+				.getFloat(PREFERENCES_FONT_SIZE_STEP);
 		viewer.setFontSize(size);
 	}
 }
