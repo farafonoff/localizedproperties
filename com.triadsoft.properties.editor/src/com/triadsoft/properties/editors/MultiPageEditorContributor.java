@@ -27,10 +27,11 @@ import com.triadsoft.properties.editors.actions.IncreaseFontAction;
 import com.triadsoft.properties.editors.actions.PastePropertyAction;
 import com.triadsoft.properties.editors.actions.RemoveSearchTextAction;
 import com.triadsoft.properties.editors.actions.SearchTextAction;
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 
 /**
  * Controla la instalacion/desinstalacion de las acciones globales para los
- * editores multi-pagina. Responsable de la redireccion de las acctiones
+ * editores multi-pagina. Responsable de la redireccion de las acciones
  * globales para el editor activo.
  * 
  * @author Triad (flores.leonardo@gmail.com)
@@ -172,15 +173,17 @@ public class MultiPageEditorContributor extends
 				.getConfigurationElementsFor(IPROPERTIES_EXPORT_ID);
 		try {
 			for (IConfigurationElement e : config) {
-				System.out.println("Evaluating extension");
+				LocalizedPropertiesLog.debug("Evaluating extension");
 				final Object o = e.createExecutableExtension("class");
 				if (o instanceof IPropertiesExport) {
 					ISafeRunnable runnable = new ISafeRunnable() {
 						public void run() throws Exception {
-							System.out.println("The name is "
+							LocalizedPropertiesLog.debug("The name is "
 									+ ((IPropertiesExport) o).getName());
-							System.out.println("And the description is "
-									+ ((IPropertiesExport) o).getDescription());
+							LocalizedPropertiesLog
+									.debug("And the description is "
+											+ ((IPropertiesExport) o)
+													.getDescription());
 							ExtensionIEAction action = new ExtensionIEAction(
 									null, (IPropertiesExport) o);
 							exporters.add(action);
@@ -188,14 +191,14 @@ public class MultiPageEditorContributor extends
 
 						public void handleException(Throwable exception) {
 							// FIXME Make better exception
-							System.out.println("Exception in client");
+							LocalizedPropertiesLog.debug("Exception in client");
 						}
 					};
 					SafeRunner.run(runnable);
 				}
 			}
 		} catch (CoreException ex) {
-			System.out.println(ex.getMessage());
+			LocalizedPropertiesLog.error(ex.getMessage());
 		}
 	}
 
@@ -204,14 +207,14 @@ public class MultiPageEditorContributor extends
 				.getConfigurationElementsFor(IPROPERTIES_IMPORT_ID);
 		try {
 			for (IConfigurationElement e : config) {
-				System.out.println("Evaluating import extension");
+				LocalizedPropertiesLog.debug("Evaluating import extension");
 				final Object o = e.createExecutableExtension("class");
 				if (o instanceof IPropertiesImport) {
 					ISafeRunnable runnable = new ISafeRunnable() {
 						public void run() throws Exception {
-							System.out.println("The name is "
+							LocalizedPropertiesLog.debug("The name is "
 									+ ((IPropertiesImport) o).getName());
-							System.out.println("And the description is "
+							LocalizedPropertiesLog.debug("And the description is "
 									+ ((IPropertiesImport) o).getDescription());
 							ExtensionIEAction action = new ExtensionIEAction(
 									null, (IPropertiesImport) o);
@@ -220,14 +223,14 @@ public class MultiPageEditorContributor extends
 
 						public void handleException(Throwable exception) {
 							// FIXME Make better exception
-							System.out.println("Exception in client");
+							LocalizedPropertiesLog.debug("Exception in client");
 						}
 					};
 					SafeRunner.run(runnable);
 				}
 			}
 		} catch (CoreException ex) {
-			System.out.println(ex.getMessage());
+			LocalizedPropertiesLog.debug(ex.getMessage());
 		}
 	}
 

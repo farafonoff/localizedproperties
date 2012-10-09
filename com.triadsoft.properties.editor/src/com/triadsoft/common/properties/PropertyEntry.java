@@ -23,23 +23,27 @@ public class PropertyEntry extends PropertyElement {
 			Character separator) throws IOException {
 		super(parent);
 		while (true) {
-			reader.mark(1);
-			int ch = reader.read();
-			if (ch == -1) {
-				break;
-			}
-			if (ch == '#') {
+			try {
+				reader.mark(1);
+				int ch = reader.read();
+				if (ch == -1) {
+					break;
+				}
+				if (ch == '#') {
+					reader.reset();
+					break;
+				}
 				reader.reset();
-				break;
-			}
-			reader.reset();
-			String line = reader.readLine();
-			int index = line.indexOf(getSeparator());
-			if (index != -1) {
-				this.key = line.substring(0, index).trim();
-				this.value = line.substring(index + 1).trim();
-				this.lineNumber = reader.getLineNumber();
-				break;
+				String line = reader.readLine();
+				int index = line.indexOf(getSeparator());
+				if (index != -1) {
+					this.key = line.substring(0, index).trim();
+					this.value = line.substring(index + 1).trim();
+					this.lineNumber = reader.getLineNumber();
+					break;
+				}
+			} catch (IOException ex) {
+				throw ex;
 			}
 		}
 	}

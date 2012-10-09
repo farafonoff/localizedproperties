@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -14,9 +15,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class LocalizedPropertiesTest extends TestCase {
+public abstract class LocalizedPropertiesTest extends TestCase {
 	protected IWorkspace workspace;
 	protected IProject defaultProject;
+	protected Logger log = Logger.getLogger(LocalizedPropertiesTest.class);
 
 	public void setUp() throws Exception {
 		super.setUp();
@@ -29,6 +31,11 @@ public class LocalizedPropertiesTest extends TestCase {
 		if (!project.exists()) {
 			IWorkspaceRunnable operation = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
+					log.debug("Creating project "
+							+ project.getLocation().toFile().toURI()
+							+ " in "
+							+ workspace.getRoot().getLocation().toFile()
+									.toURI());
 					project.create(null);
 					project.open(null);
 				}

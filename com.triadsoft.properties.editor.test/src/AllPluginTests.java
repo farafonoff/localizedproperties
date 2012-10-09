@@ -8,9 +8,9 @@ import com.triadsoft.properties.editor.plugin.resource.FlexFilesTest;
 import com.triadsoft.properties.editor.plugin.resource.JavaFilesTest;
 import com.triadsoft.properties.editor.plugin.resource.PathDiscoveryNewImplTest;
 import com.triadsoft.properties.editor.plugin.resource.WebJavaFilesTest;
-import com.triadsoft.properties.editor.test.LocalizedPropertiesTest;
 import com.triadsoft.properties.editor.utils.StringUtilsTest;
 import com.triadsoft.properties.editor.utils.WildcardPath2Test;
+import com.triadsoft.properties.editor.utils.WildcardPathTest;
 
 public class AllPluginTests {
 
@@ -25,6 +25,7 @@ public class AllPluginTests {
 		suite.addTestSuite(ToRegexTests.class);
 		suite.addTestSuite(FullProjectTest.class);
 		suite.addTestSuite(WildcardPath2Test.class);
+		suite.addTestSuite(WildcardPathTest.class);
 		suite.addTestSuite(StringUtilsTest.class);
 		// $JUnit-END$
 		return suite;

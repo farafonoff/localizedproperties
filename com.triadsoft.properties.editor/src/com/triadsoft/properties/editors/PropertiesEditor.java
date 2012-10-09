@@ -63,6 +63,8 @@ import com.triadsoft.properties.model.utils.WildCardPath2;
  * Por éste motivo es que el Properties editor intenta buscar según el path del
  * archivos cual es el wildcard path de cada uno.
  * </p>
+ * <a href="http://localizedproperties.googlecode.com/svn/wiki/images/navigator-editor.png" target="_blank">Snapshot</a>
+ * <a href="http://localizedproperties.googlecode.com/svn/wiki/images/fulleditor.png" target="_blank">Snapshot</a>
  * 
  * @author Triad (flores.leonardo@gmail.com)
  * @see WildCardPath2

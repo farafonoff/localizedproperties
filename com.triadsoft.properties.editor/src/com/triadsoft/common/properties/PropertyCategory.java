@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
+
 /**
  * Clase que modela una categoria. Una categoria dentro de un archivo de
  * propiedades es un agrupamiento de las claves y valores delimitado por los
@@ -73,18 +75,22 @@ public class PropertyCategory extends PropertyElement {
 			if (getSeparator() == null) {
 				discoveringSeparator(line);
 			}
-			if(getSeparator()==null){
+			if (getSeparator() == null) {
 				break;
 			}
-			reader.reset();
-			entries.add(new PropertyEntry(this, reader,getSeparator()));
-//			int index = line.indexOf(getSeparator());
-//			if (index != -1) {
-//				String key = line.substring(0, index).trim();
-//				String value = line.substring(index + 1).trim();
-//				entries.add(new PropertyEntry(this, key, value, 0, index,
-//						reader.getLineNumber()));
-//			}
+			try {
+				reader.reset();
+				entries.add(new PropertyEntry(this, reader, getSeparator()));
+			} catch (IOException ioEx) {
+				LocalizedPropertiesLog.error(ioEx.getMessage());
+			}
+			// int index = line.indexOf(getSeparator());
+			// if (index != -1) {
+			// String key = line.substring(0, index).trim();
+			// String value = line.substring(index + 1).trim();
+			// entries.add(new PropertyEntry(this, key, value, 0, index,
+			// reader.getLineNumber()));
+			// }
 		}
 	}
 

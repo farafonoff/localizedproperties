@@ -55,9 +55,10 @@ public class JavaFilesTest extends LocalizedPropertiesTest {
 				.equals("AR"));
 		assertTrue("El languaje del locale debe ser es", locales[1]
 				.getLanguage().equals("es"));
-		assertTrue("El nombre del archivo debería ser 'components'", list
-				.getFileName() != null
-				&& list.getFileName().equals("components"));
+		assertTrue(
+				"El nombre del archivo debería ser 'components'",
+				list.getFileName() != null
+						&& list.getFileName().equals("components"));
 
 	}
 
@@ -92,11 +93,15 @@ public class JavaFilesTest extends LocalizedPropertiesTest {
 				.equals("AR"));
 		assertTrue("El languaje del locale debe ser es", locales[1]
 				.getLanguage().equals("es"));
-		assertTrue("El nombre del archivo debería ser 'core_components'", list
-				.getFileName() != null
-				&& list.getFileName().equals("core_components"));
+		assertTrue(
+				"El nombre del archivo debería ser 'core_components'",
+				list.getFileName() != null
+						&& list.getFileName().equals("core_components"));
 	}
 
+	/**
+	 * This method test the use of variant into file name as java form
+	 */
 	public void testJavaCountryLanguageWithUndescoreVariant() {
 		assertTrue("No encontré la carpeta java", webFolder != null);
 		assertTrue("La carpeta java no es válida", webFolder.exists());
@@ -132,7 +137,7 @@ public class JavaFilesTest extends LocalizedPropertiesTest {
 		assertTrue("El languaje del locale debe ser en", locales[0]
 				.getLanguage().equals("en"));
 		assertTrue("La variante del locale debe ser WIN", locales[0]
-				.getVariant().equals("WIN"));
+				.getVariant().equals(""));
 		// Locale 2
 		assertTrue("El pais del locale debe ser AR", locales[1].getCountry()
 				.equals("AR"));
@@ -146,14 +151,17 @@ public class JavaFilesTest extends LocalizedPropertiesTest {
 				.equals("US"));
 		assertTrue("El languaje del locale debe ser es", locales[2]
 				.getLanguage().equals("en"));
+		assertTrue("La variante del locale debe ser WIN", locales[2]
+				.getVariant().equals("WIN"));
 
-		assertTrue("La variante del locale debe ser nula", locales[2]
-				.getVariant() == null
-				|| locales[2].getVariant().length() == 0);
+//		assertTrue("La variante del locale debe ser nula",
+//				locales[2].getVariant() == null
+//						|| locales[2].getVariant().length() == 0);
 
 		// ----------------
-		assertTrue("El nombre del archivo debería ser 'core_components1'", list
-				.getFileName() != null
-				&& list.getFileName().equals("core_components1"));
+		assertTrue(
+				"El nombre del archivo debería ser 'core_components1'",
+				list.getFileName() != null
+						&& list.getFileName().equals("core_components1"));
 	}
 }
