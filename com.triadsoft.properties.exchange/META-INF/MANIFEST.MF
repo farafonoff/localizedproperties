@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Contribution to Import/Export tasks
+Bundle-SymbolicName: com.triadsoft.properties.exchange;singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Vendor: TRIADSOFT
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.triadsoft.properties.editor
+Import-Package: com.triadsoft.properties.editor.extensions
