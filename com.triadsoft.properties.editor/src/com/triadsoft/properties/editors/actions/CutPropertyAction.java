@@ -3,7 +3,7 @@ package com.triadsoft.properties.editors.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editors.PropertiesEditor;
 
 /**
@@ -22,7 +22,7 @@ public class CutPropertyAction extends Action {
 	 */
 	public CutPropertyAction(CopyPropertyAction copyPropertyAction,
 			RemovePropertyAction removePropertyAction) {
-		super(LocalizedPropertiesPlugin.getString("menu.menuitem.cutProperty.label"));
+		super(LocalizedPropertiesMessages.getString("menu.menuitem.cutProperty.label"));
 		this.copyPropertyAction = copyPropertyAction;
 		this.removePropertyAction = removePropertyAction;
 	}

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.model.utils.WildCardPath2;
 
 /**
@@ -62,7 +62,7 @@ public class SearchTextDialog extends Dialog {
 
 		final Label description = new Label(area, SWT.NONE);
 		description.setLayoutData(layoutData);
-		description.setText(LocalizedPropertiesPlugin
+		description.setText(LocalizedPropertiesMessages
 				.getString(ACTION_ADD_SEARCH_DIALOG_LABEL));
 		description.setLayoutData(gridData);
 
@@ -102,7 +102,7 @@ public class SearchTextDialog extends Dialog {
 
 			}
 		});
-		matchCaseLabel.setText(LocalizedPropertiesPlugin
+		matchCaseLabel.setText(LocalizedPropertiesMessages
 				.getString(ACTION_ADD_SEARCH_UPPER_LOWER_LABEL));
 		area.setLayout(gridLayout);
 		return area;

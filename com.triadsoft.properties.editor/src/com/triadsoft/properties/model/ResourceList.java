@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -24,12 +22,11 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 
-import com.triadsoft.common.properties.IPropertyFileListener;
-import com.triadsoft.common.properties.PropertyFile;
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.properties.IPropertyFile;
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.model.utils.IFilesDiscoverer;
 import com.triadsoft.properties.model.utils.IWildcardPath;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.NewPathDiscovery;
 import com.triadsoft.properties.model.utils.WildCardPath2;
 import com.triadsoft.properties.wizards.LocalizedPropertiesWizard;
@@ -55,8 +52,6 @@ public class ResourceList {
 	private String filename = null;
 
 	private IFilesDiscoverer pd;
-
-	private List<IPropertyFileListener> listeners = new LinkedList<IPropertyFileListener>();
 
 	private ResourcesBag propertyFiles;
 
@@ -96,20 +91,16 @@ public class ResourceList {
 				new Locale[propertyFiles.keySet().size()]);
 	}
 
-	public PropertyFile getPropertyFile(Locale locale) {
+	public IPropertyFile getPropertyFile(Locale locale) {
 		return propertyFiles.get(locale);
 	}
 
-	public void setPropertyFile(PropertyFile pf, Locale locale) {
+	public void setPropertyFile(IPropertyFile pf, Locale locale) {
 		propertyFiles.put(locale, pf);
 	}
 
 	public boolean existKey(String key) {
 		return propertyFiles.containsKey(key);
-	}
-
-	public void addListener(IPropertyFileListener listener) {
-		listeners.add(listener);
 	}
 
 	/**
@@ -133,7 +124,7 @@ public class ResourceList {
 	 * @param key
 	 * @return
 	 */
-	public boolean addKey(String key) {
+	public String addKey(String key) {
 		return propertyFiles.addKey(key);
 	}
 
@@ -145,22 +136,35 @@ public class ResourceList {
 		return propertyFiles.addProperty(property);
 	}
 
-	public void keyChanged(String oldKey, String key) {
-		propertyFiles.keyChanged(oldKey, key);
+	public String keyChanged(String oldKey, String key) {
+		return propertyFiles.keyChanged(oldKey, key);
+	}
+
+	public void saveAsUnescapedUnicode() {
+		propertyFiles.saveAsUnescapedUnicode();
+	}
+
+	public void saveAsEscapedUnicode() {
+		propertyFiles.saveAsEscapedUnicode();
 	}
 
 	public void save() {
 		propertyFiles.save();
-		IContainer container = propertyFiles.get(pd.getDefaultLocale())
-				.getFile().getParent();
+		refreshSpace();
+	}
+
+	private void refreshSpace() {
+		IContainer container = ((PropertiesFile) propertyFiles.get(pd
+				.getDefaultLocale())).getIFile().getParent();
 		if (pd.getWildcardPath().getRoot() == null) {
-			container = propertyFiles.get(pd.getDefaultLocale()).getFile()
-					.getProject();
+			container = ((PropertiesFile) propertyFiles.get(pd
+					.getDefaultLocale())).getIFile().getProject();
 		} else {
 			while (!container.getName().equals(pd.getWildcardPath().getRoot())) {
 				container = container.getParent();
 			}
 		}
+
 		try {
 			container.refreshLocal(IFile.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
@@ -177,14 +181,15 @@ public class ResourceList {
 	}
 
 	public void addLocale(Locale locale) {
-		IFile file = propertyFiles.get(this.getDefaultLocale()).getFile();
+		IFile file = ((PropertiesFile) propertyFiles.get(this
+				.getDefaultLocale())).getIFile();
 		String newFilePath = pd.getWildcardPath().getFilePath(file, locale);
 
-		final IFile newFile = file.getWorkspace().getRoot().getFile(
-				new Path(newFilePath));
+		final IFile newFile = file.getWorkspace().getRoot()
+				.getFile(new Path(newFilePath));
 		if (newFile.exists()) {
 			MessageDialog.openError(PlatformUI.getWorkbench().getDisplay()
-					.getActiveShell(), "Error", LocalizedPropertiesPlugin
+					.getActiveShell(), "Error", LocalizedPropertiesMessages
 					.getString(PREFERENCES_ADD_LOCALE_ACTION_ERROR,
 							new Object[] { locale }));
 			return;

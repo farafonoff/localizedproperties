@@ -8,7 +8,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
@@ -33,7 +33,7 @@ public class AddKeyAction extends Action {
 	};
 
 	public AddKeyAction(PropertiesEditor editor, PropertyTableViewer viewer) {
-		super(LocalizedPropertiesPlugin.getString(NEW_KEY));
+		super(LocalizedPropertiesMessages.getString(NEW_KEY));
 		super.setImageDescriptor(imageDescriptor);
 		this.editor = editor;
 		this.viewer = viewer;

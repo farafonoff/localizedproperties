@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.model.utils.IWildcardPath;
 import com.triadsoft.properties.model.utils.WildCardPath2;
 
@@ -55,7 +55,7 @@ public class WilcardPathDialog extends Dialog {
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
-		description.setText(LocalizedPropertiesPlugin
+		description.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADDWP_DIALOG_TITLE));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
@@ -65,7 +65,7 @@ public class WilcardPathDialog extends Dialog {
 		this.createButtonsArea(area);
 
 		label = new Label(area, SWT.NONE);
-		label.setText(LocalizedPropertiesPlugin
+		label.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADDWP_DIALOG_NEW_WP_LABEL));
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
@@ -78,7 +78,7 @@ public class WilcardPathDialog extends Dialog {
 			}
 		});
 		Label previewLabel = new Label(area, SWT.NONE);
-		previewLabel.setText(LocalizedPropertiesPlugin
+		previewLabel.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADDWP_DIALOG_PREVIEW_LABEL));
 		preview = new Text(area, SWT.BORDER);
 		preview.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -197,7 +197,7 @@ public class WilcardPathDialog extends Dialog {
 						+ (getParentShell().getSize().y / 2) - (newShell
 						.getSize().y / 2)));
 		newShell.setLocation(position);
-		newShell.setText(LocalizedPropertiesPlugin
+		newShell.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADDWP_DIALOG_TITLE));
 	}
 

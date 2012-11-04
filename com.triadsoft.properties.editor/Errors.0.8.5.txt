@@ -1,0 +1,3 @@
+-Despues de guardar los recursos con el editor quedan desincronizados
+	y cuando se quiere abrir un de los archivos de recursos con el 
+	editor de properties, da un error de sincronizacion

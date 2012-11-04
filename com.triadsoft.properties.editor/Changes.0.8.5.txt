@@ -1,0 +1,19 @@
+Version 0.8.5 - New features & Bugs correction
+-Now the unicode and special characters are supported
+-Supports multiline values
+-Autofocus new created key
+-Now escaped chars unicode are allowed(\u0999)
+-Using Save As... you can save escape unicode values or convert it
+to unescaped unicode
+-Now you have possibility to Save files with escaped or unescaped characters using "Save As" menu
+-Various bugs related with file type, file long, and file load, has been solved
+
+Version 0.8.1 - Bug Fixing
+- Friendly description when the plugin doesn't find an appropiate
+wildcard
+- Sort problem on default language column
+- Adding new repeated key doesn't dispatch an error message
+- Problem with removing recently added wildcard
+- A bug in Properties wizard
+- Wizard return invalid filename, without country infomation
+- Defaults Wildcards cannot be reloaded

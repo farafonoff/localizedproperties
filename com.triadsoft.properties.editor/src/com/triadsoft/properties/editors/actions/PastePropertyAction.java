@@ -14,10 +14,10 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Item;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyTransfer;
 
 public class PastePropertyAction extends Action {
@@ -55,7 +55,7 @@ public class PastePropertyAction extends Action {
 	};
 
 	public PastePropertyAction(PropertiesEditor editor) {
-		super(LocalizedPropertiesPlugin
+		super(LocalizedPropertiesMessages
 				.getString(MENU_MENUITEM_PASTE_PROPERTY_LABEL));
 		setEditor(editor);
 		setEnabled(true);

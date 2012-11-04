@@ -31,8 +31,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 
 /**
  * Wizard para poder crear un archivo de recursos internacionalizados
@@ -145,7 +146,7 @@ public class LocalizedPropertiesWizard extends Wizard implements INewWizard {
 					IDE.openEditor(page, file,
 							LocalizedPropertiesPlugin.PROPERTIES_EDITOR_ID);
 				} catch (PartInitException e) {
-					LocalizedPropertiesLog.error(LocalizedPropertiesPlugin
+					LocalizedPropertiesLog.error(LocalizedPropertiesMessages
 							.getString(ERROR_CANT_LOAD_EDITOR), e);
 				}
 			}

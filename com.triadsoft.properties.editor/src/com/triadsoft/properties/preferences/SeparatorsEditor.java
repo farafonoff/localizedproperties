@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
@@ -64,7 +65,7 @@ public class SeparatorsEditor extends ListEditor {
 
 		if (defaultButton == null) {
 			defaultButton = new Button(buttonBox, SWT.PUSH);
-			defaultButton.setText(LocalizedPropertiesPlugin
+			defaultButton.setText(LocalizedPropertiesMessages
 					.getString(PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
 			defaultButton.setEnabled(true);
 			defaultButton.addMouseListener(new MouseListener() {

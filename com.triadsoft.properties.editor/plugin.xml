@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="com.triadsoft.properties.editor.export" name="Export" schema="schema/com.triadsoft.properties.editor.export.exsd"/>
-   <extension-point id="com.triadsoft.properties.editor.import" name="Import" schema="schema/com.triadsoft.properties.editor.import.exsd"/>
 	<extension
          point="org.eclipse.ui.editors">
       <editor

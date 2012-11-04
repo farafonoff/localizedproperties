@@ -1,5 +1,6 @@
 package com.triadsoft.properties.model.utils;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -13,19 +14,24 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesContentProvider;
 import com.triadsoft.properties.editors.PropertiesEditor;
@@ -45,14 +51,15 @@ import com.triadsoft.properties.editors.actions.RemoveSearchTextAction;
 import com.triadsoft.properties.editors.actions.SearchTextAction;
 
 /**
- * Tabla que muestra las columnas con las claves y los idiomas de los distintos
- * archivos de recursos TODO:Translate
+ * Table that shows columns with locales and keys on rows
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
 public class PropertyTableViewer extends TableViewer {
+	private static final int DEFAULT_COLUMN_SIZE = 150;
+	private static final String PREFERENCES_COLUMNS_WIDTH = "preferences.columns.width";
 	protected static final String EDITOR_TABLE_MODIFY_KEY_NULLVALUE = "editor.table.modifyKey.nullvalue";
-	protected static final String PREFERENCES_FONT_SIZE = "preferences.font.size";
+	public static final String PREFERENCES_FONT_SIZE = "preferences.font.size";
 	protected static final String PREFERENCES_FONT_MIN_SIZE = "preferences.font.minSize";
 	protected static final String PREFERENCES_FONT_MAX_SIZE = "preferences.font.maxSize";
 
@@ -96,6 +103,8 @@ public class PropertyTableViewer extends TableViewer {
 		getTable().setLinesVisible(true);
 		this.defaultLocale = defaultLocale;
 		setSorter(sorter);
+		this.createKeyColumn();
+		this.createDefaultColumn();
 		this.createInitialActions();
 		this.createContextMenu();
 		addFilter(new PropertyFilter());
@@ -112,12 +121,17 @@ public class PropertyTableViewer extends TableViewer {
 		}
 		Font font = getTable().getFont();
 		FontData[] fontdata = font.getFontData();
-		FontData data = fontdata[0];
+		FontData data = new FontData();
+		data.setName(fontdata[0].getName());
+		data.setStyle(fontdata[0].getStyle());
 		data.height = size;
 		getTable().setFont(
 				new Font(editor.getSite().getShell().getDisplay(), data));
-		LocalizedPropertiesPlugin.getDefault().getPreferenceStore().setValue(
-				PREFERENCES_FONT_SIZE, size);
+		LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
+				.setValue(PREFERENCES_FONT_SIZE, size);
+		for (int i = 0; i < getTable().getColumns().length; i++) {
+			getTable().getColumn(i).pack();
+		}
 		this.updateEditorsFontSize(size);
 	}
 
@@ -125,9 +139,8 @@ public class PropertyTableViewer extends TableViewer {
 		if (getCellEditors() == null) {
 			return;
 		}
-		for (int i = 0; i < getCellEditors().length; i++) {
-			PropertyTextEditor ce = (PropertyTextEditor) getCellEditors()[i];
-			ce.setFontSize(size);
+		for (int i = 0; i < getTable().getColumns().length; i++) {
+			getTable().getColumn(i).pack();
 		}
 	}
 
@@ -135,14 +148,14 @@ public class PropertyTableViewer extends TableViewer {
 		Font font = getTable().getFont();
 		FontData[] fontdata = font.getFontData();
 		FontData data = fontdata[0];
-		return data.height;
+		return data.getHeight();
 	}
 
 	private void createKeyColumn() {
 		TableColumn keyColumn = new TableColumn(getTable(), SWT.NONE);
-		keyColumn
-				.setText(LocalizedPropertiesPlugin.getString(EDITOR_TABLE_KEY));
-		keyColumn.setWidth(150);
+		keyColumn.setText(LocalizedPropertiesMessages
+				.getString(EDITOR_TABLE_KEY));
+		keyColumn.setWidth(getColumnWidth(0));
 		keyColumn.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent event) {
 				TableColumn col = (TableColumn) event.getSource();
@@ -154,6 +167,37 @@ public class PropertyTableViewer extends TableViewer {
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 			}
 		});
+
+		keyColumn.addControlListener(new ControlListener() {
+
+			public void controlResized(ControlEvent event) {
+				// FIXME: Is not perform save with every change
+				// but I didn't found how to save, previously to dispose
+				PropertyTableViewer.this.saveColumnsSize();
+			}
+
+			public void controlMoved(ControlEvent arg0) {
+			}
+		});
+
+		List<CellEditor> editors = new LinkedList<CellEditor>();
+		List<String> columnProperties = new LinkedList<String>();
+		// Editor para la clave que es readonly
+		PropertyTextEditor keyEditor = new PropertyTextEditor(getTable());
+		keyEditor.setValidator(new ICellEditorValidator() {
+			public String isValid(Object value) {
+				if (((String) value).trim().length() == 0) {
+					return LocalizedPropertiesMessages
+							.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE);
+				}
+				return null;
+			}
+		});
+		editors.add(keyEditor);
+		columnProperties.add(PropertiesEditor.KEY_COLUMN_ID);
+		setCellEditors(editors.toArray(new CellEditor[editors.size()]));
+		setColumnProperties(columnProperties
+				.toArray(new String[columnProperties.size()]));
 	}
 
 	public void editElement(java.lang.Object element, int column) {
@@ -175,7 +219,7 @@ public class PropertyTableViewer extends TableViewer {
 				StringUtils.getKeyLocale().toString())) {
 			defaultColumn.setText(DEFAULT_TEXT);
 		}
-		defaultColumn.setWidth(150);
+		defaultColumn.setWidth(getColumnWidth(1));
 		defaultColumn.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent event) {
 				TableColumn col = (TableColumn) event.getSource();
@@ -188,6 +232,31 @@ public class PropertyTableViewer extends TableViewer {
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 			}
 		});
+
+		defaultColumn.addControlListener(new ControlListener() {
+
+			public void controlResized(ControlEvent event) {
+				// FIXME: Is not perform save with every change
+				// but I didn't found how to save, previously to dispose
+				PropertyTableViewer.this.saveColumnsSize();
+			}
+
+			public void controlMoved(ControlEvent arg0) {
+			}
+		});
+
+		List<CellEditor> editors = new LinkedList<CellEditor>();
+		editors.add(getCellEditors()[0]);
+		List<String> columnProperties = new LinkedList<String>();
+		columnProperties.add((String) getColumnProperties()[0]);
+
+		// Creo la columna para el locale por default
+		editors.add(new PropertyTextEditor(getTable()));
+		columnProperties.add(defaultLocale.toString());
+
+		setCellEditors(editors.toArray(new CellEditor[editors.size()]));
+		setColumnProperties(columnProperties
+				.toArray(new String[columnProperties.size()]));
 	}
 
 	private void createColumn(final Locale locale, final int index) {
@@ -196,7 +265,7 @@ public class PropertyTableViewer extends TableViewer {
 		if (locale.toString().equals(StringUtils.getKeyLocale().toString())) {
 			valueColumn.setText(DEFAULT_TEXT);
 		}
-		valueColumn.setWidth(150);
+		valueColumn.setWidth(getColumnWidth(index));
 		valueColumn.setResizable(true);
 		valueColumn.setMoveable(true);
 		valueColumn.addSelectionListener(new SelectionListener() {
@@ -209,6 +278,18 @@ public class PropertyTableViewer extends TableViewer {
 			}
 
 			public void widgetDefaultSelected(SelectionEvent event) {
+			}
+		});
+
+		valueColumn.addControlListener(new ControlListener() {
+
+			public void controlResized(ControlEvent event) {
+				// FIXME: Is not perform save with every change
+				// but I didn't found how to save, previously to dispose
+				PropertyTableViewer.this.saveColumnsSize();
+			}
+
+			public void controlMoved(ControlEvent arg0) {
 			}
 		});
 	}
@@ -228,11 +309,6 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	public void dispose() {
-		// this.getControl().getDisplay().syncExec(new Runnable() {
-		// public void run() {
-		// PropertyTableViewer.this.cleanColumns();
-		// }
-		// });
 		locales = null;
 		mgr = null;
 		defaultColumn = null;
@@ -244,29 +320,10 @@ public class PropertyTableViewer extends TableViewer {
 	private void localesChanged() {
 		refresh(false);
 		this.cleanColumns();
-		createKeyColumn();
-		createDefaultColumn();
-
-		List<CellEditor> editors = new LinkedList<CellEditor>();
-		List<String> columnProperties = new LinkedList<String>();
-		// Editor para la clave que es readonly
-		PropertyTextEditor keyEditor = new PropertyTextEditor(getTable());
-		keyEditor.setValidator(new ICellEditorValidator() {
-			public String isValid(Object value) {
-				if (((String) value).trim().length() == 0) {
-					return LocalizedPropertiesPlugin
-							.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE);
-				}
-				return null;
-			}
-		});
-		editors.add(keyEditor);
-		columnProperties.add(PropertiesEditor.KEY_COLUMN_ID);
-		// Creo la columna para el locale por default
-		editors.add(new PropertyTextEditor(getTable()));
-		columnProperties.add(defaultLocale.toString());
-		mgr = new MenuManager("#PopupMenu");
-		mgr.setRemoveAllWhenShown(true);
+		List<CellEditor> editors = new LinkedList<CellEditor>(
+				Arrays.asList(getCellEditors()));
+		List<Object> columnProperties = new LinkedList<Object>(
+				Arrays.asList(getColumnProperties()));
 
 		for (int i = 0; i < locales.length; i++) {
 			if (locales[i].equals(defaultLocale)) {
@@ -282,17 +339,63 @@ public class PropertyTableViewer extends TableViewer {
 		refresh(true);
 	}
 
+	/**
+	 * 
+	 */
 	private void cleanColumns() {
-		while (getTable().getColumnCount() > 0) {
-			getTable().getColumn(0).dispose();
+		/**
+		 * SWT has a reported bug when you try to dispose s
+		 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=258282#c16 This is
+		 * because I used getTable().setRedraw(true/false) workaround
+		 */
+		getTable().setRedraw(false);
+		while (getTable().getColumnCount() > 2) {
+			getTable().getColumn(2).dispose();
 		}
-		setCellEditors(null);
-		setColumnProperties(null);
-		defaultColumn = null;
-		if (selectedColumn != null) {
-			selectedColumn.dispose();
+		this.cleanCellEditors();
+		this.cleanColumnProperties();
+		getTable().setRedraw(true);
+	}
+
+	private void cleanCellEditors() {
+		List<CellEditor> cellEditors = new LinkedList<CellEditor>();
+		cellEditors.add(getCellEditors()[0]);
+		cellEditors.add(getCellEditors()[1]);
+		setCellEditors(cellEditors.toArray(new CellEditor[2]));
+	}
+
+	private void cleanColumnProperties() {
+		List<String> columnProperties = new LinkedList<String>();
+		columnProperties.add((String) getColumnProperties()[0]);
+		columnProperties.add((String) getColumnProperties()[1]);
+		setColumnProperties(columnProperties.toArray(new String[2]));
+	}
+
+	public void saveColumnsSize() {
+		List<String> sizesList = new LinkedList<String>();
+		for (int i = 0; i < getTable().getColumnCount(); i++) {
+			sizesList.add(String.valueOf(getTable().getColumn(i).getWidth()));
 		}
-		selectedColumn = null;
+
+		String sizes = StringUtils.join(
+				sizesList.toArray(new String[sizesList.size()]), '|');
+		LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
+				.setValue(PREFERENCES_COLUMNS_WIDTH, sizes);
+	}
+
+	private int getColumnWidth(int index) {
+		String savedSizes = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore().getString(PREFERENCES_COLUMNS_WIDTH);
+		if (savedSizes.length() == 0) {
+			return DEFAULT_COLUMN_SIZE;
+		}
+		String[] sizes = savedSizes.split("\\|");
+		if (index > sizes.length - 1) {
+			// Si la cantidad de columnas es menor
+			// que la columna pedida, devuelve un default
+			return DEFAULT_COLUMN_SIZE;
+		}
+		return Integer.valueOf(sizes[index]);
 	}
 
 	private void createInitialActions() {
@@ -318,7 +421,7 @@ public class PropertyTableViewer extends TableViewer {
 					StringUtils.getLocale(selectedColumn.getText()));
 			if (!selectedColumn.equals(defaultColumn)
 					&& !selectedColumn.getText().equals(
-							LocalizedPropertiesPlugin
+							LocalizedPropertiesMessages
 									.getString(EDITOR_TABLE_KEY))) {
 				rla.setEnabled(true);
 				menuMgr.add(rla);
@@ -348,18 +451,22 @@ public class PropertyTableViewer extends TableViewer {
 
 	public TableColumn getTableColumn(int x, int y) {
 		// FIXME: Ver ésto porque está harcodeado la diferencia
-		x = x - 274;
+		x = x - 264;
 		y = y - 148;
+		Point point = new Point(x, y);
 		Rectangle tableBounds = getTable().getClientArea();
+		int selection = getTable().getHorizontalBar().getSelection();
+
 		Rectangle contBounds = getTable().getParent().getBounds();
 		Rectangle colBounds = new Rectangle(contBounds.x + tableBounds.x,
 				contBounds.y + tableBounds.y, tableBounds.width,
 				tableBounds.height);
+
 		for (int i = 0; i < this.getTable().getColumnCount(); i++) {
 			TableColumn col = this.getTable().getColumn(i);
 			colBounds.width = col.getWidth();
-
-			if (x > colBounds.x && x < colBounds.x + colBounds.width) {
+			if (x > (colBounds.x - selection)
+					&& x < (colBounds.x - selection) + colBounds.width) {
 				return col;
 			}
 			colBounds.x = colBounds.x + col.getWidth();

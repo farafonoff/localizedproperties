@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+
 /**
  * Esta clase es la encargada de encapsular todos la logica para poder parsear y
  * descubrir los datos referidos al path La clase no maneja archivos sino que

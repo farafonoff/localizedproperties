@@ -7,8 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.MessageBox;
 
-import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.StringUtils;
@@ -30,11 +29,11 @@ public class PropertyModifier implements ICellModifier {
 	private static final String EDITOR_TABLE_MODIFY_KEY_NULLVALUE_MESSAGE = "editor.table.modifyKey.nullvalue.message";
 	protected static final String EDITOR_TABLE_MODIFY_KEY_CONFIRM_TITLE = "editor.table.modifyKey.confirm.title";
 	protected static final String EDITOR_TABLE_MODIFY_KEY_CONFIRM_MESSAGE = "editor.table.modifyKey.confirm.message";
-	private ILocalizedPropertyFileListener listener = null;
+	private PropertiesEditor listener = null;
 	private Object item;
 	private String editedProperty;
 
-	public PropertyModifier(ILocalizedPropertyFileListener listener) {
+	public PropertyModifier(PropertiesEditor listener) {
 		this.listener = listener;
 	}
 
@@ -60,10 +59,10 @@ public class PropertyModifier implements ICellModifier {
 			return ((Property) obj).getKey();
 		}
 		Locale locale = StringUtils.getLocale(property);
-		if (locale != null) {
+		if (locale != null && ((Property) obj).getValue(locale) != null) {
 			return ((Property) obj).getValue(locale);
 		}
-		return "<unknown>";
+		return "";
 	}
 
 	/**
@@ -87,9 +86,9 @@ public class PropertyModifier implements ICellModifier {
 		if (PropertiesEditor.KEY_COLUMN_ID.equals(property) && value == null) {
 			MessageBox messageBox = new MessageBox(editor.getEditorSite()
 					.getShell(), SWT.OK | SWT.ICON_ERROR);
-			messageBox.setMessage(LocalizedPropertiesPlugin
+			messageBox.setMessage(LocalizedPropertiesMessages
 					.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE_MESSAGE));
-			messageBox.setText(LocalizedPropertiesPlugin
+			messageBox.setText(LocalizedPropertiesMessages
 					.getString(EDITOR_TABLE_MODIFY_KEY_NULLVALUE_TITLE));
 			messageBox.open();
 			return;
@@ -97,10 +96,10 @@ public class PropertyModifier implements ICellModifier {
 				&& !properties.getKey().equals((String) value)) {
 			MessageBox messageBox = new MessageBox(editor.getEditorSite()
 					.getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-			messageBox.setMessage(LocalizedPropertiesPlugin.getString(
+			messageBox.setMessage(LocalizedPropertiesMessages.getString(
 					EDITOR_TABLE_MODIFY_KEY_CONFIRM_MESSAGE,
 					new String[] { properties.getKey().toString() }));
-			messageBox.setText(LocalizedPropertiesPlugin.getString(
+			messageBox.setText(LocalizedPropertiesMessages.getString(
 					EDITOR_TABLE_MODIFY_KEY_CONFIRM_TITLE,
 					new String[] { properties.getKey().toString() }));
 			if (messageBox.open() == SWT.YES) {
@@ -111,8 +110,11 @@ public class PropertyModifier implements ICellModifier {
 			return;
 		}
 		Locale locale = StringUtils.getLocale(property);
-		if (!properties.getValue(locale).equals(value)) {
+		if (properties.getValue(locale) != null
+				&& !properties.getValue(locale).equals(value)) {
 			editor.valueChanged(properties.getKey(), (String) value, locale);
+		} else if (properties.getValue(locale) != null) {
+			properties.setValue(locale, (String) value);
 		}
 		item = null;
 		editedProperty = null;

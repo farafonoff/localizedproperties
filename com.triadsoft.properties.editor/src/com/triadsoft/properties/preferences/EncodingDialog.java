@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 
 /**
  * <p>
@@ -41,14 +41,14 @@ public class EncodingDialog extends Dialog {
 		final Label description = new Label(area, SWT.NONE);
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
-		description.setText(LocalizedPropertiesPlugin
+		description.setText(LocalizedPropertiesMessages
 				.getString("preferences.encodingSubtitle"));
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 1;
 		label = new Label(area, SWT.NONE);
-		label.setText(LocalizedPropertiesPlugin
+		label.setText(LocalizedPropertiesMessages
 				.getString("preferences.languageLabel"));
 		label.setLayoutData(gridData);
 		languageTxt = new Text(area, SWT.BORDER);
@@ -62,7 +62,7 @@ public class EncodingDialog extends Dialog {
 			}
 		});
 		Label previewLabel = new Label(area, SWT.NONE);
-		previewLabel.setText(LocalizedPropertiesPlugin
+		previewLabel.setText(LocalizedPropertiesMessages
 				.getString("preferences.encodingLabel"));
 		encodingTxt = new Text(area, SWT.BORDER);
 		encodingTxt.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -81,7 +81,7 @@ public class EncodingDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(LocalizedPropertiesPlugin
+		newShell.setText(LocalizedPropertiesMessages
 				.getString("preferences.dialog.title"));
 	}
 

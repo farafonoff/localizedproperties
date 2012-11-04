@@ -2,8 +2,6 @@ package com.triadsoft.properties.editor;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -20,11 +18,7 @@ import com.triadsoft.properties.preferences.PreferenceConstants;
  */
 public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 
-	private static final String BUNDLE_NAME = "com.triadsoft.properties.editor.localizedProperties";
 	public static final String PROPERTIES_EDITOR_ID = "com.triadsoft.properties.editors.PropertiesEditor";
-
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
 
 	public static final String PLUGIN_ID = "com.triadsoft.properties";
 
@@ -127,10 +121,9 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 					.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
 							+ index);
 			if (value != null && !value.equals("")) {
-				wcs
-						.add(store
-								.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
-										+ index));
+				wcs.add(store
+						.getString(PreferenceConstants.WILDCARD_PATHS_PREFERENCES
+								+ index));
 			}
 			index++;
 		}
@@ -138,8 +131,10 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 	}
 
 	public static Character getDefaultSeparator() {
-		return getDefault().getPreferenceStore().getString(
-				PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
+		return getDefault()
+				.getPreferenceStore()
+				.getString(
+						PreferenceConstants.KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES)
 				.charAt(0);
 	}
 
@@ -152,26 +147,5 @@ public class LocalizedPropertiesPlugin extends AbstractUIPlugin {
 		}
 		return (String[]) sepList.toArray(new String[sepList.size()]);
 
-	}
-
-	public static String getString(String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	public static String getString(String key, Object[] params) {
-		String resource = getString(key);
-		String parametrized = resource;
-		if (key.equals(resource)) {
-			return key;
-		}
-		for (int i = 0; i < params.length; i++) {
-			parametrized = resource.replaceAll("\\{" + i + "\\}", params[i]
-					.toString());
-		}
-		return parametrized;
 	}
 }

@@ -1,6 +1,5 @@
 package com.triadsoft.properties.editors;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -23,6 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -34,12 +34,11 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
-import com.triadsoft.common.properties.ILocalizedPropertyFileListener;
-import com.triadsoft.common.properties.PropertyFile;
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
+import com.triadsoft.properties.model.PropertiesFile;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.ResourceList;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyFilter;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.WildCardPath2;
@@ -69,7 +68,7 @@ import com.triadsoft.properties.model.utils.WildCardPath2;
  * @see ResourceBundle
  */
 public class PropertiesEditor extends MultiPageEditorPart implements
-		IResourceChangeListener, ILocalizedPropertyFileListener {
+		IResourceChangeListener {
 
 	private static final String EDITOR_TABLE_SEARCH = "editor.table.search.label";
 
@@ -80,6 +79,10 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	private static final String EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_TITLE = "editor.table.overwriteKey.confirm.title";
 
 	private static final String EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_MESSAGE = "editor.table.overwriteKey.confirm.message";
+
+	private static final String EDITOR_SAVE_AS_UNICODE_TITLE = "editor.save_as.escaped.title";
+
+	private static final String EDITOR_SAVE_AS_UNICODE_MESSAGE = "editor.save_as.escaped.message";
 
 	public static final String KEY_COLUMN_ID = "key_column";
 
@@ -116,7 +119,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		resource = new ResourceList(file);
 		createPage0();
-		//createPage1();
+		// createPage1();
 		setPartName(resource.getFileName());
 	}
 
@@ -169,7 +172,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 		int index = addPage(tableViewer.getControl());
 		setPageText(index,
-				LocalizedPropertiesPlugin.getString(EDITOR_TAB_PROPERTIES));
+				LocalizedPropertiesMessages.getString(EDITOR_TAB_PROPERTIES));
 	}
 
 	public IAction getTableViewerAction(String workbenchActionId) {
@@ -189,7 +192,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			textEditor = new TextEditor();
 			int index = addPage(textEditor, getEditorInput());
 			setPageText(index,
-					LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
+					LocalizedPropertiesMessages.getString(EDITOR_TAB_PREVIEW));
 		} catch (PartInitException e) {
 			LocalizedPropertiesLog.error(e.getLocalizedMessage());
 		}
@@ -204,7 +207,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 		int index = addPage(composite);
 		setPageText(index,
-				LocalizedPropertiesPlugin.getString(EDITOR_TAB_PREVIEW));
+				LocalizedPropertiesMessages.getString(EDITOR_TAB_PREVIEW));
 	}
 
 	protected void tableChanged() {
@@ -251,19 +254,38 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 * Saves the multi-page editor's document.
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		// getEditor(0).doSave(monitor);
-		resource.save();
-		isTableModified = false;
-		isTextModified = false;
-		firePropertyChange(IEditorPart.PROP_DIRTY);
+		tableViewer.cancelEditing();
+		//if(!tableViewer.isBusy()){
+			resource.save();
+			isTableModified = false;
+			isTextModified = false;
+			firePropertyChange(IEditorPart.PROP_DIRTY);
+		//}
 	}
 
 	/**
-	 * Sobreescribo el save as... porque no puedo sobrescribir varios archivos
-	 * juntos. Nada para hacer porque nunca será llamado
+	 * Save as gives possibility to save files in escaped characters unicode
 	 */
 	public void doSaveAs() {
-		// Nada para hacer porque nunca será llamado;
+		MessageBox existMsg = new MessageBox(getEditorSite().getShell(),
+				SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+		// Dialog that ask about posibility of save files with escaped
+		// characters unicode, or not
+		existMsg.setMessage(LocalizedPropertiesMessages
+				.getString(EDITOR_SAVE_AS_UNICODE_MESSAGE));
+		existMsg.setText(LocalizedPropertiesMessages
+				.getString(EDITOR_SAVE_AS_UNICODE_TITLE));
+		isTableModified = false;
+		isTextModified = false;
+
+		if (existMsg.open() == SWT.NO) {
+			// Guardar los caracteres sin escapar
+			resource.saveAsUnescapedUnicode();
+		} else {
+			// Guardar los caracteres escapados
+			resource.saveAsEscapedUnicode();
+		}
+		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 
 	/**
@@ -311,7 +333,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
 	 */
 	public boolean isSaveAsAllowed() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -319,25 +341,27 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 */
 	protected void pageChange(int pageIndex) {
 
-		PropertyFile pf = resource.getPropertyFile(resource.getDefaultLocale());
+		PropertiesFile pf = (PropertiesFile) resource.getPropertyFile(resource
+				.getDefaultLocale());
 		if (pageIndex == 1) {
 			if (isTableModified) {
-//				textEditor.getDocumentProvider()
-//						.getDocument(textEditor.getEditorInput())
-//						.set(pf.asText());
+				// textEditor.getDocumentProvider()
+				// .getDocument(textEditor.getEditorInput())
+				// .set(pf.asText());
 			}
 		} else if (pageIndex == 0) {
 			if (isTextModified) {
-				try {
-					IFile file = ((IFileEditorInput) getEditorInput()).getFile();
-					PropertyFile npf = new PropertyFile(file,
-							pf.getEncoding(), pf.getSeparator());
-					npf.setFile(pf.getFile());
-					resource.setPropertyFile(npf, resource.getDefaultLocale());
-					tableViewer.setLocales(resource.getLocales());
-				} catch (IOException e) {
-					LocalizedPropertiesLog.error(e.getLocalizedMessage());
-				}
+				// try {
+				IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+				// PropertyFile npf = new PropertyFile(file, pf.getEncoding(),
+				// pf.getSeparator());
+				PropertiesFile npf = new PropertiesFile(file);
+				// npf.setFile(pf.getFile());
+				resource.setPropertyFile(npf, resource.getDefaultLocale());
+				tableViewer.setLocales(resource.getLocales());
+				// } catch (IOException e) {
+				// LocalizedPropertiesLog.error(e.getLocalizedMessage());
+				// }
 			}
 		}
 		super.pageChange(pageIndex);
@@ -384,10 +408,10 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			MessageBox existMsg = new MessageBox(getEditorSite().getShell(),
 					SWT.YES | SWT.NO | SWT.ICON_WARNING);
 
-			existMsg.setMessage(LocalizedPropertiesPlugin.getString(
+			existMsg.setMessage(LocalizedPropertiesMessages.getString(
 					EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_MESSAGE,
 					new String[] { key }));
-			existMsg.setText(LocalizedPropertiesPlugin.getString(
+			existMsg.setText(LocalizedPropertiesMessages.getString(
 					EDITOR_TABLE_OVERWRITE_KEY_CONFIRM_TITLE,
 					new String[] { key }));
 			if (existMsg.open() == SWT.NO) {
@@ -395,7 +419,7 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			}
 		}
 		tableChanged();
-		resource.keyChanged(oldKey, key);
+		String newKey = resource.keyChanged(oldKey, key);
 		tableViewer.refresh();
 	}
 
@@ -418,17 +442,19 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	public void addKey(String key) {
 		tableChanged();
-		resource.addKey(key);
+		// La clave puede cambiar si la clave está repetida
+		key = resource.addKey(key);
 		tableViewer.refresh();
-		Object[] properties = resource.getProperties();
-		for (int i = 0; i < properties.length; i++) {
-			if (((Property) properties[i]).getKey().equals(key)) {
-				tableViewer.setSelection(
-						new StructuredSelection(properties[i]), true);
-				tableViewer.getTable().setSelection(new int[] { i });
+		int index = 0;
+		while (index < tableViewer.getTable().getItemCount()) {
+			TableItem item = tableViewer.getTable().getItem(index);
+			Property prop = (Property) item.getData();
+			if (prop.getKey().equals(key)) {
+				tableViewer.setSelection(new StructuredSelection(prop));
+				tableViewer.getTable().showItem(item);
 				break;
 			}
-
+			index++;
 		}
 	}
 }

@@ -28,8 +28,9 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.WildCardPath2;
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
@@ -116,8 +117,8 @@ public class LocalizedPropertiesPage extends WizardPage {
 	 */
 	public LocalizedPropertiesPage(ISelection selection) {
 		super("wizardPage");
-		setTitle(LocalizedPropertiesPlugin.getString(WIZARD_PAGE_TITLE));
-		setDescription(LocalizedPropertiesPlugin
+		setTitle(LocalizedPropertiesMessages.getString(WIZARD_PAGE_TITLE));
+		setDescription(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_DESCRIPTION));
 		this.selection = selection;
 	}
@@ -153,7 +154,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 		GridLayout layout = new GridLayout(2, false);
 		container.setLayout(layout);
 		useDefaultsLabel = new Label(container, SWT.NULL);
-		useDefaultsLabel.setText(LocalizedPropertiesPlugin
+		useDefaultsLabel.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_DEFAULT_USE));
 
 		useDefaultsButton = new Button(container, SWT.CHECK);
@@ -176,7 +177,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 			// useDefaultsLabel.setText(Activator
 			// .getString(WIZARD_PAGE_DEFAULT_USE));
 		} else {
-			useDefaultsLabel.setText(LocalizedPropertiesPlugin
+			useDefaultsLabel.setText(LocalizedPropertiesMessages
 					.getString(WIZARD_PAGE_DEFAULT_MODIFY));
 		}
 	}
@@ -192,15 +193,15 @@ public class LocalizedPropertiesPage extends WizardPage {
 		// rootLabel.setText(Activator.getString(WIZARD_PAGE_WILCARD_ROOT_LABEL));
 
 		filenameLabel = new Label(container, SWT.NULL);
-		filenameLabel.setText(LocalizedPropertiesPlugin
+		filenameLabel.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_WILCARD_FILENAME_LABEL));
 
 		langLabel = new Label(container, SWT.NULL);
-		langLabel.setText(LocalizedPropertiesPlugin
+		langLabel.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_WILCARD_LANGUAJE_LABEL));
 
 		countryLabel = new Label(container, SWT.NULL);
-		countryLabel.setText(LocalizedPropertiesPlugin
+		countryLabel.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_WILCARD_COUNTRY_LABEL));
 
 		// rootText = new Text(container, SWT.BORDER | SWT.SINGLE);
@@ -240,7 +241,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 			}
 		});
 		filepathLabel = new Label(container, SWT.NULL);
-		filepathLabel.setText(LocalizedPropertiesPlugin
+		filepathLabel.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_WILCARDPATH_LABEL));
 		GridData filepath = new GridData();
 		filepath.horizontalSpan = 3;
@@ -262,7 +263,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 		layoutData.horizontalSpan = 2;
 		folderPathContainer.setLayoutData(layoutData);
 		Label label = new Label(folderPathContainer, SWT.NULL);
-		label.setText(LocalizedPropertiesPlugin
+		label.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_FOLDER_LABEL));
 		GridData labelData = new GridData(GridData.FILL_HORIZONTAL);
 		labelData.horizontalSpan = 2;
@@ -278,7 +279,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 		});
 
 		Button button = new Button(folderPathContainer, SWT.PUSH);
-		button.setText(LocalizedPropertiesPlugin
+		button.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_FOLDER_BUTTON));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -290,7 +291,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 	private void createList(Composite parent) {
 		listContainer = new Composite(parent, SWT.NULL);
 		Label listLabel = new Label(listContainer, SWT.NULL);
-		listLabel.setText(LocalizedPropertiesPlugin
+		listLabel.setText(LocalizedPropertiesMessages
 				.getString(WIZARD_PAGE_WILCARD_LIST_LABEL));
 		GridLayout layout = new GridLayout(1, false);
 		listContainer.setLayout(layout);
@@ -357,7 +358,7 @@ public class LocalizedPropertiesPage extends WizardPage {
 	private void handleBrowse() {
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-				LocalizedPropertiesPlugin
+				LocalizedPropertiesMessages
 						.getString(WIZARD_PAGE_FOLDER_CONTAINER_MESSAGE));
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
@@ -396,28 +397,28 @@ public class LocalizedPropertiesPage extends WizardPage {
 		String fileName = getFileName();
 
 		if (this.resource == null) {
-			updateStatus(LocalizedPropertiesPlugin
+			updateStatus(LocalizedPropertiesMessages
 					.getString(WIZARD_PAGE_FOLDER_CONTAINER_ERROR));
 			return;
 		}
 		if (this.resource == null
 				|| (resource.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
-			updateStatus(LocalizedPropertiesPlugin
+			updateStatus(LocalizedPropertiesMessages
 					.getString(WIZARD_PAGE_FOLDER_CONTAINER_ERROR_NOTEXIST));
 			return;
 		}
 		if (!this.resource.isAccessible()) {
-			updateStatus(LocalizedPropertiesPlugin
+			updateStatus(LocalizedPropertiesMessages
 					.getString(WIZARD_PAGE_FOLDER_CONTAINER_ERROR_NOTWRITABLE));
 			return;
 		}
 		if (fileName.length() == 0) {
-			updateStatus(LocalizedPropertiesPlugin
+			updateStatus(LocalizedPropertiesMessages
 					.getString(WIZARD_PAGE_FOLDER_FILENAME_ERROR_VOID));
 			return;
 		}
 		if (fileName.replace('\\', '/').indexOf('/', 1) > 0) {
-			updateStatus(LocalizedPropertiesPlugin
+			updateStatus(LocalizedPropertiesMessages
 					.getString(WIZARD_PAGE_FILENAME_ERROR_INVALID));
 			return;
 		}

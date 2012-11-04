@@ -18,10 +18,11 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 import com.triadsoft.properties.model.utils.PropertyTransfer;
 
 public class CopyPropertyAction extends Action {
@@ -58,7 +59,7 @@ public class CopyPropertyAction extends Action {
 	};
 
 	public CopyPropertyAction(PropertiesEditor editor) {
-		super(LocalizedPropertiesPlugin
+		super(LocalizedPropertiesMessages
 				.getString("menu.menuitem.copyProperty.label"));
 		setEditor(editor);
 		setImageDescriptor(imageDescriptor);

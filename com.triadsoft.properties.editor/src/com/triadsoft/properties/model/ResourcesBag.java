@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -15,20 +17,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 
 import com.triadsoft.common.properties.IPropertyFile;
-import com.triadsoft.common.properties.PropertyCategory;
-import com.triadsoft.common.properties.PropertyEntry;
-import com.triadsoft.common.properties.PropertyFile;
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
-import com.triadsoft.properties.model.utils.LocalizedPropertiesLog;
 
 /**
  * Esta es una clase que se encarga de controlar los recursos de propiedades y
  * se encarga del mantenimiento, eliminacion y guardado de los archivos de
- * pripiedades
+ * propiedades.
  * 
  * @author Triad (flores.leonardo@gmail.com)
  */
-public class ResourcesBag extends HashMap<Locale, PropertyFile> {
+public class ResourcesBag extends HashMap<Locale, IPropertyFile> {
 
 	private static final String ERROR_LOCALE_DOESNT_EXIST = "error.locale.doesnt.exist";
 	private static final String ERROR_FILE_DOESN_EXIST = "error.file.doesn.exist";
@@ -49,7 +49,7 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		this.defaultLocale = locale;
 	}
 
-	public boolean addLocalization(Locale locale, PropertyFile file) {
+	public boolean addLocalization(Locale locale, PropertiesFile file) {
 		if (!containsKey(locale)) {
 			return false;
 		}
@@ -74,16 +74,21 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	public boolean addResource(Locale locale, IFile file) throws IOException,
 			CoreException {
 		if (!file.exists()) {
-			throw new IOException(LocalizedPropertiesPlugin.getString(
+			throw new IOException(LocalizedPropertiesMessages.getString(
 					ERROR_FILE_DOESN_EXIST, new String[] { file.getFullPath()
 							.toString() }));
 		}
-		PropertyFile pf = new PropertyFile(file, LocalizedPropertiesPlugin
-				.getKeyValueSeparators());
+		PropertiesFile pf = new PropertiesFile(file);
 		put(locale, pf);
 		return true;
 	}
 
+	/**
+	 * Receive an property object and add the key to all locales
+	 * 
+	 * @param property
+	 * @return
+	 */
 	public boolean addProperty(Property property) {
 		String key = property.getKey();
 		int index = 0;
@@ -94,13 +99,12 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		}
 		Locale[] locales = property.getLocales();
 		for (int i = 0; i < locales.length; i++) {
-			PropertyFile pf = get(locales[i]);
+			IPropertyFile pf = get(locales[i]);
 			if (pf == null) {
 				continue;
 			}
 			String value = property.getValue(locales[i]);
-			PropertyEntry entry = new PropertyEntry(null, key, value);
-			pf.getDefaultCategory().addEntry(entry);
+			pf.setProperty(key, value);
 			try {
 				pf.save();
 			} catch (IOException e) {
@@ -112,39 +116,60 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		return true;
 	}
 
-	public boolean addKey(String newKey) {
-		String key = newKey;
-		int index = 0;
-		while (allKeys.contains(key) || allKeys.contains(newKey + index)) {
-			key = newKey + index;
-			index++;
+	public String addKey(String key) {
+		String newKey = getNewKey(key);
+		if (newKey == null) {
+			throw new RuntimeException(
+					LocalizedPropertiesMessages
+							.getString(ERROR_KEY_MUST_NOT_BE_NULL));
 		}
-		if (key == null) {
-			throw new RuntimeException(LocalizedPropertiesPlugin
-					.getString(ERROR_KEY_MUST_NOT_BE_NULL));
-		}
-		if (allKeys.contains(key)) {
+		if (allKeys.contains(newKey)) {
 			MessageBox messageBox = new MessageBox(LocalizedPropertiesPlugin
 					.getDefault().getWorkbench().getActiveWorkbenchWindow()
 					.getShell(), SWT.OK | SWT.ICON_ERROR);
-			messageBox.setText(LocalizedPropertiesPlugin
+			messageBox.setText(LocalizedPropertiesMessages
 					.getString(ERROR_REPEATED_KEY));
-			messageBox.setMessage(LocalizedPropertiesPlugin
+			messageBox.setMessage(LocalizedPropertiesMessages
 					.getString(ERROR_REPEATED_KEY));
 			if (messageBox.open() == SWT.OK) {
-				return false;
+				return key;
 			}
 			// throw new RuntimeException(LocalizedPropertiesPlugin
 			// .getString(ERROR_REPEATED_KEY));
 		}
-		allKeys.add(key);
-		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
+		allKeys.add(newKey);
+		for (Iterator<IPropertyFile> iterator = values().iterator(); iterator
 				.hasNext();) {
-			PropertyFile pf = iterator.next();
-			PropertyEntry entry = new PropertyEntry(null, key, "");
-			pf.getDefaultCategory().addEntry(entry);
+			IPropertyFile pf = iterator.next();
+			pf.setProperty(newKey, "");
 		}
-		return true;
+		return newKey;
+	}
+
+	/**
+	 * The method receives a key and checks if the key exist. If the key exist,
+	 * appends an incremental number until the key doesn't exists
+	 * 
+	 * @param key
+	 * @return
+	 */
+	private String getNewKey(String key) {
+		Pattern p = Pattern.compile("\\d{1,}");
+		Matcher m = p.matcher(key);
+		String num = "";
+		String newKey = key;
+
+		if (m.find()) {
+			num = key.substring(m.start(), m.end());
+			key = key.substring(0, m.start());
+		}
+		int index = num.length() > 0 ? new Integer(num) : 0;
+
+		while (allKeys.contains(newKey) || allKeys.contains(newKey + index)) {
+			newKey = key + index;
+			index++;
+		}
+		return newKey;
 	}
 
 	/**
@@ -165,21 +190,21 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		}
 	}
 
-	public PropertyFile put(Locale locale, PropertyFile pf) {
+	public IPropertyFile put(Locale locale, PropertiesFile pf) {
 		addKeys(pf);
 		return super.put(locale, pf);
 	}
 
 	public boolean removeLocale(Locale locale) throws CoreException {
 		if (!keySet().contains(locale)) {
-			throw new RuntimeException(LocalizedPropertiesPlugin.getString(
+			throw new RuntimeException(LocalizedPropertiesMessages.getString(
 					ERROR_LOCALE_DOESNT_EXIST,
 					new String[] { locale.toString() }));
 		}
-		PropertyFile pf = get(locale);
+		IPropertyFile pf = get(locale);
 		remove(locale);
 		if (pf != null) {
-			IFile file = pf.getFile();
+			IFile file = ((PropertiesFile) pf).getIFile();
 			if (file != null) {
 				file.delete(true, null);
 			}
@@ -190,8 +215,8 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 	public boolean update(Locale locale, IFile file) throws IOException,
 			CoreException {
 		if (get(locale) == null) {
-			throw new RuntimeException(LocalizedPropertiesPlugin
-					.getString(ERROR_LOST_LOCALE));
+			throw new RuntimeException(
+					LocalizedPropertiesMessages.getString(ERROR_LOST_LOCALE));
 		}
 		remove(locale);
 		addResource(locale, file);
@@ -206,26 +231,29 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 		if (!allKeys.contains(key)) {
 			throw new RuntimeException("La clave no existe");
 		}
-		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
+		for (Iterator<IPropertyFile> iterator = values().iterator(); iterator
 				.hasNext();) {
-			IPropertyFile pf = (IPropertyFile) iterator.next();
-			PropertyEntry entry = pf.getPropertyEntry(key);
-			((PropertyCategory) entry.getParent()).removeEntry(entry);
+			PropertiesFile pf = (PropertiesFile) iterator.next();
+			pf.remove(key);
 			isRemoved = true;
 		}
 		allKeys.remove(key);
 		return isRemoved;
 	}
 
-	public void keyChanged(String oldKey, String key) {
-		for (Iterator<PropertyFile> iterator = values().iterator(); iterator
+	public String keyChanged(String oldKey, String key) {
+		String newKey = getNewKey(key);
+		for (Iterator<IPropertyFile> iterator = values().iterator(); iterator
 				.hasNext();) {
-			IPropertyFile pf = (IPropertyFile) iterator.next();
-			PropertyEntry e = pf.getPropertyEntry(oldKey);
-			e.setKey(key);
+			PropertiesFile pf = (PropertiesFile) iterator.next();
+			String value = pf.getProperty(oldKey);
+			pf.remove(oldKey);
+			// addKey(newKey);
+			pf.setProperty(newKey, value);
 		}
 		allKeys.remove(oldKey);
-		allKeys.add(key);
+		allKeys.add(newKey);
+		return newKey;
 	}
 
 	public boolean changeValue(Locale locale, String key, String oldValue,
@@ -235,24 +263,40 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 			throw new RuntimeException("El locale no es valido");
 		}
 		if (newValue != null && !newValue.equals(oldValue)) {
-			IPropertyFile pf = get(locale);
-			PropertyEntry pe = pf.getPropertyEntry(key);
-			pe.setValue(newValue);
+			PropertiesFile pf = (PropertiesFile) get(locale);
+			pf.setProperty(key, newValue);
 			// try {
-			// pf.getFile().getParent().refreshLocal(IFile.DEPTH_ONE, null);
+			// pf.getIFile().getParent().refreshLocal(IFile.DEPTH_ONE, null);
+			hasChanged = true;
 			// } catch (CoreException e) {
 			// LocalizedPropertiesLog.error(e.getMessage(), e);
 			// }
-			hasChanged = true;
 		}
 		return hasChanged;
 	}
 
+	/**
+	 * Force to save files as unescaped code
+	 */
+	public void saveAsUnescapedUnicode() {
+		this.save(false);
+	}
+
+	/**
+	 * Force to save files as escaped code
+	 */
+	public void saveAsEscapedUnicode() {
+		this.save(true);
+	}
+
+	/**
+	 * This method keep the file style that was loaded from file
+	 */
 	public void save() {
 		for (Iterator<Locale> iterator = keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();
-			IPropertyFile pf = (IPropertyFile) get(locale);
+			PropertiesFile pf = (PropertiesFile) get(locale);
 			try {
 				pf.save();
 			} catch (FileNotFoundException e) {
@@ -263,6 +307,39 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 			}
 		}
+		refreshWorkspace();
+	}
+
+	private void save(boolean escapedUnicode) {
+		for (Iterator<Locale> iterator = keySet().iterator(); iterator
+				.hasNext();) {
+			Locale locale = iterator.next();
+			PropertiesFile pf = (PropertiesFile) get(locale);
+			try {
+				if (escapedUnicode) {
+					pf.saveAsEscapedUnicode();
+				} else {
+					pf.saveAsUnescapedUnicode();
+				}
+			} catch (FileNotFoundException e) {
+				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
+			} catch (IOException e) {
+				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
+			} catch (CoreException e) {
+				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
+			}
+		}
+		refreshWorkspace();
+	}
+
+	private void refreshWorkspace() {
+		PropertiesFile pf = (PropertiesFile) get(defaultLocale);
+		try {
+			pf.getIFile().getParent().refreshLocal(IFile.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			LocalizedPropertiesLog.error(
+					"Error actualizando el arbol de archivos", e);
+		}
 	}
 
 	public void dispose() {
@@ -272,32 +349,27 @@ public class ResourcesBag extends HashMap<Locale, PropertyFile> {
 
 	public Property[] getProperties() {
 		ArrayList<Property> list = new ArrayList<Property>();
-		PropertyFile defaultProperties = get(defaultLocale);
+		PropertiesFile defaultProperties = (PropertiesFile) get(defaultLocale);
 		for (Iterator<String> iter = allKeys.iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
 			Property property = new Property(key);
 			// Si no encuentra la entrada en el archivo por default
 			// agrega la clave al archivo
-			PropertyEntry defaultEntry = defaultProperties
-					.getPropertyEntry(key);
-			if (defaultEntry == null) {
-				defaultEntry = new PropertyEntry(null, key, null);
-				defaultProperties.getDefaultCategory().addEntry(defaultEntry);
+			if (defaultProperties.getProperty(key) == null) {
+				defaultProperties.setProperty(key, "");
 			}
-			property.setValue(defaultLocale, defaultEntry.getValue());
+			property.setValue(defaultLocale, defaultProperties.getProperty(key));
 
 			for (Iterator<Locale> itera = keySet().iterator(); itera.hasNext();) {
 				Locale loc = itera.next();
 				if (defaultLocale.equals(loc)) {
 					continue;
 				}
-				PropertyFile properties = ((PropertyFile) get(loc));
-				PropertyEntry entry = properties.getPropertyEntry(key);
-				if (entry == null) {
-					entry = new PropertyEntry(null, key, null);
-					properties.getDefaultCategory().addEntry(entry);
+				PropertiesFile properties = ((PropertiesFile) get(loc));
+				if (properties.getProperty(key) == null) {
+					properties.setProperty(key, "");
 				}
-				property.setValue(loc, entry.getValue());
+				property.setValue(loc, properties.getProperty(key));
 			}
 			list.add(property);
 		}

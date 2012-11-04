@@ -11,6 +11,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
+import com.triadsoft.common.utils.LocalizedPropertiesLog;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.model.visitors.FileDiscoverer;
 
@@ -77,7 +79,7 @@ public class NewPathDiscovery implements IFilesDiscoverer {
 			wps = this.getWPS(offset);
 		}
 		if (wps.length == 0) {
-			throw new RuntimeException(LocalizedPropertiesPlugin.getString(
+			throw new RuntimeException(LocalizedPropertiesMessages.getString(
 					PATHDISCOVERY_UNKNOWN_WILDCARD_MESSAGE, new String[] { file
 							.getFullPath().toString() }));
 		}

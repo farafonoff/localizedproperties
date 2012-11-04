@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 
 /**
@@ -182,7 +183,7 @@ public class WilcardPathEditor extends ListEditor {
 		buttonBox = super.getButtonBoxControl(parent);
 		defaultButton = new Button(buttonBox, SWT.PUSH);
 		defaultButton
-				.setText(LocalizedPropertiesPlugin
+				.setText(LocalizedPropertiesMessages
 						.getString(SeparatorsEditor.PREFERENCES_SEPARATORS_DEFAULT_BUTTON));
 		defaultButton.addMouseListener(new MouseListener() {
 			public void mouseUp(MouseEvent arg0) {

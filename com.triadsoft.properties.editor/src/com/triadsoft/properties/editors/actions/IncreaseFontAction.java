@@ -3,13 +3,14 @@ package com.triadsoft.properties.editors.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 
 /**
- * Accion que permite agrandar y achicar la fuente
- * TODO:Translate
+ * Accion que permite agrandar y achicar la fuente TODO:Translate
+ * 
  * @author Triad (flores.leonardo@triadsoft.com.ar)
  */
 public class IncreaseFontAction extends Action {
@@ -23,7 +24,7 @@ public class IncreaseFontAction extends Action {
 			this.getClass(), "/icons/font_increase.png");
 
 	public IncreaseFontAction(PropertyTableViewer viewer) {
-		super(LocalizedPropertiesPlugin.getString(NEW_KEY));
+		super(LocalizedPropertiesMessages.getString(NEW_KEY));
 		this.viewer = viewer;
 		super.setImageDescriptor(imageDescriptor);
 		// super.setAccelerator(SWT.CTRL | 'O');
@@ -40,7 +41,10 @@ public class IncreaseFontAction extends Action {
 		if (this.viewer == null) {
 			return;
 		}
-		float size = viewer.getFontSize();
+		// float size = viewer.getFontSize();
+		float size = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore()
+				.getFloat(PropertyTableViewer.PREFERENCES_FONT_SIZE);
 		size += LocalizedPropertiesPlugin.getDefault().getPreferenceStore()
 				.getFloat(PREFERENCES_FONT_SIZE_STEP);
 		viewer.setFontSize(size);

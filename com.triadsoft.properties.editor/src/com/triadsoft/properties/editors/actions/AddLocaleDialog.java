@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.common.utils.LocalizedPropertiesMessages;
 import com.triadsoft.properties.model.utils.IWildcardPath;
 
 /**
@@ -59,19 +59,19 @@ public class AddLocaleDialog extends Dialog {
 		area.setLayout(labelLayout);
 
 		final Label descriptionLabel = new Label(area, SWT.NONE);
-		descriptionLabel.setText(LocalizedPropertiesPlugin
+		descriptionLabel.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADD_DIALOG_DESCRIPTION));
 		GridData descriptionData = new GridData(GridData.FILL_HORIZONTAL);
 		descriptionData.horizontalSpan = 4;
 		descriptionLabel.setLayoutData(descriptionData);
 
 		final Label localeLabel = new Label(area, SWT.NONE);
-		localeLabel.setText(LocalizedPropertiesPlugin
+		localeLabel.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADD_DIALOG_NEW_LOCALE_LABEL));
 		// localeLabel.setLayoutData(gridData);
 
 		final Label countryLabel = new Label(area, SWT.NONE);
-		countryLabel.setText(LocalizedPropertiesPlugin
+		countryLabel.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADD_DIALOG_NEW_COUNTRY_LABEL));
 
 		GridLayout gridLayout = new GridLayout();
@@ -79,7 +79,7 @@ public class AddLocaleDialog extends Dialog {
 
 		locale = new Text(area, SWT.BORDER);
 		locale.setText("");
-		locale.setMessage(LocalizedPropertiesPlugin
+		locale.setMessage(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADD_LOCALE_DIALOG_LANGUAGE_ERROR));
 		locale.setTextLimit(2);
 		locale.addModifyListener(new ModifyListener() {
@@ -101,7 +101,7 @@ public class AddLocaleDialog extends Dialog {
 		});
 		country = new Text(area, SWT.BORDER);
 		country.setText("");
-		country.setMessage(LocalizedPropertiesPlugin
+		country.setMessage(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADD_LOCALE_DIALOG_COUNTRY_ERROR));
 		country.setTextLimit(2);
 		country.addModifyListener(new ModifyListener() {
@@ -129,7 +129,7 @@ public class AddLocaleDialog extends Dialog {
 		if (!validate()) {
 			MessageBox messageBox = new MessageBox(getShell(), SWT.OK
 					| SWT.ICON_ERROR);
-			messageBox.setText(LocalizedPropertiesPlugin
+			messageBox.setText(LocalizedPropertiesMessages
 					.getString(PREFERENCES_ADD_LOCALE_DIALOG_TITLE_ERRORS));
 			messageBox.setMessage(errors);
 			if (messageBox.open() == SWT.OK) {
@@ -146,7 +146,8 @@ public class AddLocaleDialog extends Dialog {
 	 */
 	private boolean validate() {
 		errors = "";
-		if (languageString != null && !languageString.matches(IWildcardPath.LANGUAGE_REGEX)) {
+		if (languageString != null
+				&& !languageString.matches(IWildcardPath.LANGUAGE_REGEX)) {
 			errors += locale.getMessage();
 		}
 		if (countryString != null && countryString.length() > 0
@@ -161,7 +162,7 @@ public class AddLocaleDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(LocalizedPropertiesPlugin
+		newShell.setText(LocalizedPropertiesMessages
 				.getString(PREFERENCES_ADD_LOCALE_DIALOG_TITLE));
 	}
 
