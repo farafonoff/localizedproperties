@@ -44,7 +44,8 @@ public class ResourceChangeDeltaVisitor implements IResourceDeltaVisitor {
 				|| delta.getKind() == IResourceDelta.REMOVED || delta.getKind() == IResourceDelta.CHANGED)
 				&& resource.getType() == IResource.FILE && wp.match(filepath)) {
 			int index = 0;
-			while (!wp.parse(filepath, index) && index < IWildcardPath.MAXIMUM_OPTIONALS) {
+			while (!wp.parse(filepath, index)
+					&& index < IWildcardPath.MAXIMUM_OPTIONALS) {
 				index++;
 			}
 			if (wp.getFileName() != null && wp.getFileName().equals(filename)

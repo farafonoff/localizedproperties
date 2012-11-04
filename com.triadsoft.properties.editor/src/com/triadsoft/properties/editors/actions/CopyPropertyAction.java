@@ -20,7 +20,6 @@ import org.eclipse.swt.dnd.Transfer;
 
 import com.triadsoft.common.utils.LocalizedPropertiesLog;
 import com.triadsoft.common.utils.LocalizedPropertiesMessages;
-import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
 import com.triadsoft.properties.editors.PropertiesEditor;
 import com.triadsoft.properties.model.Property;
 import com.triadsoft.properties.model.utils.PropertyTransfer;
