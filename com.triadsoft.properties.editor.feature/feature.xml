@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.triadsoft.properties.editor.feature"
-      label="Localized Properties"
-      version="0.8.1"
-      provider-name="TRIADSOFT"
-      plugin="com.triadsoft.properties.editor"
-      nl="en,es">
+      label="Localized Properties Editor"
+      version="0.8.5"
+      provider-name="Triadsoft"
+      plugin="com.triadsoft.properties.editor">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/helios/">
-      Version 0.8.1 - Bug Fixing
+      Version 0.8.5 - New features &amp; Bug fixing
+-Now the unicode and special characters are supported
+-Supports multiline values
+-Autofocus new created key
+-Now escaped chars unicode are allowed(\u0999)
+-Now you have possibility to Save files with escaped or unescaped
+characters using &quot;Save As&quot; menu
+-Various bugs related with file type, file long, and file load,
+has been solved
+-Editor columns, keep size between updates
+Version 0.8.1 - Bug Fixing
 - Friendly description when the plugin doesn&apos;t find an appropiate
 wildcard
 - Sort problem on default language column
@@ -903,11 +912,21 @@ Public License instead of this License.  But first, please read
       <discovery label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/helios"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.jdt.core"/>
+   </requires>
+
    <plugin
          id="com.triadsoft.properties.editor"
          download-size="0"
          install-size="0"
-         version="0.8.1"
+         version="0.8.5"
          unpack="false"/>
 
 </feature>
