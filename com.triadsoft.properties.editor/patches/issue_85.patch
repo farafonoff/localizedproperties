@@ -1,0 +1,278 @@
+Index: src/com/triadsoft/properties/model/ResourcesBag.java
+===================================================================
+--- src/com/triadsoft/properties/model/ResourcesBag.java	(revision 531)
++++ src/com/triadsoft/properties/model/ResourcesBag.java	(working copy)
+@@ -4,8 +4,8 @@
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+-import java.util.HashSet;
+ import java.util.Iterator;
++import java.util.LinkedHashSet;
+ import java.util.Locale;
+ import java.util.Map;
+ 
+@@ -39,7 +39,7 @@
+ 	 */
+ 	private static final long serialVersionUID = -8621871160250240736L;
+ 
+-	private HashSet<String> allKeys = new HashSet<String>();
++	private LinkedHashSet<String> allKeys = new LinkedHashSet<String>();
+ 
+ 	private Locale defaultLocale;
+ 
+Index: src/com/triadsoft/common/properties/PropertyEntry.java
+===================================================================
+--- src/com/triadsoft/common/properties/PropertyEntry.java	(revision 531)
++++ src/com/triadsoft/common/properties/PropertyEntry.java	(working copy)
+@@ -53,7 +53,7 @@
+ 
+ 	/**
+ 	 * Crea la propiedad sin el control de la linea
+-	 * 
++	 *
+ 	 * @param parent
+ 	 * @param key
+ 	 * @param value
+@@ -142,6 +142,15 @@
+ 	}
+ 
+ 	public void appendText(PrintWriter writer) {
++		appendText(writer, false);
++	}
++
++	/**
++	 * Appends entries in properties
++	 * @param writer {@link PrintWriter} to append lines.
++	 * @param newLine {@code true} when file ends (no new line sign is required), {@code false} otherwise.
++	 */
++	public void appendText(PrintWriter writer, boolean newLine) {
+ 		writer.print(key);
+ 		if (getSeparator() == null) {
+ 			setSeparator(LocalizedPropertiesPlugin.getDefaultSeparator());
+@@ -150,7 +159,9 @@
+ 		if (value != null) {
+ 			writer.print(value);
+ 		}
+-		writer.println();
++		if (newLine) {
++			writer.println();
++		}
+ 	}
+ 
+ 	public int getLine() {
+Index: src/com/triadsoft/common/properties/PropertyCategory.java
+===================================================================
+--- src/com/triadsoft/common/properties/PropertyCategory.java	(revision 531)
++++ src/com/triadsoft/common/properties/PropertyCategory.java	(working copy)
+@@ -18,7 +18,7 @@
+  * libro <a href="http://www.amazon.com/Eclipse-Plug-ins-3rd-Eric- Clayberg
+  * /dp/0321553462/ref=pd_bbs_sr_1?ie=UTF8&s=books&qid=1239049938&sr=8-1">Eclipse
+  * Plugins</a>
+- * 
++ *
+  * @author Triad (flores.leonardo@gmail.com)
+  * @see <a href="http://www.amazon.com/Eclipse-Plug-ins-3rd-Eric- Clayberg
+  *      /dp/0321553462
+@@ -56,35 +56,33 @@
+ 	 * @throws IOException
+ 	 */
+ 	private void readEntries(LineNumberReader reader) throws IOException {
+-		while (true) {
+-			reader.mark(1);
+-			int ch = reader.read();
+-			if (ch == -1) {
+-				break;
+-			}
+-			reader.reset();
+-			if (ch == '#') {
+-				break;
+-			}
+-			String line = reader.readLine();
+-			if (line.length() == 0) {
++		String line = null;
++		while ((line = reader.readLine()) != null) {
++			if (line.startsWith("#")) {
+ 				continue;
+ 			}
+ 			if (getSeparator() == null) {
+ 				discoveringSeparator(line);
+ 			}
+-			if(getSeparator()==null){
++			if (getSeparator() == null) {
+ 				break;
+ 			}
+-			reader.reset();
+-			entries.add(new PropertyEntry(this, reader,getSeparator()));
+-//			int index = line.indexOf(getSeparator());
+-//			if (index != -1) {
+-//				String key = line.substring(0, index).trim();
+-//				String value = line.substring(index + 1).trim();
+-//				entries.add(new PropertyEntry(this, key, value, 0, index,
+-//						reader.getLineNumber()));
+-//			}
++
++			int index = line.indexOf(getSeparator());
++			if (index != -1) {
++				String key = line.substring(0, index).trim();
++				String value = line.substring(index + 1).trim();
++				entries.add(new PropertyEntry(this, key, value, 0, index,
++						reader.getLineNumber()));
++
++			}
++			else { //if there is no separator, so this line belongs to the previous one
++				//first line without separator means that there is an error in the file
++				if (entries.size() > 0) {
++					final PropertyEntry entry = entries.get(entries.size() - 1);
++					entry.setValue(entry.getValue() + line);
++				}
++			}
+ 		}
+ 	}
+ 
+@@ -197,12 +195,12 @@
+ 		}
+ 		Iterator<PropertyEntry> iter = entries.iterator();
+ 		while (iter.hasNext())
+-			((PropertyEntry) iter.next()).appendText(writer);
++			((PropertyEntry) iter.next()).appendText(writer, iter.hasNext());
+ 	}
+ 
+ 	/**
+ 	 * Devuelve un booleano que indica si la clave existe en esta categoria
+-	 * 
++	 *
+ 	 * @param entryValue
+ 	 * @return Boolean TRUE o FALSE
+ 	 */
+Index: src/com/triadsoft/common/properties/PropertyFile.java
+===================================================================
+--- src/com/triadsoft/common/properties/PropertyFile.java	(revision 531)
++++ src/com/triadsoft/common/properties/PropertyFile.java	(working copy)
+@@ -90,7 +90,7 @@
+ 		// }
+ 		// }
+ 		// stream.close();
+-		//			
++		//
+ 		// } catch (IOException e) {
+ 		// e.printStackTrace();
+ 		// }
+@@ -99,7 +99,7 @@
+ 
+ 	/**
+ 	 * Permite crear un property file a partir de un IFile
+-	 * 
++	 *
+ 	 * @param file
+ 	 * @throws IOException
+ 	 * @throws CoreException
+@@ -134,7 +134,7 @@
+ 	}
+ 
+ 	/**
+-	 * 
++	 *
+ 	 * @param content
+ 	 * @throws IOException
+ 	 */
+@@ -150,7 +150,7 @@
+ 
+ 	/**
+ 	 * Permite cargar el property file, a partir de un file
+-	 * 
++	 *
+ 	 * @param content
+ 	 * @throws IOException
+ 	 */
+@@ -170,7 +170,7 @@
+ 
+ 	/**
+ 	 * Permite cargar el property file, a partir de un contenido
+-	 * 
++	 *
+ 	 * @param content
+ 	 * @throws IOException
+ 	 */
+@@ -286,7 +286,7 @@
+ 
+ 	/**
+ 	 * Devuelve true, si existe una categoria con este nombre
+-	 * 
++	 *
+ 	 * @param categoryName
+ 	 * @return Booleano TRUE o FALSE
+ 	 */
+@@ -303,7 +303,7 @@
+ 
+ 	/**
+ 	 * Devuelve verdadero si existe la propiedad en el archivo
+-	 * 
++	 *
+ 	 * @param propertyName
+ 	 * @return Booleano TRUE o FALSE
+ 	 */
+@@ -320,15 +320,14 @@
+ 
+ 	/**
+ 	 * Convierte el PropertyFile en texto
+-	 * 
++	 *
+ 	 * @return un String con todo el contenido del archivo de propiedades
+ 	 */
+ 	public String asText() {
+ 		StringWriter stringWriter = new StringWriter(2000);
+ 		PrintWriter writer = new PrintWriter(stringWriter);
+-		Iterator<PropertyCategory> iter = categories.iterator();
+-		while (iter.hasNext()) {
+-			((PropertyCategory) iter.next()).appendText(writer);
++		for (PropertyCategory category : categories) {
++			category.appendText(writer);
+ 		}
+ 		return stringWriter.toString();
+ 	}
+@@ -339,7 +338,7 @@
+ 	 * categoria. Todas las claves entontradas antes de un comentario, son
+ 	 * agregadas a esta categoria, ya que no se puede identificar a la categoria
+ 	 * a la que pertenecen
+-	 * 
++	 *
+ 	 * @return PropertyCategory
+ 	 * @see PropertyCategory
+ 	 */
+@@ -415,7 +414,7 @@
+ 
+ 	/**
+ 	 * Devuelve una categoria a partir de su nombre
+-	 * 
++	 *
+ 	 * @param categoryName
+ 	 *            Nombre de la categoria buscada
+ 	 * @return PropertyCategory encontrada, null si no la encuentra
+@@ -432,7 +431,7 @@
+ 
+ 	/**
+ 	 * Devuelve la categoria a partir del key buscado
+-	 * 
++	 *
+ 	 * @param entryKey
+ 	 * @return null si no existe la entrada
+ 	 */
+@@ -448,7 +447,7 @@
+ 
+ 	/**
+ 	 * Devuelve el objeto PropertyEntry a partir de la clave
+-	 * 
++	 *
+ 	 * @param entryKey
+ 	 *            String que identifica a la entrada
+ 	 * @return ProperyEntry
+@@ -463,7 +462,7 @@
+ 
+ 	/**
+ 	 * Mueve un entrada a un categoria
+-	 * 
++	 *
+ 	 * @param entry
+ 	 * @param destinityCategory
+ 	 */
