@@ -142,11 +142,13 @@ public class WildcardPathTest extends TestCase {
 		StringTokenizer tokenizer = new StringTokenizer(text, "/");
 		assertTrue("Encontre 5 elementos", tokenizer.countTokens() == 5);
 		tokenizer = new StringTokenizer(text, "/.-_");
-		LocalizedPropertiesLog.debug("encontre " + tokenizer.countTokens());
+		//LocalizedPropertiesLog.debug("encontre " + tokenizer.countTokens());
+		System.out.println("encontre " + tokenizer.countTokens());
 		assertTrue("Encontre 12 elementos", tokenizer.countTokens() == 12);
 
 		while (tokenizer.hasMoreElements()) {
-			LocalizedPropertiesLog.debug("" + tokenizer.nextElement());
+			//LocalizedPropertiesLog.debug("" + tokenizer.nextElement());
+			System.out.println("" + tokenizer.nextElement());
 		}
 	}
 
