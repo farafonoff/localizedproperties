@@ -13,6 +13,9 @@
    <feature url="features/com.triadsoft.properties.editor.feature_0.8.5.jar" id="com.triadsoft.properties.editor.feature" version="0.8.5" nl="en,es">
       <category name="Localized Properties Update Site"/>
    </feature>
+   <feature url="features/com.triadsoft.properties.editor.feature_0.8.6.jar" id="com.triadsoft.properties.editor.feature" version="0.8.6">
+      <category name="Localized Properties Update Site"/>
+   </feature>
    <category-def name="Localized Properties Update Site" label="Localized Properties Editor">
       <description>
          The goal of the plugin is provide an editor where we can review and modify all resource files at once and get a glimpse of the texts for all languages at same time.
