@@ -1,0 +1,232 @@
+Index: src/com/triadsoft/properties/editors/PropertiesEditor.java
+===================================================================
+--- src/com/triadsoft/properties/editors/PropertiesEditor.java	(revisión: 632)
++++ src/com/triadsoft/properties/editors/PropertiesEditor.java	(copia de trabajo)
+@@ -1,6 +1,7 @@
+ package com.triadsoft.properties.editors;
+ 
+ import java.util.Locale;
++import java.util.Map;
+ import java.util.ResourceBundle;
+ 
+ import org.eclipse.core.resources.IFile;
+@@ -46,20 +47,20 @@
+ /**
+  * <p>
+  * Editor que muestra la grilla de datos de las propiedades, viendo en la
+- * primera columna las claves y en las demás los distintos idiomas.
++ * primera columna las claves y en las demï¿½s los distintos idiomas.
+  * </p>
+  * <p>
+- * El editor intentará descubrir según el path de los archivos de recursos,los
+- * distintos idiomas a los que se encuentran los resource bundle. Para ésto
++ * El editor intentarï¿½ descubrir segï¿½n el path de los archivos de recursos,los
++ * distintos idiomas a los que se encuentran los resource bundle. Para ï¿½sto
+  * utiliza el WildcardPath.
+  * </p>
+  * <p>
+- * Segun los distintos lenguajes de programacion, los archivos de recursos están
++ * Segun los distintos lenguajes de programacion, los archivos de recursos estï¿½n
+  * en distintas ubicaciones con distintas convenciones en el nombre de los
+  * archivos y la ubicacion de los mismos.
+  * </p>
+  * <p>
+- * Por éste motivo es que el Properties editor intenta buscar según el path del
++ * Por ï¿½ste motivo es que el Properties editor intenta buscar segï¿½n el path del
+  * archivos cual es el wildcard path de cada uno.
+  * </p>
+  * 
+@@ -328,7 +329,7 @@
+ 	}
+ 
+ 	/**
+-	 * No se permite el save as porque hay varios archivos que se están editando
++	 * No se permite el save as porque hay varios archivos que se estï¿½n editando
+ 	 * 
+ 	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+ 	 */
+@@ -440,10 +441,10 @@
+ 		tableViewer.refresh();
+ 	}
+ 
+-	public void addKey(String key) {
++	public void addKey(String key, Map<Locale, String> localeValues) {
+ 		tableChanged();
+-		// La clave puede cambiar si la clave está repetida
+-		key = resource.addKey(key);
++		// La clave puede cambiar si la clave estï¿½ repetida
++		key = resource.addKey(key, localeValues);
+ 		tableViewer.refresh();
+ 		int index = 0;
+ 		while (index < tableViewer.getTable().getItemCount()) {
+Index: src/com/triadsoft/properties/editors/actions/AddKeyAction.java
+===================================================================
+--- src/com/triadsoft/properties/editors/actions/AddKeyAction.java	(revisión: 632)
++++ src/com/triadsoft/properties/editors/actions/AddKeyAction.java	(copia de trabajo)
+@@ -48,11 +48,11 @@
+ 		try {
+ 
+ 			AddKeyDialog dialog = new AddKeyDialog(PlatformUI.getWorkbench()
+-					.getDisplay().getActiveShell());
++					.getDisplay().getActiveShell(), editor.getResource().getLocales());
+ 			if (dialog.open() != InputDialog.OK) {
+ 				return;
+ 			}
+-			editor.addKey(dialog.getNewKey());
++			editor.addKey(dialog.getNewKey(), dialog.getValues());
+ 		} finally {
+ 			table.setRedraw(true);
+ 		}
+Index: src/com/triadsoft/properties/editors/actions/AddKeyDialog.java
+===================================================================
+--- src/com/triadsoft/properties/editors/actions/AddKeyDialog.java	(revisión: 632)
++++ src/com/triadsoft/properties/editors/actions/AddKeyDialog.java	(copia de trabajo)
+@@ -1,5 +1,9 @@
+ package com.triadsoft.properties.editors.actions;
+ 
++import java.util.HashMap;
++import java.util.Locale;
++import java.util.Map;
++
+ import org.eclipse.jface.dialogs.Dialog;
+ import org.eclipse.swt.SWT;
+ import org.eclipse.swt.events.ModifyEvent;
+@@ -13,6 +17,7 @@
+ import org.eclipse.swt.widgets.Text;
+ 
+ import com.triadsoft.common.utils.LocalizedPropertiesMessages;
++import com.triadsoft.properties.model.utils.StringUtils;
+ 
+ /**
+  * Dialogo para agregar una nueva clave al archivo de recursos
+@@ -25,12 +30,17 @@
+ 	private static final String PREFERENCES_ADD_KEY_DIALOG_TITLE = "preferences.add.key.dialog.title";
+ 	private static final String PREFERENCES_ADD_KEY_DIALOG_LABEL = "preferences.add.key.dialog.label";
+ 	private static final String PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION = "preferences.add.key.dialog.description";
++	private static final String DEFAULT_TEXT = "<default>";
+ 	private Label label;
+ 	private Text wildcardPath;
+ 	private String newKey;
++	
++	private Locale[] locales;
++	private Map<Locale, String> values = new HashMap<Locale, String>();
+ 
+-	public AddKeyDialog(Shell shell) {
++	public AddKeyDialog(Shell shell, Locale[] locales) {
+ 		super(shell);
++		this.locales = locales;
+ 	}
+ 
+ 	@Override
+@@ -59,6 +69,27 @@
+ 				changeData();
+ 			}
+ 		});
++		
++		final Map<Text, Locale> localeValues = new HashMap<Text, Locale>();
++		for (Locale locale : locales) {
++			label = new Label(area, SWT.NONE);
++			if (locale.toString().equals(StringUtils.getKeyLocale().toString())) {
++				label.setText(DEFAULT_TEXT);
++			} else {
++				label.setText(locale.toString());
++			}
++			Text value = new Text(area, SWT.BORDER);
++			value.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
++			value.setText("");
++			value.addModifyListener(new ModifyListener() {
++				public void modifyText(ModifyEvent e) {
++					Text source = (Text) e.getSource();
++					Locale modifiedLocale = localeValues.get(source);
++					values.put(modifiedLocale, source.getText());
++				}
++			});
++			localeValues.put(value, locale);
++		}
+ 		area.setLayout(gridLayout);
+ 		return area;
+ 	}
+@@ -80,4 +111,8 @@
+ 	public String getNewKey() {
+ 		return newKey;
+ 	}
++	
++	public Map<Locale, String> getValues() {
++		return values;
++	}
+ }
+Index: src/com/triadsoft/properties/model/ResourceList.java
+===================================================================
+--- src/com/triadsoft/properties/model/ResourceList.java	(revisión: 632)
++++ src/com/triadsoft/properties/model/ResourceList.java	(copia de trabajo)
+@@ -33,14 +33,14 @@
+ 
+ /**
+  * Esta clase es la encargada de manejar el archivo que se intenta abrir desde
+- * el editor. A partir del nombre del archivo abierto, ésta clase intenta
++ * el editor. A partir del nombre del archivo abierto, ï¿½sta clase intenta
+  * descubrir a partir de los WildcardPath mostrados en los defaults, la
+  * ubicacion de los demas archivos de recursos parseando el path del archivo y
+- * descubre el locale que contiene el path del archivo. Ésta clase basicamente
++ * descubre el locale que contiene el path del archivo. ï¿½sta clase basicamente
+  * sirve de conexion entre el editor y el manejo de los archivos de propiedades
+  * descubiertos en el path, los mantiene sincronizados, y cuando recibe un
+  * cambio desde el editor, se ancarga de actualizar el archivo que corresponde
+- * al idioma que se está modificando
++ * al idioma que se estï¿½ modificando
+  * 
+  * @author Triad (flores.leonardo@gmail.com)
+  * @see WildCardPath2
+@@ -122,10 +122,11 @@
+ 	 * </p>
+ 	 * 
+ 	 * @param key
++	 * @param localeValues 
+ 	 * @return
+ 	 */
+-	public String addKey(String key) {
+-		return propertyFiles.addKey(key);
++	public String addKey(String key, Map<Locale, String> localeValues) {
++		return propertyFiles.addKey(key, localeValues);
+ 	}
+ 
+ 	public boolean removeKey(String key) {
+Index: src/com/triadsoft/properties/model/ResourcesBag.java
+===================================================================
+--- src/com/triadsoft/properties/model/ResourcesBag.java	(revisión: 632)
++++ src/com/triadsoft/properties/model/ResourcesBag.java	(copia de trabajo)
+@@ -116,7 +116,7 @@
+ 		return true;
+ 	}
+ 
+-	public String addKey(String key) {
++	public String addKey(String key, Map<Locale, String> localeValues) {
+ 		String newKey = getNewKey(key);
+ 		if (newKey == null) {
+ 			throw new RuntimeException(
+@@ -138,10 +138,12 @@
+ 			// .getString(ERROR_REPEATED_KEY));
+ 		}
+ 		allKeys.add(newKey);
+-		for (Iterator<IPropertyFile> iterator = values().iterator(); iterator
+-				.hasNext();) {
+-			IPropertyFile pf = iterator.next();
+-			pf.setProperty(newKey, "");
++		for (Map.Entry<Locale, IPropertyFile> entry : this.entrySet()) {
++			Locale propertyLocale = entry.getKey();
++			IPropertyFile propertyFile = entry.getValue();
++			String value = localeValues.get(propertyLocale) != null ? localeValues.get(propertyLocale) : "";
++			
++			propertyFile.setProperty(key, value);
+ 		}
+ 		return newKey;
+ 	}
+@@ -175,7 +177,7 @@
+ 	/**
+ 	 * Metodo encargado de cargar todas las claves del property file un set que
+ 	 * no repite las claves. Puede ocurrir que los distintos archivos tengan
+-	 * distintas claves, entonces de ésta manera cuando voy a armar la tabla,
++	 * distintas claves, entonces de ï¿½sta manera cuando voy a armar la tabla,
+ 	 * parto del listado de claves de la mezcla de todos los archivos
+ 	 * 
+ 	 * @param file

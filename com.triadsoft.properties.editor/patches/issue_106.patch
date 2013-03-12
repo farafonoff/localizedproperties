@@ -1,0 +1,47 @@
+Index: src/com/triadsoft/properties/model/PropertiesFile.java
+===================================================================
+--- src/com/triadsoft/properties/model/PropertiesFile.java	(revisión: 632)
++++ src/com/triadsoft/properties/model/PropertiesFile.java	(copia de trabajo)
+@@ -10,11 +10,15 @@
+ import java.io.OutputStream;
+ import java.io.OutputStreamWriter;
+ import java.nio.charset.Charset;
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Collections;
++import java.util.Comparator;
+ import java.util.Date;
+-import java.util.Enumeration;
+ import java.util.Iterator;
+ import java.util.LinkedList;
+ import java.util.List;
++import java.util.Map;
+ import java.util.Properties;
+ 
+ import org.eclipse.core.resources.IFile;
+@@ -442,15 +446,20 @@
+ 		bw.write("#" + new Date().toString());
+ 		bw.newLine();
+ 		synchronized (this) {
+-			for (Enumeration<Object> e = keys(); e.hasMoreElements();) {
+-				String key = (String) e.nextElement();
+-				String val = (String) get(key);
+-				key = saveConvert(key, true, escUnicode);
++			ArrayList<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>((Collection<? extends java.util.Map.Entry<String, String>>) this.entrySet());
++			Collections.sort(list,new Comparator<Map.Entry<String, String>>() {
++				public int compare(java.util.Map.Entry<String, String> o1, java.util.Map.Entry<String, String> o2) {
++					return o1.getKey().compareTo(o2.getKey());
++				}
++			});
++			
++			for (Map.Entry<String, String> entry : list) {
++				String key = saveConvert(entry.getKey(), true, escUnicode);
+ 				/*
+ 				 * No need to escape embedded and trailing spaces for value,
+ 				 * hence pass false to flag.
+ 				 */
+-				val = saveConvert(val, false, escUnicode);
++				String val = saveConvert(entry.getValue(), false, escUnicode);
+ 				bw.write(key + separator + val);
+ 				bw.newLine();
+ 			}
