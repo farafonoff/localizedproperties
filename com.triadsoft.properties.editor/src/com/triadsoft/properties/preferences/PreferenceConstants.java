@@ -18,5 +18,7 @@ public class PreferenceConstants {
 
 	public static final String KEY_VALUE_SEPARATORS_PREFERENCES = "preferences.keyvalue.separators";
 	public static final String KEY_VALUE_DEFAULT_SEPARATOR_PREFERENCES = "preferences.separator.default";
+	
+	public static final String KEY_SORTERED_PREFERENCES = "preferences.sortered.keys";
 
 }
