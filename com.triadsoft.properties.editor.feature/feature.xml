@@ -7,7 +7,11 @@
       plugin="com.triadsoft.properties.editor">
 
    <description url="http://localizedproperties.googlecode.com/svn/trunk/helios/">
-      Version 0.8.5 - New features &amp; Bug fixing
+      Version 0.8.6 - New features &amp; Bug Fixing
+-Now supports alphabetical key sorting, selectable from preferences
+-It has been solved errors related with encoding, such as UTF support errors, and characters tranformations between distincts types.
+
+Version 0.8.5 - New features &amp; Bug fixing
 -Now the unicode and special characters are supported
 -Supports multiline values
 -Autofocus new created key
