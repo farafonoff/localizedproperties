@@ -10,17 +10,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.IPropertyFile;
+import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage;
+import com.triadsoft.properties.preferences.PreferenceConstants;
 
 /**
  * This is an extension of Java API Properties to extend the functionality and
@@ -75,6 +82,11 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		}
 	}
 
+	/**
+	 * This method overrides Properties method, cause I need to detect '~'
+	 * codes, used in some type of files as separator. Also I need to keep the
+	 * used separator on this file.
+	 */
 	public synchronized void load(InputStream inStream) throws IOException {
 		char[] convtBuf = new char[1024];
 		LineReader lr = new LineReader(inStream);
@@ -441,16 +453,32 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		}
 		bw.write("#" + new Date().toString());
 		bw.newLine();
+		boolean saveSortered = LocalizedPropertiesPlugin.getDefault()
+				.getPreferenceStore()
+				.getBoolean(PreferenceConstants.KEY_SORTERED_PREFERENCES);
 		synchronized (this) {
-			for (Enumeration<Object> e = keys(); e.hasMoreElements();) {
-				String key = (String) e.nextElement();
-				String val = (String) get(key);
-				key = saveConvert(key, true, escUnicode);
+			ArrayList<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(
+					(Collection<? extends java.util.Map.Entry<String, String>>) this
+							.entrySet());
+			//Now sorting is setted by user config preferences
+			if (saveSortered) {
+				Collections.sort(list,
+						new Comparator<Map.Entry<String, String>>() {
+							public int compare(
+									java.util.Map.Entry<String, String> o1,
+									java.util.Map.Entry<String, String> o2) {
+								return o1.getKey().compareTo(o2.getKey());
+							}
+						});
+			}
+
+			for (Map.Entry<String, String> entry : list) {
+				String key = saveConvert(entry.getKey(), true, escUnicode);
 				/*
 				 * No need to escape embedded and trailing spaces for value,
 				 * hence pass false to flag.
 				 */
-				val = saveConvert(val, false, escUnicode);
+				String val = saveConvert(entry.getValue(), false, escUnicode);
 				bw.write(key + separator + val);
 				bw.newLine();
 			}
@@ -491,7 +519,15 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 	 */
 	public void save() throws IOException, CoreException {
 		OutputStream ostream = new FileOutputStream(file);
-		store(ostream, null, hasEscapedCode);
+		if (ifile != null && ifile.getCharset().equals("UTF-8")
+				|| ifile.getCharset().equals("UTF-16BE")
+				|| ifile.getCharset().equals("UTF-16LE")
+				|| ifile.getCharset().equals("UTF-32BE")
+				|| ifile.getCharset().equals("UTF-32LE")) {
+			store(ostream, null, true);
+			return;
+		}
+		store(ostream, null, false);
 	}
 
 	/**
