@@ -1,5 +1,6 @@
 package com.triadsoft.properties.model;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,25 +8,30 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 
 import com.triadsoft.common.properties.IPropertyFile;
 import com.triadsoft.properties.editor.LocalizedPropertiesPlugin;
+import com.triadsoft.properties.model.utils.StringUtils;
 import com.triadsoft.properties.preferences.LocalizedPropertiesPreferencePage;
 import com.triadsoft.properties.preferences.PreferenceConstants;
 
@@ -88,62 +94,96 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 	 * used separator on this file.
 	 */
 	public synchronized void load(InputStream inStream) throws IOException {
-		char[] convtBuf = new char[1024];
-		LineReader lr = new LineReader(inStream);
-
+		BufferedReader br = new BufferedReader(new InputStreamReader(inStream, "UTF-8"));
+		String line;
+		while ((line = br.readLine()) != null) {
+			Map.Entry<String, String> entry = splitLine(line);
+			if (entry!=null) {
+				put(entry.getKey(), entry.getValue());
+			}
+		}
+	}
+	
+	private Map.Entry<String, String> splitLine(String line) {
+		char[] convtBuf = new char[1024];		
 		int limit;
 		int keyLen;
 		int valueStart;
 		char c;
 		boolean hasSep;
 		boolean precedingBackslash;
-
-		while ((limit = lr.readLine()) >= 0) {
-			c = 0;
-			keyLen = 0;
-			valueStart = limit;
-			hasSep = false;
-
-			// System.out.println("line=<" + new String(lineBuf, 0, limit) +
-			// ">");
-			precedingBackslash = false;
-			while (keyLen < limit) {
-				c = lr.lineBuf[keyLen];
-				// need check if escaped.
-				if ((c == '=' || c == ':' || c == '~') && !precedingBackslash) {
-					valueStart = keyLen + 1;
-					separator = c;
-					hasSep = true;
-					break;
-				} else if ((c == ' ' || c == '\t' || c == '\f')
-						&& !precedingBackslash) {
-					valueStart = keyLen + 1;
-					break;
-				}
-				if (c == '\\') {
-					precedingBackslash = !precedingBackslash;
-				} else {
-					precedingBackslash = false;
-				}
-				keyLen++;
-			}
-			while (valueStart < limit) {
-				c = lr.lineBuf[valueStart];
-				if (c != ' ' && c != '\t' && c != '\f') {
-					if (!hasSep && (c == '=' || c == ':' || c == '~')) {
-						hasSep = true;
-						separator = c;
-					} else {
-						break;
-					}
-				}
-				valueStart++;
-			}
-			String key = loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
-			String value = loadConvert(lr.lineBuf, valueStart, limit
-					- valueStart, convtBuf);
-			put(key, value);
+		char[] lineBuf;
+		while (line.startsWith("\uFEFF")) {//remove BOM
+			line = line.substring(1);
 		}
+		
+		limit = line.length();
+		lineBuf = line.toCharArray();
+		if (line.startsWith("#")) {
+			return null;//skip comments here
+		}
+		c = 0;
+		keyLen = 0;
+		valueStart = limit;
+		hasSep = false;
+
+		// System.out.println("line=<" + new String(lineBuf, 0, limit) +
+		// ">");
+		precedingBackslash = false;
+		while (keyLen < limit) {
+			c = lineBuf[keyLen];
+			// need check if escaped.
+			if ((c == '=' || c == ':' || c == '~') && !precedingBackslash) {
+				valueStart = keyLen + 1;
+				separator = c;
+				hasSep = true;
+				break;
+			} else if ((c == ' ' || c == '\t' || c == '\f')
+					&& !precedingBackslash) {
+				valueStart = keyLen + 1;
+				break;
+			}
+			if (c == '\\') {
+				precedingBackslash = !precedingBackslash;
+			} else {
+				precedingBackslash = false;
+			}
+			keyLen++;
+		}
+		while (valueStart < limit) {
+			c = lineBuf[valueStart];
+			if (c != ' ' && c != '\t' && c != '\f') {
+				if (!hasSep && (c == '=' || c == ':' || c == '~')) {
+					hasSep = true;
+					separator = c;
+				} else {
+					break;
+				}
+			}
+			valueStart++;
+		}
+		final String xkey = loadConvert(lineBuf, 0, keyLen, convtBuf);
+		final String xvalue = loadConvert(lineBuf, valueStart, limit
+				- valueStart, convtBuf);
+		if (xkey.trim().isEmpty()) {
+			return null;
+		}
+		return new Map.Entry<String, String>() {
+			String key = xkey;
+			String value = xvalue;
+			
+			public String getValue() {
+				return this.value;
+			}
+			
+			public String getKey() {
+				return this.key;
+			}
+
+			public String setValue(String value) {
+				return this.value = value;
+			}
+		};
 	}
 
 	private String loadConvert(char[] in, int off, int len, char[] convtBuf) {
@@ -222,117 +262,6 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		return new String(out, 0, outLen);
 	}
 
-	class LineReader {
-		public LineReader(InputStream inStream) {
-			this.inStream = inStream;
-		}
-
-		byte[] inBuf = new byte[8192];
-		char[] lineBuf = new char[1024];
-		int inLimit = 0;
-		int inOff = 0;
-		InputStream inStream;
-
-		int readLine() throws IOException {
-			int len = 0;
-			char c = 0;
-
-			boolean skipWhiteSpace = true;
-			boolean isCommentLine = false;
-			boolean isNewLine = true;
-			boolean appendedLineBegin = false;
-			boolean precedingBackslash = false;
-			boolean skipLF = false;
-
-			while (true) {
-				if (inOff >= inLimit) {
-					inLimit = inStream.read(inBuf);
-					inOff = 0;
-					if (inLimit <= 0) {
-						if (len == 0 || isCommentLine) {
-							return -1;
-						}
-						return len;
-					}
-				}
-				// The line below is equivalent to calling a
-				// ISO8859-1 decoder.
-				c = (char) (0xff & inBuf[inOff++]);
-				if (skipLF) {
-					skipLF = false;
-					if (c == '\n') {
-						continue;
-					}
-				}
-				if (skipWhiteSpace) {
-					if (c == ' ' || c == '\t' || c == '\f') {
-						continue;
-					}
-					if (!appendedLineBegin && (c == '\r' || c == '\n')) {
-						continue;
-					}
-					skipWhiteSpace = false;
-					appendedLineBegin = false;
-				}
-				if (isNewLine) {
-					isNewLine = false;
-					if (c == '#' || c == '!') {
-						isCommentLine = true;
-						continue;
-					}
-				}
-
-				if (c != '\n' && c != '\r') {
-					lineBuf[len++] = c;
-					if (len == lineBuf.length) {
-						int newLength = lineBuf.length * 2;
-						if (newLength < 0) {
-							newLength = Integer.MAX_VALUE;
-						}
-						char[] buf = new char[newLength];
-						System.arraycopy(lineBuf, 0, buf, 0, lineBuf.length);
-						lineBuf = buf;
-					}
-					// flip the preceding backslash flag
-					if (c == '\\') {
-						precedingBackslash = !precedingBackslash;
-					} else {
-						precedingBackslash = false;
-					}
-				} else {
-					// reached EOL
-					if (isCommentLine || len == 0) {
-						isCommentLine = false;
-						isNewLine = true;
-						skipWhiteSpace = true;
-						len = 0;
-						continue;
-					}
-					if (inOff >= inLimit) {
-						inLimit = inStream.read(inBuf);
-						inOff = 0;
-						if (inLimit <= 0) {
-							return len;
-						}
-					}
-					if (precedingBackslash) {
-						len -= 1;
-						// skip the leading whitespace characters in following
-						// line
-						skipWhiteSpace = true;
-						appendedLineBegin = true;
-						precedingBackslash = false;
-						if (c == '\r') {
-							skipLF = true;
-						}
-					} else {
-						return len;
-					}
-				}
-			}
-		}
-	}
-
 	private String saveConvert(String theString, boolean escapeSpace,
 			boolean escapeUnicode) {
 		int len = theString.length();
@@ -378,9 +307,9 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 				outBuffer.append('f');
 				break;
 			case '=': // Fall through
-			case ':': // Fall through
+//			case ':': // Fall through
 			case '#': // Fall through
-			case '!':
+//			case '!':
 				outBuffer.append('\\');
 				outBuffer.append(aChar);
 				break;
@@ -398,92 +327,6 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 			}
 		}
 		return outBuffer.toString();
-	}
-
-	private static void writeComments(BufferedWriter bw, String comments)
-			throws IOException {
-		bw.write("#");
-		int len = comments.length();
-		int current = 0;
-		int last = 0;
-		char[] uu = new char[6];
-		uu[0] = '\\';
-		uu[1] = 'u';
-		while (current < len) {
-			char c = comments.charAt(current);
-			if (c > '\u00ff' || c == '\n' || c == '\r') {
-				if (last != current)
-					bw.write(comments.substring(last, current));
-				if (c > '\u00ff') {
-					uu[2] = toHex((c >> 12) & 0xf);
-					uu[3] = toHex((c >> 8) & 0xf);
-					uu[4] = toHex((c >> 4) & 0xf);
-					uu[5] = toHex(c & 0xf);
-					bw.write(new String(uu));
-				} else {
-					bw.newLine();
-					if (c == '\r' && current != len - 1
-							&& comments.charAt(current + 1) == '\n') {
-						current++;
-					}
-					if (current == len - 1
-							|| (comments.charAt(current + 1) != '#' && comments
-									.charAt(current + 1) != '!'))
-						bw.write("#");
-				}
-				last = current + 1;
-			}
-			current++;
-		}
-		if (last != current)
-			bw.write(comments.substring(last, current));
-		bw.newLine();
-	}
-
-	public void store(OutputStream out, String comments, boolean escapedUnicode)
-			throws IOException {
-		store0(new BufferedWriter(new OutputStreamWriter(out,
-				Charset.defaultCharset())), comments, escapedUnicode);
-	}
-
-	private void store0(BufferedWriter bw, String comments, boolean escUnicode)
-			throws IOException {
-		if (comments != null) {
-			writeComments(bw, comments);
-		}
-		bw.write("#" + new Date().toString());
-		bw.newLine();
-		boolean saveSortered = LocalizedPropertiesPlugin.getDefault()
-				.getPreferenceStore()
-				.getBoolean(PreferenceConstants.KEY_SORTERED_PREFERENCES);
-		synchronized (this) {
-			ArrayList<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(
-					(Collection<? extends java.util.Map.Entry<String, String>>) this
-							.entrySet());
-			//Now sorting is setted by user config preferences
-			if (saveSortered) {
-				Collections.sort(list,
-						new Comparator<Map.Entry<String, String>>() {
-							public int compare(
-									java.util.Map.Entry<String, String> o1,
-									java.util.Map.Entry<String, String> o2) {
-								return o1.getKey().compareTo(o2.getKey());
-							}
-						});
-			}
-
-			for (Map.Entry<String, String> entry : list) {
-				String key = saveConvert(entry.getKey(), true, escUnicode);
-				/*
-				 * No need to escape embedded and trailing spaces for value,
-				 * hence pass false to flag.
-				 */
-				String val = saveConvert(entry.getValue(), false, escUnicode);
-				bw.write(key + separator + val);
-				bw.newLine();
-			}
-		}
-		bw.flush();
 	}
 
 	/**
@@ -518,16 +361,56 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 	 *             , CoreException
 	 */
 	public void save() throws IOException, CoreException {
-		OutputStream ostream = new FileOutputStream(file);
-		if (ifile != null && ifile.getCharset().equals("UTF-8")
+		/*if (ifile != null && ifile.getCharset().equals("UTF-8")
 				|| ifile.getCharset().equals("UTF-16BE")
 				|| ifile.getCharset().equals("UTF-16LE")
 				|| ifile.getCharset().equals("UTF-32BE")
 				|| ifile.getCharset().equals("UTF-32LE")) {
-			store(ostream, null, true);
+			storeFile(file, null, false);
 			return;
+		}*///don't esc unicode
+		storeFile(file, null, false);
+	}
+	
+	private void storeFile(File file, String comments, boolean escUnicode) throws IOException {
+		File tmpFile = new File(file.getAbsoluteFile()+".bak");
+		file.renameTo(tmpFile);
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile), "UTF-8"));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+		try {
+		String srcLine;
+		Set<String> keys = new HashSet<String>(Arrays.asList(getKeys()));
+		while((srcLine = br.readLine())!=null) {
+			Map.Entry<String, String> entry = splitLine(srcLine);
+			if (entry!=null) {
+				String key = entry.getKey();
+				String oldValue = entry.getValue();
+				String newValue = getProperty(key);
+				keys.remove(key);
+				if (newValue!=null&&!newValue.equals(oldValue)) {
+					String newConvKey = saveConvert(entry.getKey(), true, escUnicode);
+					String newConvValue = saveConvert(entry.getValue().trim(), false, escUnicode);
+					bw.write(newConvKey + separator + newConvValue);
+				} else {
+					bw.write(srcLine);					
+				}
+			} else {
+				bw.write(srcLine);
+			}
+			bw.newLine();			
 		}
-		store(ostream, null, false);
+		for(String key: keys) {
+			String newConvKey = saveConvert(key, true, escUnicode);
+			String newConvValue = saveConvert(getProperty(key), false, escUnicode);
+			if (newConvValue!=null&&!newConvValue.isEmpty()) {
+				bw.write(newConvKey + separator + newConvValue);
+				bw.newLine();
+			}
+		}
+		} finally {
+			br.close();
+			bw.close();
+		}
 	}
 
 	/**
@@ -537,8 +420,7 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 	 * @throws CoreException
 	 */
 	public void saveAsEscapedUnicode() throws IOException, CoreException {
-		OutputStream ostream = new FileOutputStream(file);
-		store(ostream, null, true);
+		storeFile(file, null, true);
 	}
 
 	/**
@@ -548,8 +430,7 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 	 * @throws CoreException
 	 */
 	public void saveAsUnescapedUnicode() throws IOException, CoreException {
-		OutputStream ostream = new FileOutputStream(file);
-		store(ostream, null, false);
+		storeFile(file, null, false);
 	}
 
 	// private void save(boolean escapedUnicode) throws IOException,
