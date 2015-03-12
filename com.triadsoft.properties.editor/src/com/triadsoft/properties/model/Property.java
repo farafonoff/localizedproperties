@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import com.triadsoft.properties.model.utils.StringUtils;
+
 /**
  * <p>
  * This class contains the value of property, and the translation for all
@@ -71,12 +73,6 @@ public class Property {
 	 * @param value
 	 */
 	public void setValue(Locale locale, String value) {
-		if (value == null || value.trim().length() == 0) {
-			value = "";
-			// FIXME: TO EXTERNALIZE
-			addError(locale, new PropertyError(PropertyError.VOID_VALUE,
-					"No se encontro valor para"));
-		}
 		this.values.put(locale, value);
 	}
 
@@ -118,5 +114,28 @@ public class Property {
 			ret += values.get(loc).toString();
 		}
 		return ret;
+	}
+
+	public void updateError() {
+		for (Locale locale : values.keySet()) {
+			String value = values.get(locale);
+			if (value == null || value.trim().length() == 0) {
+				value = "";
+				addError(locale, new PropertyError(PropertyError.VOID_VALUE,
+						"No se encontro valor para"));
+			} else {
+				Locale uk = StringUtils.getLocale("uk");
+				boolean hasUK = values.get(uk) != null
+						&& values.get(uk).trim().length() != 0;
+				boolean notUK = !"uk".equals(locale.toString());
+				if (notUK
+						&& hasUK
+						&& value.trim().equalsIgnoreCase(
+								values.get(uk).trim())) {
+					addError(locale, new PropertyError(PropertyError.UK_TEXT,
+							"text is same as UK english text. check twice"));
+				}
+			}
+		}
 	}
 }

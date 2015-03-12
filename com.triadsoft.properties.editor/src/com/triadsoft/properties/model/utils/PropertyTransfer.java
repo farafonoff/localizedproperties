@@ -78,6 +78,7 @@ public class PropertyTransfer extends ByteArrayTransfer {
 						Locale locale = StringUtils.getLocale(locString);
 						property.setValue(locale, propValue);
 					}
+					property.updateError();
 					properties.add(property);
 				}
 				readIn.close();

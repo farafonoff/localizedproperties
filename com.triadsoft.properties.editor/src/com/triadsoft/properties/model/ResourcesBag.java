@@ -371,6 +371,7 @@ public class ResourcesBag extends HashMap<Locale, IPropertyFile> {
 				}
 				property.setValue(loc, properties.getProperty(key));
 			}
+			property.updateError();
 			list.add(property);
 		}
 		return list.toArray(new Property[list.size()]);

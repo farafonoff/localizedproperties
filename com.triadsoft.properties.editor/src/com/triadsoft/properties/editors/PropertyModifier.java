@@ -116,6 +116,7 @@ public class PropertyModifier implements ICellModifier {
 		} else if (properties.getValue(locale) != null) {
 			properties.setValue(locale, (String) value);
 		}
+		properties.updateError();
 		item = null;
 		editedProperty = null;
 	}
