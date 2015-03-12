@@ -188,7 +188,6 @@ public class WilcardPathDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setSize(400, 200);
 		Point position = new Point(
 				(getParentShell().getLocation().x
 						+ (getParentShell().getSize().x / 2) - (newShell
