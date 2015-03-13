@@ -2,17 +2,19 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties Editor"
-      version="0.8.6"
+      version="0.8.7"
       provider-name="Triadsoft"
       plugin="com.triadsoft.properties.editor">
 
-   <description url="http://localizedproperties.googlecode.com/svn/trunk/helios/">
-      Version 0.8.6 - New features &amp; Bug Fixing
+   <description url="http://farafonoff.github.io/localizedproperties/updates/">
+      Version 0.8.7 - New features &amp; Bug Fixing
+-Switched to Unicode properties file
+-Highlight translations same as UK
+Version 0.8.6 - New features &amp; Bug Fixing
 -Now supports alphabetical key sorting, selectable from preferences
 -It has been solved errors related with encoding, such as UTF
 support errors, and characters tranformations between distincts
 types.
-
 Version 0.8.5 - New features &amp; Bug fixing
 -Now the unicode and special characters are supported
 -Supports multiline values
@@ -914,8 +916,8 @@ Public License instead of this License.  But first, please read
    </license>
 
    <url>
-      <update label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/helios"/>
-      <discovery label="Localized Properties Update Site" url="http://localizedproperties.googlecode.com/svn/trunk/helios"/>
+      <update label="Localized Properties Update Site" url="http://farafonoff.github.io/localizedproperties/updates/"/>
+      <discovery label="Localized Properties Update Site" url="http://farafonoff.github.io/localizedproperties/updates/"/>
    </url>
 
    <requires>
