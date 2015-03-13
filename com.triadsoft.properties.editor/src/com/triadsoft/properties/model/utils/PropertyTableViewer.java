@@ -13,6 +13,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -25,8 +26,10 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -49,6 +52,7 @@ import com.triadsoft.properties.editors.actions.RemoveLocaleAction;
 import com.triadsoft.properties.editors.actions.RemovePropertyAction;
 import com.triadsoft.properties.editors.actions.RemoveSearchTextAction;
 import com.triadsoft.properties.editors.actions.SearchTextAction;
+import com.triadsoft.properties.editors.actions.SetDefaultTextAction;
 
 /**
  * Table that shows columns with locales and keys on rows
@@ -72,6 +76,7 @@ public class PropertyTableViewer extends TableViewer {
 	private PropertiesSorter sorter = new PropertiesSorter(this);
 	private MenuManager mgr;
 	private AddKeyAction addKeyAction;
+	private SetDefaultTextAction setDefaultTextAction;
 	private RemovePropertyAction removePropertyAction;
 	private IncreaseFontAction increaseFontAction;
 	private DecreaseFontAction decreaseFontAction;
@@ -408,6 +413,7 @@ public class PropertyTableViewer extends TableViewer {
 		pastProperty = new PastePropertyAction(editor);
 		searchTextAction = new SearchTextAction(editor);
 		removeSearchTextAction = new RemoveSearchTextAction(editor);
+		setDefaultTextAction = new SetDefaultTextAction(editor, this);
 	}
 
 	private void createColumnActions(IMenuManager menuMgr) {
@@ -426,6 +432,8 @@ public class PropertyTableViewer extends TableViewer {
 				rla.setEnabled(true);
 				menuMgr.add(rla);
 			}
+			setDefaultTextAction.setEnabled(true);
+			setDefaultTextAction.setSelectedLocale(StringUtils.getLocale(selectedColumn.getText()));
 		}
 	}
 
@@ -450,26 +458,23 @@ public class PropertyTableViewer extends TableViewer {
 	}
 
 	public TableColumn getTableColumn(int x, int y) {
-		// FIXME: Ver ésto porque está harcodeado la diferencia
-		x = x - 264;
-		y = y - 148;
-		Point point = new Point(x, y);
-		Rectangle tableBounds = getTable().getClientArea();
-		int selection = getTable().getHorizontalBar().getSelection();
-
-		Rectangle contBounds = getTable().getParent().getBounds();
-		Rectangle colBounds = new Rectangle(contBounds.x + tableBounds.x,
-				contBounds.y + tableBounds.y, tableBounds.width,
-				tableBounds.height);
-
-		for (int i = 0; i < this.getTable().getColumnCount(); i++) {
-			TableColumn col = this.getTable().getColumn(i);
-			colBounds.width = col.getWidth();
-			if (x > (colBounds.x - selection)
-					&& x < (colBounds.x - selection) + colBounds.width) {
-				return col;
-			}
-			colBounds.x = colBounds.x + col.getWidth();
+		int xOffseted = x;
+		int yOffseted = y;
+		Control currentControl = getTable();
+		
+		while(!(currentControl instanceof Shell)) {
+			Rectangle bd = currentControl.getBounds();
+			xOffseted -= bd.x;
+			yOffseted -= bd.y;
+			currentControl = currentControl.getParent();
+		}
+		
+		Point point = new Point(xOffseted, yOffseted);
+		
+		ViewerCell cell = getCell(point);
+		if (cell!=null) {
+			int column = cell.getColumnIndex();
+			return getTable().getColumn(column);
 		}
 		return null;
 	}
@@ -487,6 +492,7 @@ public class PropertyTableViewer extends TableViewer {
 
 		menuMgr.add(removePropertyAction);
 		menuMgr.add(copyKeyAction);
+		menuMgr.add(setDefaultTextAction);
 		this.createColumnActions(menuMgr);
 		menuMgr.add(new Separator());
 		menuMgr.add(copyProperty);
