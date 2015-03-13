@@ -398,8 +398,20 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 *            Locale en el que se modifico el valor
 	 */
 	public void valueChanged(String key, String value, Locale locale) {
+		bulkValueChangeStart();
+		bulkValueChanged(key, value, locale);
+		bulkValueChangeEnd();
+	}
+	
+	public void bulkValueChangeStart() {
 		tableChanged();
+	}
+	
+	public void bulkValueChanged(String key, String value, Locale locale) {
 		resource.changeValue(key, value, locale);
+	}
+	
+	public void bulkValueChangeEnd() {
 		tableViewer.refresh();
 	}
 

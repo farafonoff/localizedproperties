@@ -20,6 +20,10 @@ import com.triadsoft.properties.model.utils.PropertyTableViewer;
  */
 public class AddKeyAction extends Action {
 	public static final String NEW_KEY = "menu.menuitem.add";
+	private static final String PREFERENCES_ADD_KEY_DIALOG_TITLE = "preferences.add.key.dialog.title";
+	private static final String PREFERENCES_ADD_KEY_DIALOG_LABEL = "preferences.add.key.dialog.label";
+	private static final String PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION = "preferences.add.key.dialog.description";
+	
 
 	private final PropertiesEditor editor;
 	private final PropertyTableViewer viewer;
@@ -47,12 +51,12 @@ public class AddKeyAction extends Action {
 		table.setRedraw(false);
 		try {
 
-			AddKeyDialog dialog = new AddKeyDialog(PlatformUI.getWorkbench()
-					.getDisplay().getActiveShell());
+			GetStringDialog dialog = new GetStringDialog(PlatformUI.getWorkbench()
+					.getDisplay().getActiveShell(), PREFERENCES_ADD_KEY_DIALOG_TITLE, PREFERENCES_ADD_KEY_DIALOG_LABEL, PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION, null);
 			if (dialog.open() != InputDialog.OK) {
 				return;
 			}
-			editor.addKey(dialog.getNewKey());
+			editor.addKey(dialog.getText());
 		} finally {
 			table.setRedraw(true);
 		}

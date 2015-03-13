@@ -20,17 +20,22 @@ import com.triadsoft.common.utils.LocalizedPropertiesMessages;
  * @author Triad (flores.leonardo@gmail.com)
  * 
  */
-public class AddKeyDialog extends Dialog {
+public class GetStringDialog extends Dialog {
 
-	private static final String PREFERENCES_ADD_KEY_DIALOG_TITLE = "preferences.add.key.dialog.title";
-	private static final String PREFERENCES_ADD_KEY_DIALOG_LABEL = "preferences.add.key.dialog.label";
-	private static final String PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION = "preferences.add.key.dialog.description";
 	private Label label;
 	private Text wildcardPath;
-	private String newKey;
+	private String enteredText;
+	
+	String title;
+	String textLabel;
+	String description;
 
-	public AddKeyDialog(Shell shell) {
+	public GetStringDialog(Shell shell, String title, String textLabel, String description, String defaultText) {
 		super(shell);
+		this.title = title;
+		this.textLabel = textLabel;
+		this.description = description;
+		this.enteredText = defaultText;
 	}
 
 	@Override
@@ -40,7 +45,7 @@ public class AddKeyDialog extends Dialog {
 		final GridData layoutData = new GridData();
 		description.setLayoutData(layoutData);
 		description.setText(LocalizedPropertiesMessages
-				.getString(PREFERENCES_ADD_KEY_DIALOG_DESCRIPTION));
+				.getString(this.description));
 
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
@@ -48,14 +53,14 @@ public class AddKeyDialog extends Dialog {
 		gridLayout.numColumns = 1;
 		label = new Label(area, SWT.NONE);
 		label.setText(LocalizedPropertiesMessages
-				.getString(PREFERENCES_ADD_KEY_DIALOG_LABEL));
+				.getString(this.textLabel));
 		label.setLayoutData(gridData);
 		wildcardPath = new Text(area, SWT.BORDER);
 		wildcardPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		wildcardPath.setText("");
+		wildcardPath.setText(enteredText);
 		wildcardPath.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				newKey = wildcardPath.getText();
+				enteredText = wildcardPath.getText();
 				changeData();
 			}
 		});
@@ -64,8 +69,8 @@ public class AddKeyDialog extends Dialog {
 	}
 
 	private void changeData() {
-		if (newKey != null && newKey.length() == 0) {
-			newKey = null;
+		if (enteredText != null && enteredText.length() == 0) {
+			enteredText = null;
 			return;
 		}
 	}
@@ -74,10 +79,10 @@ public class AddKeyDialog extends Dialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(LocalizedPropertiesMessages
-				.getString(PREFERENCES_ADD_KEY_DIALOG_TITLE));
+				.getString(this.title));
 	}
 
-	public String getNewKey() {
-		return newKey;
+	public String getText() {
+		return enteredText;
 	}
 }
