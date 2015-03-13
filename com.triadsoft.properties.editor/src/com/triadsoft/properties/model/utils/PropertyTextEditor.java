@@ -15,13 +15,13 @@ public class PropertyTextEditor extends TextCellEditor {
 	public PropertyTextEditor(Composite composite) {
 		super(composite);
 		Table table = (Table) composite;
-		setFontSize(table.getFont().getFontData()[0].height);
+		setFontSize(table.getFont().getFontData()[0].getHeight());
 	}
 
-	public void setFontSize(float fontSize) {
+	private void setFontSize(int fontSize) {
 		Font font = getControl().getFont();
 		FontData fontData = font.getFontData()[0];
-		fontData.height = fontSize;
+		fontData.setHeight(fontSize);
 		getControl().setFont(new Font(getControl().getDisplay(), fontData));
 	}
 }
