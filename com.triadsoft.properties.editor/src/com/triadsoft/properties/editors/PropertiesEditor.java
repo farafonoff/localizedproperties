@@ -88,6 +88,8 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 
 	/** The text editor used in page 0. */
 	private PropertyTableViewer tableViewer;
+	private PropertyTableViewer tableViewerKeys;
+	private FirstColumnFixedTableWidget topWidget;
 
 	private TextEditor textEditor;
 
@@ -155,22 +157,23 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 			}
 		});
 		// ----------------------------
-		tableViewer = new PropertyTableViewer(this, getContainer(), locale);
+		topWidget = new FirstColumnFixedTableWidget(getContainer(), SWT.BORDER);
+		//topWidget = getContainer();
+		
+		tableViewer = new PropertyTableViewer(this, topWidget, locale);
 		tableViewer.setLocales(resource.getLocales());
 		tableViewer.setInput(resource);
+		
+		tableViewerKeys = new PropertyTableViewer(this, topWidget, locale);
+		tableViewerKeys.setLocales(resource.getLocales());
+		tableViewerKeys.setInput(resource);
+		
+		//topWidget.setRight(tableViewer.getTable());
+		//topWidget.setLeft(tableViewerKeys.getTable());
 		// Make the selection available
 		getSite().setSelectionProvider(tableViewer);
 
-		// Layout the viewer
-		GridData gridData = new GridData();
-		gridData.verticalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.grabExcessVerticalSpace = true;
-		gridData.horizontalAlignment = GridData.FILL;
-		// tableViewer.getControl().setLayoutData(gridData);
-
-		int index = addPage(tableViewer.getControl());
+		int index = addPage(tableViewer);
 		setPageText(index,
 				LocalizedPropertiesMessages.getString(EDITOR_TAB_PROPERTIES));
 	}
@@ -255,12 +258,12 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		tableViewer.cancelEditing();
-		//if(!tableViewer.isBusy()){
-			resource.save();
-			isTableModified = false;
-			isTextModified = false;
-			firePropertyChange(IEditorPart.PROP_DIRTY);
-		//}
+		// if(!tableViewer.isBusy()){
+		resource.save();
+		isTableModified = false;
+		isTextModified = false;
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+		// }
 	}
 
 	/**
@@ -402,15 +405,15 @@ public class PropertiesEditor extends MultiPageEditorPart implements
 		bulkValueChanged(key, value, locale);
 		bulkValueChangeEnd();
 	}
-	
+
 	public void bulkValueChangeStart() {
 		tableChanged();
 	}
-	
+
 	public void bulkValueChanged(String key, String value, Locale locale) {
 		resource.changeValue(key, value, locale);
 	}
-	
+
 	public void bulkValueChangeEnd() {
 		tableViewer.refresh();
 	}

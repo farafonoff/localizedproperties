@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 import com.triadsoft.properties.model.Property;
+import com.triadsoft.properties.model.PropertyError;
 import com.triadsoft.properties.model.utils.PropertyTableViewer;
 import com.triadsoft.properties.model.utils.SearchUtils;
 import com.triadsoft.properties.model.utils.StringUtils;
@@ -36,18 +37,24 @@ import com.triadsoft.properties.model.utils.StringUtils;
  */
 public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 		ITableLabelProvider {
-
+	ImageDescriptor imageDescriptorError = ImageDescriptor.createFromFile(
+			this.getClass(), "/icons/8x8/error.png");
+	
 	ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
 			this.getClass(), "/icons/8x8/warning.png");
 
 	private TableViewer viewer;
 	private String searchText;
 	private Color systemColor;
+	private Color noValueColor;
+	private Color sameValueColor;
 
 	public PropertiesLabelProvider(TableViewer viewer) {
 		super();
 		this.viewer = viewer;
 		systemColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
+		noValueColor = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+		sameValueColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
 	}
 
 	/**
@@ -81,6 +88,29 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 				.getColumnProperties()[index]);
 		if (property.getError(locale) != null) {
 			return imageDescriptor.createImage();
+		}
+		return null;
+	}
+	
+	public Color getElementBackground(Object obj, int index) {
+		Property property = (Property) obj;
+		if (index == 0) {
+			return null;
+		}
+		Locale locale = StringUtils.getLocale((String) viewer
+				.getColumnProperties()[index]);
+		PropertyError err = (PropertyError) property.getError(locale);
+		if (err != null) {
+			switch (err.getType()) {
+			case PropertyError.VOID_VALUE:
+				return noValueColor;
+			
+			case PropertyError.UK_TEXT:
+				return sameValueColor;
+
+			default:
+				return null;
+			}
 		}
 		return null;
 	}
@@ -120,7 +150,11 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 		int index = cell.getColumnIndex();
 		String columnText = getColumnText(element, index);
 		cell.setText(columnText);
-		cell.setImage(getColumnImage(element, index));
+		//cell.setImage(getColumnImage(element, index));
+		Color alternateBgColor = getElementBackground(element, index); 
+		if (alternateBgColor!=null) {
+			cell.setBackground(alternateBgColor);
+		}
 
 		Pattern p = Pattern.compile("\\{\\d{1,}\\}");
 		Matcher m = p.matcher(columnText);

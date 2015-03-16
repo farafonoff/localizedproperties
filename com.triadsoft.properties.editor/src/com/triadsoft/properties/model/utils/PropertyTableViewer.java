@@ -506,4 +506,5 @@ public class PropertyTableViewer extends TableViewer {
 
 		// menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
+
 }
