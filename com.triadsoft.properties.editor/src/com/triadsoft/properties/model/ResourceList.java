@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -87,8 +89,16 @@ public class ResourceList {
 	 * @return Array de Locale
 	 */
 	public Locale[] getLocales() {
-		return propertyFiles.keySet().toArray(
+		Locale[] result = propertyFiles.keySet().toArray(
 				new Locale[propertyFiles.keySet().size()]);
+		Arrays.sort(result, new Comparator<Locale>() {
+
+			public int compare(Locale o1, Locale o2) {
+				return o1.toString().compareTo(o2.toString());
+			}
+			
+		});
+		return result;
 	}
 
 	public IPropertyFile getPropertyFile(Locale locale) {
