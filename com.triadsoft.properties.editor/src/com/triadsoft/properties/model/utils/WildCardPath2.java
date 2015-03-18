@@ -1,9 +1,12 @@
 package com.triadsoft.properties.model.utils;
 
 import java.io.File;
+import java.lang.management.GarbageCollectorMXBean;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,6 +92,11 @@ public class WildCardPath2 implements IWildcardPath {
 		// } else {
 		// locale = new Locale(virtualLanguage, virtualCountry, variant);
 		// }
+		String targetLanguage = this.language==null?StringUtils.getKeyLocale().getLanguage():this.language;
+		String targetCountry = this.country==null?targetLanguage.toUpperCase():this.country;
+		String targetVariant = this.variant;
+		locale = new Locale(targetLanguage, targetCountry, targetVariant);
+		/*
 		if (this.language != null && this.country != null
 				&& this.variant != null) {
 			locale = new Locale(this.language, this.country, this.variant);
@@ -101,7 +109,7 @@ public class WildCardPath2 implements IWildcardPath {
 		} else if (this.language == null && this.country != null) {
 			locale = new Locale(StringUtils.getKeyLocale().getLanguage(),
 					this.country);
-		}
+		}*/
 		return locale;
 	}
 

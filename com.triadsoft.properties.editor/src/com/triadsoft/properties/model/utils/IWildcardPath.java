@@ -18,7 +18,7 @@ public interface IWildcardPath {
 	/**
 	 * It's use to add a variant of language
 	 */
-	public static final String VARIANT_REGEX = "[A-Z]+";
+	public static final String VARIANT_REGEX = "[a-zA-Z0-9]+";
 
 	/** Constantes para los wildcards */
 	public static final String ROOT_WILDCARD = "{root}";
