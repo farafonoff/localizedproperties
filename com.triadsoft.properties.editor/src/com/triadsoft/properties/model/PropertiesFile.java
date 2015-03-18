@@ -104,7 +104,7 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		}
 	}
 	
-	private Map.Entry<String, String> splitLine(String line) {
+	Map.Entry<String, String> splitLine(String line) {
 		char[] convtBuf = new char[1024];		
 		int limit;
 		int keyLen;
@@ -186,7 +186,7 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		};
 	}
 
-	private String loadConvert(char[] in, int off, int len, char[] convtBuf) {
+	String loadConvert(char[] in, int off, int len, char[] convtBuf) {
 		if (convtBuf.length < len) {
 			int newLen = len * 2;
 			if (newLen < 0) {
@@ -386,14 +386,18 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 				String key = entry.getKey();
 				String oldValue = entry.getValue();
 				String newValue = getProperty(key);
-				keys.remove(key);
-				if (newValue!=null&&!newValue.equals(oldValue)) {
-					String newConvKey = saveConvert(entry.getKey(), true, escUnicode);
-					String newConvValue = saveConvert(newValue.trim(), false, escUnicode);
-					bw.write(newConvKey + separator + newConvValue);
-				} else {
-					bw.write(srcLine);					
-				}
+					if (keys.contains(key)) {
+						keys.remove(key);
+						if (newValue != null && !newValue.equals(oldValue)) {
+							String newConvKey = saveConvert(entry.getKey(),
+									true, escUnicode);
+							String newConvValue = saveConvert(newValue.trim(),
+									false, escUnicode);
+							bw.write(newConvKey + separator + newConvValue);
+						} else {
+							bw.write(srcLine);
+						}
+					}
 			} else {
 				bw.write(srcLine);
 			}
