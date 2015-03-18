@@ -39,6 +39,7 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 
 	ImageDescriptor imageDescriptor = ImageDescriptor.createFromFile(
 			this.getClass(), "/icons/8x8/warning.png");
+	Image warnImage = imageDescriptor.createImage();
 
 	private TableViewer viewer;
 	private String searchText;
@@ -80,7 +81,7 @@ public class PropertiesLabelProvider extends StyledCellLabelProvider implements
 		Locale locale = StringUtils.getLocale((String) viewer
 				.getColumnProperties()[index]);
 		if (property.getError(locale) != null) {
-			return imageDescriptor.createImage();
+			return warnImage;
 		}
 		return null;
 	}

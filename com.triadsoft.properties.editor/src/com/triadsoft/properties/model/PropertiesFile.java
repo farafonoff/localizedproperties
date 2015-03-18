@@ -389,7 +389,7 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 				keys.remove(key);
 				if (newValue!=null&&!newValue.equals(oldValue)) {
 					String newConvKey = saveConvert(entry.getKey(), true, escUnicode);
-					String newConvValue = saveConvert(entry.getValue().trim(), false, escUnicode);
+					String newConvValue = saveConvert(newValue.trim(), false, escUnicode);
 					bw.write(newConvKey + separator + newConvValue);
 				} else {
 					bw.write(srcLine);					

@@ -17,4 +17,8 @@ public class PropertyError extends Error {
 		super(message);
 		this.type = errorType;
 	}
+
+	public int getType() {
+		return type;
+	}
 }
