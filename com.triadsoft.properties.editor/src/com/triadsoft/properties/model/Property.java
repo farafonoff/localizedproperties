@@ -1,9 +1,11 @@
 package com.triadsoft.properties.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import com.triadsoft.properties.model.utils.StringUtils;
 
@@ -117,6 +119,8 @@ public class Property {
 	}
 
 	public void updateError() {
+		Map<String, Set<Locale>> reverseMap = new HashMap<String, Set<Locale>>();
+		Map<String, Set<Locale>> sameLangLocales = new HashMap<String, Set<Locale>>();
 		for (Locale locale : values.keySet()) {
 			String value = values.get(locale);
 			if (value == null || value.trim().length() == 0) {
@@ -124,16 +128,33 @@ public class Property {
 				addError(locale, new PropertyError(PropertyError.VOID_VALUE,
 						"No se encontro valor para"));
 			} else {
-				Locale uk = StringUtils.getLocale("uk");
-				boolean hasUK = values.get(uk) != null
-						&& values.get(uk).trim().length() != 0;
-				boolean notUK = !"uk".equals(locale.toString());
-				if (notUK
-						&& hasUK
-						&& value.trim().equalsIgnoreCase(
-								values.get(uk).trim())) {
-					addError(locale, new PropertyError(PropertyError.UK_TEXT,
-							"text is same as UK english text. check twice"));
+				if (!reverseMap.containsKey(value)) {
+					reverseMap.put(value, new HashSet<Locale>());
+				}
+				if (!sameLangLocales.containsKey(locale.getLanguage())) {
+					sameLangLocales.put(locale.getLanguage(), new HashSet<Locale>());
+				}
+				reverseMap.get(value).add(locale);
+				sameLangLocales.get(locale.getLanguage()).add(locale);
+			}
+		}
+		for (String value:reverseMap.keySet()) {
+			Set<Locale> sharingLocales = reverseMap.get(value);
+			for (Locale locale : sharingLocales) {
+
+				String lang = locale.getLanguage();
+				Set<Locale> langList = sameLangLocales.get(lang);
+				for (Locale loc : sharingLocales) {
+					if (!langList.contains(loc)) {
+						addError(loc, new PropertyError(PropertyError.UK_TEXT,
+								"string shared for different languages"));
+					}
+				}
+				for (Locale loc : langList) {
+					if (!sharingLocales.contains(loc)) {
+						addError(loc, new PropertyError(PropertyError.UK_TEXT,
+								"string not same on all language variants"));
+					}
 				}
 			}
 		}
