@@ -293,12 +293,13 @@ public class ResourcesBag extends HashMap<Locale, IPropertyFile> {
 	 * This method keep the file style that was loaded from file
 	 */
 	public void save() {
+		PropertiesFile template = (PropertiesFile) get(defaultLocale);
 		for (Iterator<Locale> iterator = keySet().iterator(); iterator
 				.hasNext();) {
 			Locale locale = iterator.next();
 			PropertiesFile pf = (PropertiesFile) get(locale);
 			try {
-				pf.save();
+				pf.save(template);
 			} catch (FileNotFoundException e) {
 				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 			} catch (IOException e) {

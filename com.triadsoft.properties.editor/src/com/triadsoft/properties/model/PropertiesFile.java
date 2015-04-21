@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -372,20 +373,34 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		storeFile(file, null, false);
 	}
 	
-	private void storeFile(File file, String comments, boolean escUnicode) throws IOException {
+	public void storeFile(File file, String comments,
+			boolean escUnicode) throws IOException {
 		File tmpFile = new File(file.getAbsoluteFile()+".bak");
-		file.renameTo(tmpFile);
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile), "UTF-8"));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+		file.renameTo(tmpFile);		
+		storeFile(tmpFile, file, null, false);		
+	}
+	
+
+	public void storeFile(File template, File file, String comments,
+			boolean escUnicode) throws IOException {
+		File tmpFile = template.getAbsoluteFile();
+		if (tmpFile.equals(file)) {
+			storeFile(file, comments, escUnicode);
+			return;
+		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				new FileInputStream(tmpFile), "UTF-8"));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(file), "UTF-8"));
 		try {
-		String srcLine;
-		Set<String> keys = new HashSet<String>(Arrays.asList(getKeys()));
-		while((srcLine = br.readLine())!=null) {
-			Map.Entry<String, String> entry = splitLine(srcLine);
-			if (entry!=null) {
-				String key = entry.getKey();
-				String oldValue = entry.getValue();
-				String newValue = getProperty(key);
+			String srcLine;
+			Set<String> keys = new HashSet<String>(Arrays.asList(getKeys()));
+			while ((srcLine = br.readLine()) != null) {
+				Map.Entry<String, String> entry = splitLine(srcLine);
+				if (entry != null) {
+					String key = entry.getKey();
+					String oldValue = entry.getValue();
+					String newValue = getProperty(key);
 					if (keys.contains(key)) {
 						keys.remove(key);
 						if (newValue != null && !newValue.equals(oldValue)) {
@@ -398,19 +413,20 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 							bw.write(srcLine);
 						}
 					}
-			} else {
-				bw.write(srcLine);
-			}
-			bw.newLine();			
-		}
-		for(String key: keys) {
-			String newConvKey = saveConvert(key, true, escUnicode);
-			String newConvValue = saveConvert(getProperty(key), false, escUnicode);
-			if (newConvValue!=null&&!newConvValue.isEmpty()) {
-				bw.write(newConvKey + separator + newConvValue);
+				} else {
+					bw.write(srcLine);
+				}
 				bw.newLine();
 			}
-		}
+			for (String key : keys) {
+				String newConvKey = saveConvert(key, true, escUnicode);
+				String newConvValue = saveConvert(getProperty(key), false,
+						escUnicode);
+				if (newConvValue != null && !newConvValue.isEmpty()) {
+					bw.write(newConvKey + separator + newConvValue);
+					bw.newLine();
+				}
+			}
 		} finally {
 			br.close();
 			bw.close();
@@ -461,4 +477,9 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 	public boolean hasEscapedCode() {
 		return this.hasEscapedCode;
 	}
+
+	public void save(PropertiesFile template) throws IOException, CoreException {
+		storeFile(template.getFile(),file, null, false);
+	}
+
 }
