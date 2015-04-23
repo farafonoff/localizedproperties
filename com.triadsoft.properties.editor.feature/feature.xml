@@ -2,7 +2,7 @@
 <feature
       id="com.triadsoft.properties.editor.feature"
       label="Localized Properties Editor"
-      version="0.9.1"
+      version="0.9.2"
       provider-name="Triadsoft"
       plugin="com.triadsoft.properties.editor">
 

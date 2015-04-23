@@ -1,5 +1,6 @@
 package com.triadsoft.common.properties;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -12,11 +13,13 @@ import org.eclipse.core.runtime.CoreException;
  * @since 0.8.3
  */
 public interface IPropertyFile {
-	public void save() throws IOException, CoreException;
+	public void save(File template) throws IOException, CoreException;
 	
 	//public void save(boolean escapedUnicode) throws IOException, CoreException;
 
 	public Object setProperty(String key, String value);
 
 	public String[] getKeys();
+	
+	public File getFile();
 }

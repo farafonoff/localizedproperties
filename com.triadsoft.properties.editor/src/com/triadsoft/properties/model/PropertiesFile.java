@@ -478,8 +478,8 @@ public class PropertiesFile extends Properties implements IPropertyFile {
 		return this.hasEscapedCode;
 	}
 
-	public void save(PropertiesFile template) throws IOException, CoreException {
-		storeFile(template.getFile(),file, null, false);
+	public void save(File template) throws IOException, CoreException {
+		storeFile(template,file, null, false);
 	}
 
 }

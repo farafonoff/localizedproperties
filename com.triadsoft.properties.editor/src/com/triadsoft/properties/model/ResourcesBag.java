@@ -106,7 +106,7 @@ public class ResourcesBag extends HashMap<Locale, IPropertyFile> {
 			String value = property.getValue(locales[i]);
 			pf.setProperty(key, value);
 			try {
-				pf.save();
+				pf.save(get(defaultLocale).getFile());
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (CoreException e) {
@@ -299,7 +299,7 @@ public class ResourcesBag extends HashMap<Locale, IPropertyFile> {
 			Locale locale = iterator.next();
 			PropertiesFile pf = (PropertiesFile) get(locale);
 			try {
-				pf.save(template);
+				pf.save(template.getFile());
 			} catch (FileNotFoundException e) {
 				LocalizedPropertiesLog.error(e.getLocalizedMessage(), e);
 			} catch (IOException e) {
